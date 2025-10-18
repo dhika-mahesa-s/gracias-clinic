@@ -13,15 +13,44 @@
         .hero {
             background: url('{{ asset("images/clinic-bg.jpg") }}') no-repeat center center/cover;
             height: 100vh;
-            color: white;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             text-align: center;
-            background-color: rgba(0,0,0,0.5);
-            background-blend-mode: darken;
+            background-color: #526D82;
         }
+        .hero2 {
+          background-color: #526D82;
+          color: white;
+          padding: 80px 0;
+          position: relative;
+          z-index: 1;
+        }
+        .card-container {
+          display: flex;
+          justify-content: center;
+          flex-wrap: wrap;
+          gap: 30px;
+          margin-top: 40px;
+        }
+        .card {
+          background: white;
+          color: #333;
+          border-radius: 15px;
+          width: 300px;
+          padding: 30px;
+          text-align: center;
+          transition: transform 0.3s ease;
+          box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .card:hover {
+          transform: translateY(-5px);
+        }
+        .icon-small {
+          width: 80px;
+          height: 80px;
+        }        
         .navbar {
             background-color: rgba(255, 255, 255, 0.9);
             backdrop-filter: blur(8px);
@@ -51,10 +80,10 @@
     </div>
   </div>
 </nav>
-
+<!--- Landing Page Section --->
 <section class="hero">
-  <h1 class="display-5 fw-bold">-Your Beauty, Our Priority-</h1>
-  <p class="lead mt-3 w-75 mx-auto">
+  <h1 class="display-5 fw-bold text-white">-Your Beauty, Our Priority-</h1>
+  <p class="lead mt-3 w-75 mx-auto text-white">
     Rasakan pengalaman beauty treatment premium dengan teknologi terdepan dan layanan dokter berpengalaman.
     Wujudkan kecantikan impian Anda bersama kami.
   </p>
@@ -65,47 +94,47 @@
 </section>
 
 <!-- Why Choose Us Section -->
-<section id="why-choose-us" class="py-20 bg-[#45586B] text-white">
-    <div class="max-w-6xl mx-auto px-4 text-center">
-        <h2 class="text-3xl font-bold mb-4">Mengapa Memilih Gracies Clinic?</h2>
-        <p class="text-lg mb-12">
-            Kami berkomitmen memberikan pelayanan terbaik dengan standar internasional
-            untuk kepuasan dan keamanan Anda
-        </p>
-
-        <!-- Grid Container -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <!-- Card 1 -->
-            <div class="bg-white text-gray-800 p-8 rounded-2xl shadow-lg flex flex-col items-center hover:scale-105 transition-transform duration-300">
-                <img src="https://cdn-icons-png.flaticon.com/512/3774/3774299.png" alt="Dokter" class="w-20 mb-4">
-                <h3 class="text-xl font-semibold mb-2">Dokter Berpengalaman</h3>
-                <p>Tim dokter ahli dengan pengalaman lebih dari 10 tahun di bidang kecantikan</p>
-            </div>
-
-            <!-- Card 2 -->
-            <div class="bg-white text-gray-800 p-8 rounded-2xl shadow-lg flex flex-col items-center hover:scale-105 transition-transform duration-300">
-                <img src="https://cdn-icons-png.flaticon.com/512/4403/4403497.png" alt="Fasilitas" class="w-20 mb-4">
-                <h3 class="text-xl font-semibold mb-2">Fasilitas Modern</h3>
-                <p>Peralatan medis terkini dan teknologi canggih untuk hasil optimal</p>
-            </div>
-
-            <!-- Card 3 -->
-            <div class="bg-white text-gray-800 p-8 rounded-2xl shadow-lg flex flex-col items-center hover:scale-105 transition-transform duration-300">
-                <img src="https://cdn-icons-png.flaticon.com/512/860/860916.png" alt="Treatment" class="w-20 mb-4">
-                <h3 class="text-xl font-semibold mb-2">Treatment Berkualitas</h3>
-                <p>Prosedur yang aman, teruji klinis, dan mengikuti standar internasional</p>
-            </div>
-
-            <!-- Card 4 -->
-            <div class="bg-white text-gray-800 p-8 rounded-2xl shadow-lg flex flex-col items-center hover:scale-105 transition-transform duration-300">
-                <img src="https://cdn-icons-png.flaticon.com/512/747/747310.png" alt="Reservasi" class="w-20 mb-4">
-                <h3 class="text-xl font-semibold mb-2">Reservasi Mudah</h3>
-                <p>Sistem booking online yang mudah dan fleksibel sesuai jadwal Anda</p>
-            </div>
+<section class="hero2 py-5 text-center text-white">
+  <div class="container">
+    <h2 class="fw-bold mb-3">Mengapa Memilih Gracies Clinic?</h2>
+    <p class="mb-5">Kami berkomitmen memberikan pelayanan terbaik dengan standar internasional untuk kepuasan dan keamanan Anda</p>
+    
+    <div class="row justify-content-center g-4">
+      <!--- card 1 --->
+      <div class="col-md-5 col-lg-4">
+        <div class="card h-100 border-0 shadow-sm p-4 text-dark">
+          <img src="https://cdn-icons-png.flaticon.com/512/3774/3774299.png" class="mx-auto mb-3 icon-small" alt="Dokter Berpengalaman">
+          <h5 class="fw-bold">Dokter Berpengalaman</h5>
+          <p>Tim dokter ahli dengan pengalaman lebih dari 10 tahun di bidang kecantikan</p>
         </div>
+      </div>
+      <!--- card 2 --->
+      <div class="col-md-5 col-lg-4">
+        <div class="card h-100 border-0 shadow-sm p-4 text-dark">
+          <img src="https://cdn-icons-png.flaticon.com/512/4403/4403497.png" class="mx-auto mb-3 icon-small" alt="Fasilitas Modern">
+          <h5 class="fw-bold">Fasilitas Modern</h5>
+          <p>Peralatan medis terkini dan teknologi canggih untuk hasil optimal</p>
+        </div>
+      </div>
+      <!--- card 3 --->
+      <div class="col-md-5 col-lg-4">
+        <div class="card h-100 border-0 shadow-sm p-4 text-dark">
+          <img src="https://cdn-icons-png.flaticon.com/512/860/860916.png" class="mx-auto mb-3 icon-small" alt="Treatment Berkualitas">
+          <h5 class="fw-bold">Treatment Berkualitas</h5>
+          <p>Prosedur yang aman, teruji klinis, dan mengikuti standar internasional</p>
+        </div>
+      </div>
+      <!--- card 4 --->
+      <div class="col-md-5 col-lg-4">
+        <div class="card h-100 border-0 shadow-sm p-4 text-dark">
+          <img src="https://cdn-icons-png.flaticon.com/512/747/747310.png" class="mx-auto mb-3 icon-small" alt="Reservasi Mudah">
+          <h5 class="fw-bold">Reservasi Mudah</h5>
+          <p>Sistem booking online yang mudah dan fleksibel sesuai jadwal Anda</p>
+        </div>
+      </div>
     </div>
+  </div>
 </section>
-
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
