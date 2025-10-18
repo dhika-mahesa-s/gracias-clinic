@@ -136,6 +136,10 @@
   </div>
 </section>
 
+<div class="bg-dark text-white text-center font-weight-bold p-1">
+    <a class="navbar-brand" href="#"> <img src="images/logo.png" alt="Logo" width="50" height="50">Gracias Aesthetic Clinic</a>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
