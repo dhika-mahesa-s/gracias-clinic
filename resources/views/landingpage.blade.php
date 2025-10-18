@@ -101,7 +101,7 @@
     
     <div class="row justify-content-center g-4">
       <!--- card 1 --->
-      <div class="col-md-5 col-lg-4">
+      <div class="col-md-6 col-lg-5">
         <div class="card h-100 border-0 shadow-sm p-4 text-dark">
           <img src="https://cdn-icons-png.flaticon.com/512/3774/3774299.png" class="mx-auto mb-3 icon-small" alt="Dokter Berpengalaman">
           <h5 class="fw-bold">Dokter Berpengalaman</h5>
@@ -109,7 +109,7 @@
         </div>
       </div>
       <!--- card 2 --->
-      <div class="col-md-5 col-lg-4">
+      <div class="col-md-6 col-lg-5">
         <div class="card h-100 border-0 shadow-sm p-4 text-dark">
           <img src="https://cdn-icons-png.flaticon.com/512/4403/4403497.png" class="mx-auto mb-3 icon-small" alt="Fasilitas Modern">
           <h5 class="fw-bold">Fasilitas Modern</h5>
@@ -117,7 +117,7 @@
         </div>
       </div>
       <!--- card 3 --->
-      <div class="col-md-5 col-lg-4">
+      <div class="col-md-6 col-lg-5">
         <div class="card h-100 border-0 shadow-sm p-4 text-dark">
           <img src="https://cdn-icons-png.flaticon.com/512/860/860916.png" class="mx-auto mb-3 icon-small" alt="Treatment Berkualitas">
           <h5 class="fw-bold">Treatment Berkualitas</h5>
@@ -125,7 +125,7 @@
         </div>
       </div>
       <!--- card 4 --->
-      <div class="col-md-5 col-lg-4">
+      <div class="col-md-6 col-lg-5">
         <div class="card h-100 border-0 shadow-sm p-4 text-dark">
           <img src="https://cdn-icons-png.flaticon.com/512/747/747310.png" class="mx-auto mb-3 icon-small" alt="Reservasi Mudah">
           <h5 class="fw-bold">Reservasi Mudah</h5>
