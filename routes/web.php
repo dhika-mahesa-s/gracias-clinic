@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\FaqController as AdminFaqController;
 use App\Http\Controllers\Customer\FaqController as CustomerFaqController;
+use App\Http\Controllers\LandingPageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,9 +16,8 @@ use App\Http\Controllers\Customer\FaqController as CustomerFaqController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Landing Page
+Route::get('/', [LandingPageController::class, 'index'])->name('landingpage');
 
 // Admin FAQ
 Route::prefix('admin')->group(function () {
