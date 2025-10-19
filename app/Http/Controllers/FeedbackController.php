@@ -7,10 +7,29 @@ use Illuminate\Http\Request;
 
 class FeedbackController extends Controller
 {
-    // ✅ Menampilkan semua feedback
-    public function index()
+    // ✅ Menampilkan semua feedback DENGAN PENCARIAN & FILTER YANG DIPERBAIKI
+    public function index(Request $request)
     {
-        $feedbacks = Feedback::latest()->get();
+        $query = Feedback::query();
+        
+        // 🔍 PENCARIAN BERDASARKAN NAMA
+        if ($request->has('search') && $request->search != '') {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        }
+        
+        // ⭐ FILTER BERDASARKAN RATING RATA-RATA (YANG DIPERBAIKI)
+        if ($request->has('rating_filter') && $request->rating_filter != '') {
+            $minRating = (int)$request->rating_filter;
+            
+            // Filter berdasarkan RATA-RATA semua rating
+            $query->whereRaw(
+                '(staff_rating + professional_rating + result_rating + return_rating + overall_rating) / 5 >= ?', 
+                [$minRating]
+            );
+        }
+        
+        $feedbacks = $query->latest()->paginate(10);
+        
         return view('feedback.index', compact('feedbacks'));
     }
 

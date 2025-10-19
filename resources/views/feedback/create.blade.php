@@ -137,9 +137,19 @@
                     <input type="email" name="email" class="form-control" placeholder="Masukkan email Anda" required>
                 </div>
 
-                <div class="col-md-6 mb-3">
+               <div class="col-md-6 mb-3">
                     <label>Nomor Telepon</label>
-                    <input type="text" name="phone" class="form-control" autocomplete="off" placeholder="Opsional">
+                    <input type="tel" 
+                        name="phone" 
+                        class="form-control" 
+                        autocomplete="off" 
+                        placeholder="Masukan Nomor  Telephone Anda"
+                        pattern="[0-9]{11,}" 
+                        title="Masukkan minimal 11 angka"
+                        oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                        minlength="11"
+                        maxlength="15">
+                    <small class="form-text text-muted"></small>
                 </div>
 
                 <div class="col-md-6 mb-3">
