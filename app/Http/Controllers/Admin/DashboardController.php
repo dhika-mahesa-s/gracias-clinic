@@ -11,9 +11,9 @@ class DashboardController extends Controller
     public function index()
     {
         // data untuk grafik
-        $totalReservasi = Reservasi::count();
-        $pendapatan = Reservasi::sum('harga');
-        $reservasiPerBulan = Reservasi::selectRaw('MONTH(created_at) as bulan, COUNT(*) as total')
+        $totalReservasi = Reservation::count();
+        $pendapatan = Reservation::sum('harga');
+        $reservasiPerBulan = Reservation::selectRaw('MONTH(created_at) as bulan, COUNT(*) as total')
                                       ->groupBy('bulan')
                                       ->pluck('total', 'bulan');
 

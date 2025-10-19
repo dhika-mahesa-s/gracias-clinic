@@ -10,7 +10,7 @@ class ReservasiController extends Controller
 {
     public function index()
     {
-        $reservasi = Reservasi::latest()->get();
+        $reservasi = Reservation::latest()->get();
         return view('admin.reservasi.index', compact('reservasi'));
     }
 
@@ -21,9 +21,9 @@ class ReservasiController extends Controller
 
     public function store(Request $request)
     {
-        Reservasi::create($request->all());
+        Reservation::create($request->all());
         return redirect()->route('admin.reservasi.index')->with('success', 'Reservasi berhasil ditambahkan!');
     }
 
-    // ... bisa lanjut ke edit, update, destroy
+    // ... bisa lanjut ke  edit, update, destroy
 }
