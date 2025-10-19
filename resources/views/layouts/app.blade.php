@@ -12,10 +12,24 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
 
     <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+
         body {
             font-family: 'Inter', sans-serif;
             background: linear-gradient(135deg, #e2ebf0 0%, #f7f9fb 100%);
             padding-top: 80px; /* ruang agar tidak tertutup navbar */
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* 🌸 Main Content - Area yang mengisi sisa space */
+        main {
+            flex: 1;
+            padding: 20px 0;
         }
 
         /* 🌟 Navbar Glass Effect */
@@ -99,6 +113,8 @@
         footer {
             background: rgba(255, 255, 255, 0.6);
             backdrop-filter: blur(8px);
+            margin-top: auto;
+            width: 100%;
         }
     </style>
 </head>
