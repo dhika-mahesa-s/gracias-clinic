@@ -167,10 +167,12 @@
                 </table>
             </div>
 
-            <!-- Pagination -->
+            <!-- Pagination - Diperbaiki -->
             @if($feedbacks->hasPages())
-                <div class="d-flex justify-content-center mt-4">
-                    {{ $feedbacks->appends(request()->query())->links() }}
+                <div class="pagination-container">
+                    <!-- Pagination Links -->
+                    <div class="d-flex justify-content-center mb-2">
+                        {{ $feedbacks->appends(request()->query())->links('pagination::bootstrap-5') }}
                 </div>
             @endif
         </div>
@@ -220,6 +222,38 @@
     
     .table-hover tbody tr:hover {
         background-color: rgba(0, 0, 0, 0.02);
+    }
+
+    /* 🔧 CSS UNTUK PAGINATION YANG LEBIH KONSISTEN */
+    .pagination {
+        font-size: 0.875rem;
+        margin-bottom: 0;
+    }
+    
+    .page-link {
+        padding: 0.375rem 0.75rem;
+        font-size: 0.875rem;
+        border-radius: 0.375rem;
+        color: #6c757d;
+        border: 1px solid #dee2e6;
+    }
+    
+    .page-item.active .page-link {
+        background-color: #0d6efd;
+        border-color: #0d6efd;
+    }
+    
+    .page-link:hover {
+        color: #0d6efd;
+        background-color: #e9ecef;
+        border-color: #dee2e6;
+    }
+    
+    /* Menyamakan ukuran semua tombol pagination */
+    .pagination .page-item:first-child .page-link,
+    .pagination .page-item:last-child .page-link {
+        border-radius: 0.375rem;
+        padding: 0.375rem 0.75rem;
     }
 </style>
 @endsection
