@@ -108,7 +108,7 @@
     <nav class="navbar navbar-expand-lg navbar-light shadow-sm fixed-top">
         <div class="container">
             <a class="navbar-brand d-flex align-items-center" href="#">
-                <img src="{{ asset('images/logo.png') }}" alt="Logo" width="50" height="50">
+                <img src="{{ asset('images/graciaslogo.png') }}" alt="Logo" width="50" height="50">
                 Gracias Aesthetic Clinic
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
