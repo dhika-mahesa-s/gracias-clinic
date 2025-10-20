@@ -8,6 +8,7 @@ use App\Http\Controllers\Customer\FaqController as CustomerFaqController;
 use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Admin\ReservationAdminController;
 
 // ==========================
 // LANDING PAGE
@@ -66,8 +67,13 @@ Route::prefix('admin')->group(function () {
 // ==========================
 Route::get('/faq', [CustomerFaqController::class, 'index']);
 
-// Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth'])->group(function () {
     Route::get('/reservasi', [ReservationController::class, 'index'])->name('reservasi.index');
     Route::post('/reservasi', [ReservationController::class, 'store'])->name('reservasi.store');
     Route::get('/reservasi/jadwal/{doctor}/{date}', [ReservationController::class, 'getSchedule']);
-// });
+});
+
+Route::prefix('admin')->middleware(['auth'])->group(function () {
+    Route::get('/reservasi', [ReservationAdminController::class, 'index'])->name('admin.reservasi.index');
+    Route::post('/reservasi/{id}/konfirmasi', [ReservationAdminController::class, 'konfirmasi'])->name('admin.reservasi.konfirmasi');
+});
