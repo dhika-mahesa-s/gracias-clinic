@@ -50,7 +50,7 @@
         .icon-small {
           width: 80px;
           height: 80px;
-        }        
+        }
         .navbar {
             background-color: rgba(255, 255, 255, 0.9);
             backdrop-filter: blur(8px);
@@ -75,7 +75,7 @@
         <li class="nav-item"><a class="nav-link" href="#">About Us</a></li>
         <li class="nav-item"><a class="nav-link" href="#">FAQ</a></li>
       </ul>
-      <a href="#" class="btn btn-outline-dark ms-3">Login</a>
+      <a href="{{ route('login') }}" class="btn btn-outline-dark ms-3">Login</a>
       <a href="#" class="btn btn-dark ms-2">Daftar Sekarang</a>
     </div>
   </div>
@@ -88,7 +88,7 @@
     Wujudkan kecantikan impian Anda bersama kami.
   </p>
   <div class="mt-4">
-    <a href="#" class="btn btn-light btn-lg me-2">Login</a>
+    <a href="{{ route('login') }}" class="btn btn-light btn-lg me-2">Login</a>
     <a href="#" class="btn btn-outline-light btn-lg">Daftar Sekarang</a>
   </div>
 </section>
@@ -98,7 +98,7 @@
   <div class="container">
     <h2 class="fw-bold mb-3">Mengapa Memilih Gracies Clinic?</h2>
     <p class="mb-5">Kami berkomitmen memberikan pelayanan terbaik dengan standar internasional untuk kepuasan dan keamanan Anda</p>
-    
+
     <div class="row justify-content-center g-4">
       <!--- card 1 --->
       <div class="col-md-6 col-lg-5">
