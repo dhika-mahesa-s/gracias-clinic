@@ -27,13 +27,6 @@
           position: relative;
           z-index: 1;
         }
-        .card-container {
-          display: flex;
-          justify-content: center;
-          flex-wrap: wrap;
-          gap: 30px;
-          margin-top: 40px;
-        }
         .card {
           background: white;
           color: #333;
@@ -64,10 +57,14 @@
 
 <nav class="navbar navbar-expand-lg navbar-light shadow-sm fixed-top">
   <div class="container">
-    <a class="navbar-brand" href="#"> <img src="images/logo.png" alt="Logo" width="50" height="50">Gracias Aesthetic Clinic</a>
+    <a class="navbar-brand" href="#"> 
+        <img src="{{ asset('images/logo.png') }}" alt="Logo" width="50" height="50">
+        Gracias Aesthetic Clinic
+    </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
       <span class="navbar-toggler-icon"></span>
     </button>
+
     <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
       <ul class="navbar-nav">
         <li class="nav-item"><a class="nav-link active" href="#">Home</a></li>
@@ -75,12 +72,22 @@
         <li class="nav-item"><a class="nav-link" href="#">About Us</a></li>
         <li class="nav-item"><a class="nav-link" href="#">FAQ</a></li>
       </ul>
-      <a href="#" class="btn btn-outline-dark ms-3">Login</a>
-      <a href="#" class="btn btn-dark ms-2">Daftar Sekarang</a>
+
+      @auth
+        <a href="{{ route('reservasi.index') }}" class="btn btn-outline-dark ms-3">Reservasi</a>
+        <form method="POST" action="{{ route('logout') }}" class="ms-2">
+          @csrf
+          <button type="submit" class="btn btn-dark">Logout</button>
+        </form>
+      @else
+        <a href="{{ route('login') }}" class="btn btn-outline-dark ms-3">Login</a>
+        <a href="{{ route('register') }}" class="btn btn-dark ms-2">Daftar Sekarang</a>
+      @endauth
     </div>
   </div>
 </nav>
-<!--- Landing Page Section --->
+
+<!-- Hero Section -->
 <section class="hero">
   <h1 class="display-5 fw-bold text-white">-Your Beauty, Our Priority-</h1>
   <p class="lead mt-3 w-75 mx-auto text-white">
@@ -88,45 +95,49 @@
     Wujudkan kecantikan impian Anda bersama kami.
   </p>
   <div class="mt-4">
-    <a href="#" class="btn btn-light btn-lg me-2">Login</a>
-    <a href="#" class="btn btn-outline-light btn-lg">Daftar Sekarang</a>
+    @auth
+      <a href="{{ route('reservasi.index') }}" class="btn btn-light btn-lg me-2">Reservasi Sekarang</a>
+      <form method="POST" action="{{ route('logout') }}" class="d-inline">
+        @csrf
+        <button type="submit" class="btn btn-outline-light btn-lg">Logout</button>
+      </form>
+    @else
+      <a href="{{ route('login') }}" class="btn btn-light btn-lg me-2">Login</a>
+      <a href="{{ route('register') }}" class="btn btn-outline-light btn-lg">Daftar Sekarang</a>
+    @endauth
   </div>
 </section>
 
-<!-- Why Choose Us Section -->
-<section class="hero2 py-5 text-center text-white">
+<!-- Why Choose Us -->
+<section class="hero2 text-center text-white">
   <div class="container">
-    <h2 class="fw-bold mb-3">Mengapa Memilih Gracies Clinic?</h2>
+    <h2 class="fw-bold mb-3">Mengapa Memilih Gracias Clinic?</h2>
     <p class="mb-5">Kami berkomitmen memberikan pelayanan terbaik dengan standar internasional untuk kepuasan dan keamanan Anda</p>
     
     <div class="row justify-content-center g-4">
-      <!--- card 1 --->
       <div class="col-md-6 col-lg-5">
-        <div class="card h-100 border-0 shadow-sm p-4 text-dark">
+        <div class="card p-4 text-dark">
           <img src="https://cdn-icons-png.flaticon.com/512/3774/3774299.png" class="mx-auto mb-3 icon-small" alt="Dokter Berpengalaman">
           <h5 class="fw-bold">Dokter Berpengalaman</h5>
           <p>Tim dokter ahli dengan pengalaman lebih dari 10 tahun di bidang kecantikan</p>
         </div>
       </div>
-      <!--- card 2 --->
       <div class="col-md-6 col-lg-5">
-        <div class="card h-100 border-0 shadow-sm p-4 text-dark">
+        <div class="card p-4 text-dark">
           <img src="https://cdn-icons-png.flaticon.com/512/4403/4403497.png" class="mx-auto mb-3 icon-small" alt="Fasilitas Modern">
           <h5 class="fw-bold">Fasilitas Modern</h5>
           <p>Peralatan medis terkini dan teknologi canggih untuk hasil optimal</p>
         </div>
       </div>
-      <!--- card 3 --->
       <div class="col-md-6 col-lg-5">
-        <div class="card h-100 border-0 shadow-sm p-4 text-dark">
+        <div class="card p-4 text-dark">
           <img src="https://cdn-icons-png.flaticon.com/512/860/860916.png" class="mx-auto mb-3 icon-small" alt="Treatment Berkualitas">
           <h5 class="fw-bold">Treatment Berkualitas</h5>
           <p>Prosedur yang aman, teruji klinis, dan mengikuti standar internasional</p>
         </div>
       </div>
-      <!--- card 4 --->
       <div class="col-md-6 col-lg-5">
-        <div class="card h-100 border-0 shadow-sm p-4 text-dark">
+        <div class="card p-4 text-dark">
           <img src="https://cdn-icons-png.flaticon.com/512/747/747310.png" class="mx-auto mb-3 icon-small" alt="Reservasi Mudah">
           <h5 class="fw-bold">Reservasi Mudah</h5>
           <p>Sistem booking online yang mudah dan fleksibel sesuai jadwal Anda</p>
@@ -137,7 +148,10 @@
 </section>
 
 <div class="bg-dark text-white text-center font-weight-bold p-1">
-    <a class="navbar-brand" href="#"> <img src="images/logo.png" alt="Logo" width="50" height="50">Gracias Aesthetic Clinic</a>
+    <a class="navbar-brand text-white" href="#"> 
+        <img src="{{ asset('images/logo.png') }}" alt="Logo" width="50" height="50">
+        Gracias Aesthetic Clinic
+    </a>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
