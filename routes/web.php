@@ -7,11 +7,27 @@ use App\Http\Controllers\Admin\FaqController as AdminFaqController;
 use App\Http\Controllers\Customer\FaqController as CustomerFaqController;
 use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\ReservationController;
+use App\Http\Controllers\Auth\LoginController;
 
 // ==========================
 // LANDING PAGE
 // ==========================
 Route::get('/', [LandingPageController::class, 'index'])->name('landingpage');
+
+// ==========================
+// AUTH ROUTES
+// ==========================
+Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [LoginController::class, 'login']);
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
+// Register Routes
+use App\Http\Controllers\Auth\RegisterController;
+
+Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
+Route::post('/register', [RegisterController::class, 'register']);
+
+
 
 // ==========================
 // FEEDBACK (User Side)
