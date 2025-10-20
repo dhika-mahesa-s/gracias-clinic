@@ -1,7 +1,6 @@
 @extends('layouts.app')
 
 @section('content')
-<!-- 🌟 FONT AWESOME & GOOGLE FONT -->
 <link
     rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
@@ -18,6 +17,7 @@
         text-align: center;
         margin-bottom: 2rem;
     }
+
     .feedback-header h1 {
         font-family: 'Playfair Display', serif;
         font-weight: 600;
@@ -33,7 +33,7 @@
         backdrop-filter: blur(15px);
         -webkit-backdrop-filter: blur(15px);
         border: 1px solid rgba(255, 255, 255, 0.3);
-        padding: 3rem 3.5rem;
+        padding: 3rem;
         max-width: 1100px;
         margin: 0 auto;
         transition: all 0.3s ease;
@@ -49,6 +49,25 @@
         .feedback-card {
             padding: 2rem;
             max-width: 95%;
+        }
+
+        .feedback-header h1 {
+            font-size: 1.8rem;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .feedback-card {
+            padding: 1.5rem;
+            border-radius: 15px;
+        }
+
+        .feedback-header h1 {
+            font-size: 1.6rem;
+        }
+
+        .btn {
+            width: 100%;
         }
     }
 
@@ -105,9 +124,65 @@
     hr {
         border-top: 1px solid #e0e0e0;
     }
+
+    /* 🧭 Responsivitas tambahan */
+    @media (max-width: 768px) {
+        label {
+            font-size: 0.95rem;
+        }
+
+        .form-control {
+            font-size: 0.95rem;
+            padding: 8px 12px;
+        }
+
+        input::placeholder,
+        textarea::placeholder {
+            font-size: 0.9rem;
+            white-space: normal;
+        }
+
+        .rating-stars {
+            font-size: 1.4rem;
+        }
+
+        h5.text-center {
+            font-size: 1rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .feedback-card {
+            padding: 1.2rem;
+            border-radius: 10px;
+        }
+
+        .feedback-header h1 {
+            font-size: 1.4rem;
+        }
+
+        .form-control,
+        label {
+            width: 100%;
+        }
+
+        input::placeholder,
+        textarea::placeholder {
+            font-size: 0.85rem;
+        }
+
+        .btn {
+            width: 100%;
+            font-size: 0.95rem;
+        }
+
+        .rating-stars {
+            justify-content: space-between;
+        }
+    }
 </style>
 
-<div class="container mt-5 mb-5">
+<div class="container my-5">
     <div class="feedback-header">
         <h1>Better Care Starts<br>with Your Words</h1>
     </div>
@@ -126,71 +201,67 @@
     <div class="feedback-card">
         <form action="{{ route('feedback.store') }}" method="POST">
             @csrf
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label>Nama</label>
-                    <input type="text" name="name" class="form-control" placeholder="Masukkan nama Anda" autocomplete="off" required>
+
+            <!-- 🧍 Data Diri -->
+            <div class="row g-3">
+                <div class="col-12 col-md-6">
+                    <label for="name">Nama</label>
+                    <input type="text" id="name" name="name" class="form-control" placeholder="Masukkan nama Anda" required>
                 </div>
 
-                <div class="col-md-6 mb-3">
-                    <label>Email</label>
-                    <input type="email" name="email" class="form-control" placeholder="Masukkan email Anda" required>
+                <div class="col-12 col-md-6">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" class="form-control" placeholder="Masukkan email Anda" required>
                 </div>
 
-               <div class="col-md-6 mb-3">
-                    <label>Nomor Telepon</label>
-                    <input type="tel" 
-                        name="phone" 
-                        class="form-control" 
-                        autocomplete="off" 
-                        placeholder="Masukan Nomor  Telephone Anda"
-                        pattern="[0-9]{11,}" 
-                        title="Masukkan minimal 11 angka"
-                        oninput="this.value = this.value.replace(/[^0-9]/g, '')"
-                        minlength="11"
-                        maxlength="15">
-                    <small class="form-text text-muted"></small>
+                <div class="col-12 col-md-6">
+                    <label for="phone">Nomor Telepon</label>
+                    <input type="tel" id="phone" name="phone" class="form-control" placeholder="Masukkan nomor telepon Anda" pattern="[0-9]{11,}" minlength="11" maxlength="15">
                 </div>
 
-                <div class="col-md-6 mb-3">
-                    <label>Jenis Layanan</label>
-                    <input type="text" name="service_type" class="form-control" autocomplete="off" placeholder="Contoh: Perawatan wajah, terapi, dll">
+                <div class="col-12 col-md-6">
+                    <label for="service_type">Jenis Layanan</label>
+                    <input type="text" id="service_type" name="service_type" class="form-control" placeholder="Contoh: Perawatan wajah, terapi, dll">
                 </div>
             </div>
 
             <hr class="my-4">
 
+            <!-- 🌟 Penilaian -->
             <h5 class="mb-3 text-center fw-bold text-secondary">Penilaian Anda (1–5 ⭐)</h5>
+            <div class="row g-4">
+                @php
+                    $ratings = [
+                        'staff_rating' => 'Staf klinik tanggap terhadap kebutuhan saya.',
+                        'professional_rating' => 'Dokter/terapis bersikap profesional selama perawatan.',
+                        'result_rating' => 'Hasil perawatan sesuai dengan harapan saya.',
+                        'return_rating' => 'Saya ingin kembali melakukan perawatan di klinik ini.',
+                        'overall_rating' => 'Secara keseluruhan, saya puas dengan layanan klinik ini.'
+                    ];
+                @endphp
 
-            @php
-                $ratings = [
-                    'staff_rating' => 'Staf klinik tanggap terhadap kebutuhan saya.',
-                    'professional_rating' => 'Dokter/terapis bersikap profesional selama perawatan.',
-                    'result_rating' => 'Hasil perawatan sesuai dengan harapan saya.',
-                    'return_rating' => 'Saya ingin kembali melakukan perawatan di klinik ini.',
-                    'overall_rating' => 'Secara keseluruhan, saya puas dengan layanan klinik ini.'
-                ];
-            @endphp
-
-            @foreach ($ratings as $field => $label)
-                <div class="mb-3">
-                    <label>{{ $label }}</label>
-                    <div class="rating-stars" data-field="{{ $field }}">
-                        @for ($i = 1; $i <= 5; $i++)
-                            <i class="fas fa-star" data-value="{{ $i }}"></i>
-                        @endfor
+                @foreach ($ratings as $field => $label)
+                    <div class="col-12 col-sm-6">
+                        <label>{{ $label }}</label>
+                        <div class="d-flex align-items-center justify-content-start rating-stars flex-wrap" data-field="{{ $field }}">
+                            @for ($i = 1; $i <= 5; $i++)
+                                <i class="fas fa-star" data-value="{{ $i }}"></i>
+                            @endfor
+                        </div>
+                        <input type="hidden" name="{{ $field }}" required>
                     </div>
-                    <input type="hidden" name="{{ $field }}" required>
-                </div>
-            @endforeach
-
-            <div class="mb-4 mt-4">
-                <label>Pesan / Saran</label>
-                <textarea name="message" class="form-control" rows="4" placeholder="Ceritakan pengalaman Anda..."></textarea>
+                @endforeach
             </div>
 
+            <!-- 💬 Pesan -->
+            <div class="mt-4">
+                <label for="message">Pesan / Saran</label>
+                <textarea id="message" name="message" class="form-control" rows="4" placeholder="Ceritakan pengalaman Anda..."></textarea>
+            </div>
+
+            <!-- 📨 Tombol Submit -->
             <div class="text-center mt-4">
-                <button type="submit" class="btn" style="background-color: #434F5D; color:white;">Kirim Feedback</button>
+                <button type="submit" class="btn btn-primary px-5 py-2 w-100 w-md-auto" style="background-color:#434F5D;border:none;">Kirim Feedback</button>
             </div>
         </form>
     </div>
@@ -222,26 +293,23 @@ document.querySelectorAll('.rating-stars').forEach(starGroup => {
 });
 </script>
 
-<!-- ✅ POPUP "TERIMA KASIH" -->
 @if(session('success'))
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        Swal.fire({
-            icon: 'success',
-            title: 'Terima Kasih Sudah Bersuara!',
-            text: '{{ session("success") }}',
-            confirmButtonColor: '#3b82f6',
-            background: 'rgba(255, 255, 255, 0.9)',
-            backdrop: `
-                rgba(0,0,0,0.3)
-                url("https://cdn.jsdelivr.net/gh/galanghm/assets/checkmark.gif")
-                center top
-                no-repeat
-            `,
-        }).then(() => {
-            document.querySelector('form').reset(); // ✅ Reset form setelah OK ditekan
-            document.querySelectorAll('.fa-star').forEach(s => s.classList.remove('active', 'hovered'));
-        });
-    </script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+Swal.fire({
+    icon: 'success',
+    title: 'Terima Kasih Sudah Bersuara!',
+    text: '{{ session("success") }}',
+    confirmButtonColor: '#3b82f6',
+    background: 'rgba(255, 255, 255, 0.9)',
+    backdrop: `rgba(0,0,0,0.3)
+        url("https://cdn.jsdelivr.net/gh/galanghm/assets/checkmark.gif")
+        center top
+        no-repeat`
+}).then(() => {
+    document.querySelector('form').reset();
+    document.querySelectorAll('.fa-star').forEach(s => s.classList.remove('active', 'hovered'));
+});
+</script>
 @endif
 @endsection
