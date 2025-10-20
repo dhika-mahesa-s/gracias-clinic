@@ -9,8 +9,8 @@
     </div>
 
     <!-- Search and Filter -->
-    <div class="row mb-4">
-        <div class="col-md-6">
+    <div class="row mb-4 gy-3">
+        <div class="col-12 col-md-6">
             <form method="GET" action="{{ route('feedback.index') }}">
                 <div class="input-group">
                     <span class="input-group-text bg-light border-end-0">
@@ -281,5 +281,33 @@
         border-radius: 0.375rem;
         padding: 0.375rem 0.75rem;
     }
+
+
+    /* Responsive font size untuk layar kecil */
+@media (max-width: 576px) {
+    .card-body {
+        font-size: 0.85rem; /* perkecil teks di card */
+    }
+
+    table th,
+    table td {
+        font-size: 0.8rem; /* kecilkan teks tabel */
+        padding: 6px 4px; /* rapatkan padding antar sel */
+    }
+
+    .btn {
+        font-size: 0.75rem; /* kecilkan tombol */
+        padding: 4px 6px;
+    }
+
+    h1.display-4 {
+        font-size: 1.5rem; /* judul utama lebih kecil */
+    }
+
+    h2.h3 {
+        font-size: 1rem; /* subjudul juga ikut kecil */
+    }
+}
+
 </style>
 @endsection
