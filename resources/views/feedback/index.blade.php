@@ -167,14 +167,27 @@
                 </table>
             </div>
 
-            <!-- Pagination - Diperbaiki -->
+            <!-- Pagination -->
             @if($feedbacks->hasPages())
-                <div class="pagination-container">
-                    <!-- Pagination Links -->
+                <div class="pagination-container text-center mt-4">
+                    <!-- Tombol Pagination -->
                     <div class="d-flex justify-content-center mb-2">
                         {{ $feedbacks->appends(request()->query())->links('pagination::bootstrap-5') }}
+                    </div>
+
+                    <!-- Teks jumlah hasil -->
+                    <div class="text-muted small">
+                        Showing 
+                        {{ $feedbacks->firstItem() }} 
+                        to 
+                        {{ $feedbacks->lastItem() }} 
+                        of 
+                        {{ $feedbacks->total() }} 
+                        results
+                    </div>
                 </div>
             @endif
+
         </div>
     </div>
 </div>
@@ -230,6 +243,19 @@
         margin-bottom: 0;
     }
     
+    .pagination-container {
+        text-align: center;
+        margin-top: 1rem;
+    }
+
+    .pagination-container .text-muted {
+        margin-top: 4px;
+        font-size: 0.875rem;
+        color: #6c757d;
+    }
+
+
+
     .page-link {
         padding: 0.375rem 0.75rem;
         font-size: 0.875rem;
