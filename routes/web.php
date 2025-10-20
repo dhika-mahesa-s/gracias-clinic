@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\FeedbackController as AdminFeedbackController;
 use App\Http\Controllers\Admin\FaqController as AdminFaqController;
 use App\Http\Controllers\Customer\FaqController as CustomerFaqController;
 use App\Http\Controllers\LandingPageController;
+use App\Http\Controllers\ReservationController;
 
 // ==========================
 // LANDING PAGE
@@ -48,3 +49,9 @@ Route::prefix('admin')->group(function () {
 // CUSTOMER FAQ
 // ==========================
 Route::get('/faq', [CustomerFaqController::class, 'index']);
+
+// Route::middleware(['auth'])->group(function () {
+    Route::get('/reservasi', [ReservationController::class, 'index'])->name('reservasi.index');
+    Route::post('/reservasi', [ReservationController::class, 'store'])->name('reservasi.store');
+    Route::get('/reservasi/jadwal/{doctor}/{date}', [ReservationController::class, 'getSchedule']);
+// });
