@@ -15,7 +15,6 @@ use App\Http\Controllers\Admin\FeedbackController as AdminFeedbackController;
 use App\Http\Controllers\Admin\FaqController as AdminFaqController;
 use App\Http\Controllers\Customer\FaqController as CustomerFaqController;
 
-
 // ==========================
 // LANDING PAGE
 // ==========================
@@ -54,12 +53,14 @@ Route::resource('feedback', FeedbackController::class);
 // ==========================
 // ADMIN FEEDBACK
 // ==========================
-
 Route::prefix('admin')->group(function () {
     Route::get('/feedback', [AdminFeedbackController::class, 'index'])->name('admin.feedback.index');
     Route::post('/feedback/{id}/toggle-visibility', [AdminFeedbackController::class, 'toggleVisibility'])->name('admin.feedback.toggle');
 });
 
+// ==========================
+// ADMIN FAQ
+// ==========================
 Route::prefix('admin')->group(function () {
     Route::get('/faq', [AdminFaqController::class, 'index']);
     Route::get('/faq/create', [AdminFaqController::class, 'create']);

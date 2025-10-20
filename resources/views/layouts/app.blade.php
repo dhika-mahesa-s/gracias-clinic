@@ -149,5 +149,14 @@
         <div class="container">
             @yield('content')
         </div>
-    </body>
+    </main>
+
+    <!-- 🌙 Footer -->
+    <footer class="text-center py-3 border-top mt-5">
+        <small>© {{ date('Y') }} Gracias Aesthetic Clinic. All rights reserved.</small>
+    </footer>
+
+    <!-- ✅ Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
 </html>
