@@ -185,7 +185,7 @@
 
                     <div class="bottom-links">
                         <a href="{{ route('register') }}">Create An Account</a>
-                        <a href="#">Forget Password?</a>
+                        <a href="{{ route('password.request') }}">Forget Password?</a>
                     </div>
                 </form>
             </div>
