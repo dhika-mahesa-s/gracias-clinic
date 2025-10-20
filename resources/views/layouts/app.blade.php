@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,10 +10,13 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- ✅ Google Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@600&display=swap"
+        rel="stylesheet">
 
     <style>
-        html, body {
+        html,
+        body {
             height: 100%;
             margin: 0;
         }
@@ -20,7 +24,8 @@
         body {
             font-family: 'Inter', sans-serif;
             background: linear-gradient(135deg, #e2ebf0 0%, #f7f9fb 100%);
-            padding-top: 80px; /* ruang agar tidak tertutup navbar */
+            padding-top: 80px;
+            /* ruang agar tidak tertutup navbar */
             display: flex;
             flex-direction: column;
             min-height: 100vh;
@@ -139,7 +144,7 @@
                     <li class="nav-item"><a class="nav-link" href="#">FAQ</a></li>
                 </ul>
                 <a href="#" class="btn btn-outline-dark ms-3">Login</a>
-                <a href="#" class="btn btn-dark ms-2">Daftar Sekarang</a>
+                <a href="{{ route('register') }}" class="btn btn-dark ms-2">Daftar Sekarang</a>
             </div>
         </div>
     </nav>
@@ -159,4 +164,5 @@
     <!-- ✅ Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
