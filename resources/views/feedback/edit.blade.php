@@ -128,15 +128,11 @@
                             </div>
                         </div>
 
-                        <!-- Action Buttons (Responsive) -->
+                        <!-- Action Buttons (tanpa tombol Batal) -->
                         <div class="d-flex flex-column flex-md-row justify-content-md-between align-items-center gap-2">
                             <a href="{{ route('feedback.show', $feedback->id) }}" class="btn btn-outline-secondary w-100 w-md-auto">
                                 <i class="fas fa-arrow-left me-2"></i>Kembali ke Detail
                             </a>
-
-                            <button type="reset" class="btn btn-light border w-100 w-md-auto">
-                                <i class="fas fa-times me-2"></i>Batal
-                            </button>
 
                             <button type="submit" class="btn btn-primary w-100 w-md-auto">
                                 <i class="fas fa-save me-2"></i>Update Feedback
@@ -207,7 +203,6 @@
         border-radius: 15px 15px 0 0 !important;
     }
 
-    /* RESPONSIVE OPTIMIZATION */
     @media (max-width: 576px) {
         .container {
             padding-left: 8px;
@@ -245,3 +240,4 @@
 </style>
 
 @endsection
+git 
