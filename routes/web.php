@@ -1,25 +1,40 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\FeedbackController;
+use App\Http\Controllers\Admin\FeedbackController as AdminFeedbackController;
 use App\Http\Controllers\Admin\FaqController as AdminFaqController;
 use App\Http\Controllers\Customer\FaqController as CustomerFaqController;
 use App\Http\Controllers\LandingPageController;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
-*/
-
-// Landing Page
+// ==========================
+// LANDING PAGE
+// ==========================
 Route::get('/', [LandingPageController::class, 'index'])->name('landingpage');
 
-// Admin FAQ
+// ==========================
+// FEEDBACK (User Side)
+// ==========================
+Route::get('/feedback', [FeedbackController::class, 'create'])->name('feedback.create');
+Route::post('/feedback', [FeedbackController::class, 'store'])->name('feedback.store');
+Route::get('/feedback/thankyou', [FeedbackController::class, 'thankyou'])->name('feedback.thankyou');
+
+// ==========================
+// FEEDBACK RESOURCE (CRUD)
+// ==========================
+Route::resource('feedback', FeedbackController::class);
+
+// ==========================
+// ADMIN FEEDBACK
+// ==========================
+Route::prefix('admin')->group(function () {
+    Route::get('/feedback', [AdminFeedbackController::class, 'index'])->name('admin.feedback.index');
+    Route::post('/feedback/{id}/toggle-visibility', [AdminFeedbackController::class, 'toggleVisibility'])->name('admin.feedback.toggle');
+});
+
+// ==========================
+// ADMIN FAQ
+// ==========================
 Route::prefix('admin')->group(function () {
     Route::get('/faq', [AdminFaqController::class, 'index']);
     Route::get('/faq/create', [AdminFaqController::class, 'create']);
@@ -29,5 +44,7 @@ Route::prefix('admin')->group(function () {
     Route::delete('/faq/{id}', [AdminFaqController::class, 'destroy']);
 });
 
-// Customer FAQ
+// ==========================
+// CUSTOMER FAQ
+// ==========================
 Route::get('/faq', [CustomerFaqController::class, 'index']);
