@@ -160,7 +160,7 @@
         <div class="col-lg-4">
             <!-- Message Card -->
             @if($feedback->message)
-            <div class="card shadow-sm border-0 mb-4">
+            <div class="card shadow-sm border-0 mt-4 mb-4">
                 <div class="card-header bg-white py-3">
                     <h5 class="card-title mb-0 text-dark">
                         <i class="fas fa-comment me-2"></i>Pesan Tambahan
