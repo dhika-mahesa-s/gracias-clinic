@@ -4,6 +4,9 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\ReservationController;
+use App\Http\Controllers\DashboardController;
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -73,3 +76,8 @@ Route::prefix('admin')->group(function () {
 // CUSTOMER FAQ
 // ==========================
 Route::get('/faq', [CustomerFaqController::class, 'index']);
+
+// Route untuk dashboard admin
+Route::get('/admin/dashboard', function () {
+    return view('admin.dashboard');
+});

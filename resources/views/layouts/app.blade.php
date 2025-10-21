@@ -28,9 +28,14 @@
             @endif
 
             <!-- Page Content -->
-            <main>
-                {{ $slot }}
-            </main>
+<main>
+    @if (isset($slot))
+        {{ $slot }}
+    @elseif (View::hasSection('content'))
+        @yield('content')
+    @endif
+</main>
+
         </div>
     </body>
 </html>
