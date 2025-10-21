@@ -10,12 +10,10 @@ use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Admin\ReservationAdminController;
 
-<<<<<<< HEAD
 // ==========================
 // LANDING PAGE
 // ==========================
 Route::get('/', [LandingPageController::class, 'index'])->name('landingpage');
-=======
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -28,13 +26,11 @@ Route::get('/', [LandingPageController::class, 'index'])->name('landingpage');
 */
 use App\Http\Controllers\TreatmentController;
 
-Route::get('/', fn() => redirect()->route('treatments.index'));
 
 Route::prefix('treatments')->group(function () {
     Route::get('/', [TreatmentController::class, 'index'])->name('treatments.index');
     Route::get('/{treatment}', [TreatmentController::class, 'show'])->name('treatments.show');
-    Route::get('/reservasi', fn() => view('reservasi'))->name('treatments.reservasi');
-
+    
     // Admin / Management
     Route::get('/manage/list', [TreatmentController::class, 'manage'])->name('treatments.manage');
     Route::get('/manage/create', [TreatmentController::class, 'create'])->name('treatments.create');
@@ -45,7 +41,6 @@ Route::prefix('treatments')->group(function () {
     Route::get('/manage/{treatment}/edit', [TreatmentController::class, 'edit'])->name('treatments.edit');
     Route::put('/manage/{treatment}',      [TreatmentController::class, 'update'])->name('treatments.update');
 });
->>>>>>> bcf6f902f91d5e798dd67a745a4bb970cf0fbe41
 
 // ==========================
 // AUTH ROUTES
