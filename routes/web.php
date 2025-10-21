@@ -78,6 +78,5 @@ Route::prefix('admin')->group(function () {
 Route::get('/faq', [CustomerFaqController::class, 'index']);
 
 // Route untuk dashboard admin
-Route::get('/admin/dashboard', function () {
-    return view('admin.dashboard');
-});
+Route::get('/dashboard', [DashboardController::class, 'index']);
+
