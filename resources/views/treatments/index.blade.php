@@ -45,7 +45,7 @@
           <p class="fw-bold mb-3">{{ $price }}</p>
 
           <div class="d-flex justify-content-center gap-2">
-            <a href="{{ route('treatments.reservasi') }}" class="btn btn-primary btn-sm">Reservasi Sekarang</a>
+            <a href="{{ route('reservasi.index') }}" class="btn btn-primary btn-sm">Reservasi Sekarang</a>
             <a href="{{ route('treatments.show', $t) }}" class="btn btn-secondary btn-sm">Baca Selengkapnya</a>
           </div>
         </div>

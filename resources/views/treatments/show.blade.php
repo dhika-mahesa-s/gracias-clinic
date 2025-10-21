@@ -26,6 +26,6 @@
   <p><strong>Durasi:</strong> {{ $treatment->duration }} menit</p>
   <p class="mt-3">{{ $treatment->description }}</p>
 
-  <a href="{{ route('treatments.reservasi') }}" class="btn btn-primary mt-3">Reservasi Sekarang!</a>
+  <a href="{{ route('reservasi.index') }}" class="btn btn-primary mt-3">Reservasi Sekarang!</a>
 </div>
 @endsection
