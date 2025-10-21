@@ -2,14 +2,14 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class ReservationHistoryControllerTest extends TestCase
 {
     use RefreshDatabase;
 
-    /** 
+    /**
      * Pastikan halaman riwayat reservasi bisa diakses (public).
      */
     public function test_reservation_history_page_is_accessible()

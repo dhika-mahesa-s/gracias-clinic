@@ -19,59 +19,38 @@ class ReservationHistoryController extends Controller
 
     public function index(Request $request)
     {
-        $query = Reservation::with(['doctor', 'treatment']);
+        $query = Reservation::query();
 
-        if (Auth::check()) {
-            $query->where('user_id', Auth::id());
-        } elseif ($request->filled('user_id')) {
-            $query->where('user_id', intval($request->user_id));
-        } // else public -> show all
-
-        // filters
+        // Filter status (hanya jika diisi)
         if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
+
+        // Filter tanggal (hanya jika valid)
         if ($request->filled('date')) {
-            $query->whereDate('tanggal', $request->date);
+            // GANTI 'reservation_date' DENGAN NAMA KOLOM TANGGAL ANDA YANG SEBENARNYA
+            $query->whereDate('reservation_date', $request->input('date'));
         }
+
+        // Filter pencarian (nama pasien atau dokter)
         if ($request->filled('search')) {
-            $s = $request->search;
-            $query->where(function ($q) use ($s) {
-                $q->where('booking_id', 'like', "%{$s}%")
-                    ->orWhereHas('doctor', fn($q2) => $q2->where('name', 'like', "%{$s}%"))
-                    ->orWhereHas('treatment', fn($q2) => $q2->where('name', 'like', "%{$s}%"));
+            $search = $request->input('search');
+
+            $query->where(function ($q) use ($search) {
+                // Asumsi: relasi 'user' punya kolom 'name' (untuk pasien)
+                $q->whereHas('user', function ($subQuery) use ($search) {
+                    $subQuery->where('name', 'like', "%{$search}%");
+                })
+                    // Asumsi: relasi 'doctor' punya kolom 'name' (untuk dokter)
+                    ->orWhereHas('doctor', function ($subQuery) use ($search) {
+                        $subQuery->where('name', 'like', "%{$search}%");
+                    });
             });
         }
 
-        // paginate (no risk if Intelephense warns)
-        $reservations = $query->orderByDesc('tanggal')->paginate(8);
+        $reservations = $query->latest()->get();
 
-        // Build stats safely (ensure keys always exist)
-        $stats = [
-            'total'     => 0,
-            'done'      => 0,
-            'upcoming'  => 0,
-            'cancelled' => 0,
-        ];
-
-        // Determine which scope to use for stats
-        if (Auth::check()) {
-            $uid = Auth::id();
-            $base = Reservation::where('user_id', $uid);
-        } elseif ($request->filled('user_id')) {
-            $uid = intval($request->user_id);
-            $base = Reservation::where('user_id', $uid);
-        } else {
-            $base = Reservation::query();
-        }
-
-        // compute stats from $base
-        $stats['total']     = (int) $base->count();
-        $stats['done']      = (int) $base->where('status', 'Selesai')->count();
-        $stats['upcoming']  = (int) $base->whereIn('status', ['Pending', 'Dikonfirmasi'])->count();
-        $stats['cancelled'] = (int) $base->where('status', 'Dibatalkan')->count();
-
-        return view('reservations.history', compact('reservations', 'stats'));
+        return view('reservations.history', compact('reservations'));
     }
 
     public function show(Reservation $reservation)
