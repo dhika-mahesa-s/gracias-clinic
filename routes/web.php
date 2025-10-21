@@ -10,10 +10,42 @@ use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Admin\ReservationAdminController;
 
+<<<<<<< HEAD
 // ==========================
 // LANDING PAGE
 // ==========================
 Route::get('/', [LandingPageController::class, 'index'])->name('landingpage');
+=======
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register web routes for your application. These
+| routes are loaded by the RouteServiceProvider and all of them will
+| be assigned to the "web" middleware group. Make something great!
+|
+*/
+use App\Http\Controllers\TreatmentController;
+
+Route::get('/', fn() => redirect()->route('treatments.index'));
+
+Route::prefix('treatments')->group(function () {
+    Route::get('/', [TreatmentController::class, 'index'])->name('treatments.index');
+    Route::get('/{treatment}', [TreatmentController::class, 'show'])->name('treatments.show');
+    Route::get('/reservasi', fn() => view('reservasi'))->name('treatments.reservasi');
+
+    // Admin / Management
+    Route::get('/manage/list', [TreatmentController::class, 'manage'])->name('treatments.manage');
+    Route::get('/manage/create', [TreatmentController::class, 'create'])->name('treatments.create');
+    Route::post('/manage/store', [TreatmentController::class, 'store'])->name('treatments.store');
+    Route::delete('/manage/{treatment}', [TreatmentController::class, 'destroy'])->name('treatments.destroy');
+
+      // NEW: edit & update
+    Route::get('/manage/{treatment}/edit', [TreatmentController::class, 'edit'])->name('treatments.edit');
+    Route::put('/manage/{treatment}',      [TreatmentController::class, 'update'])->name('treatments.update');
+});
+>>>>>>> bcf6f902f91d5e798dd67a745a4bb970cf0fbe41
 
 // ==========================
 // AUTH ROUTES
@@ -83,3 +115,4 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
     Route::get('/reservasi', [ReservationAdminController::class, 'index'])->name('reservasi.admin');
     Route::post('/reservasi/{id}/konfirmasi', [ReservationAdminController::class, 'konfirmasi'])->name('admin.reservasi.konfirmasi');
 });
+
