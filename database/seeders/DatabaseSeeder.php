@@ -63,5 +63,12 @@ class DatabaseSeeder extends Seeder
         }
 
         echo "✅ Seeder berhasil dijalankan.\n";
+        // \App\Models\User::factory()->create([
+        //     'name' => 'Test User',
+        //     'email' => 'test@example.com',
+        // ]);
+        $this->call([
+            \Database\Seeders\ReservationSeeder::class,
+        ]);
     }
 }

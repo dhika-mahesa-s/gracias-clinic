@@ -9,6 +9,7 @@ use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Admin\ReservationAdminController;
+use App\Http\Controllers\ReservationHistoryController;
 
 // ==========================
 // LANDING PAGE
@@ -111,3 +112,7 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
     Route::post('/reservasi/{id}/konfirmasi', [ReservationAdminController::class, 'konfirmasi'])->name('admin.reservasi.konfirmasi');
 });
 
+Route::get('/reservations/create', [ReservationHistoryController::class, 'create'])->name('reservations.create');
+Route::get('/riwayat-reservasi', [ReservationHistoryController::class, 'index'])->name('reservations.history');
+Route::get('/reservations/{reservation}', [ReservationHistoryController::class, 'show'])->name('reservations.show');
+Route::post('/reservations/{reservation}/cancel', [ReservationHistoryController::class, 'cancel'])->name('reservations.cancel');
