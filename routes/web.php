@@ -80,6 +80,6 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::prefix('admin')->middleware(['auth'])->group(function () {
-    Route::get('/reservasi', [ReservationAdminController::class, 'index'])->name('admin.reservasi.index');
+    Route::get('/reservasi', [ReservationAdminController::class, 'index'])->name('reservasi.admin');
     Route::post('/reservasi/{id}/konfirmasi', [ReservationAdminController::class, 'konfirmasi'])->name('admin.reservasi.konfirmasi');
 });

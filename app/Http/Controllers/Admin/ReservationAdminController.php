@@ -15,7 +15,7 @@ class ReservationAdminController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-        return view('admin.reservations.index', compact('reservations'));
+        return view('reservasi.admin', compact('reservations'));
     }
 
     // ✅ Mengonfirmasi reservasi
