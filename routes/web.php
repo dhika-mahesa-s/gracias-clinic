@@ -2,11 +2,10 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+
 use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\ReservationController;
-use App\Http\Controllers\DashboardController;
-
-
+use App\Http\Controllers\Admin\DashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -59,8 +58,8 @@ Route::resource('feedback', FeedbackController::class);
 // ==========================
 
 Route::prefix('admin')->group(function () {
-    Route::get('/feedback', [AdminFeedbackController::class, 'index'])->name('admin.feedback.index');
-    Route::post('/feedback/{id}/toggle-visibility', [AdminFeedbackController::class, 'toggleVisibility'])->name('admin.feedback.toggle');
+    Route::get('/feedback', [FeedbackController::class, 'index'])->name('admin.feedback.index');
+    Route::post('/feedback/{id}/toggle-visibility', [FeedbackController::class, 'toggleVisibility'])->name('admin.feedback.toggle');
 });
 
 Route::prefix('admin')->group(function () {
@@ -79,4 +78,6 @@ Route::get('/faq', [CustomerFaqController::class, 'index']);
 
 // Route untuk dashboard admin
 Route::get('/dashboard', [DashboardController::class, 'index']);
+
+Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
 
