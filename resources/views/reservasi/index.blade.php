@@ -220,25 +220,50 @@ function reservationForm() {
         },
 
         async submitForm() {
-            const url = this.$root.dataset.storeUrl;
-            const token = this.$root.dataset.csrf;
+  const url = this.$root.dataset.storeUrl;
+  const token = this.$root.dataset.csrf;
 
-            try {
-                const res = await fetch(url, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json','X-CSRF-TOKEN': token,},
-                    body: JSON.stringify(this.form)
-                });
+  // pastikan time -> HH:mm:ss
+  if (this.form.time && this.form.time.length === 5) {
+    this.form.time = this.form.time + ':00';
+  }
 
-                const data = await res.json();
-                if (data.success) {
-                    this.reservationCode = data.code;
-                    this.currentStep = 5;
-                } else alert('Terjadi kesalahan saat menyimpan reservasi.');
-            } catch {
-                alert('Gagal mengirim data ke server.');
-            }
-        }
+  try {
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',             // <-- penting!
+        'X-CSRF-TOKEN': token,
+        'X-Requested-With': 'XMLHttpRequest',     // bantu Laravel kenali AJAX
+      },
+      body: JSON.stringify(this.form)
+    });
+
+    // kalau bukan 2xx, tampilkan pesan server biar jelas
+    if (!res.ok) {
+      const text = await res.text();
+      alert(`Gagal (${res.status}).\n${text.substring(0, 500)}`);
+      return;
+    }
+
+    const data = await res.json();
+
+    if (data.success) {
+      this.reservationCode = data.code;
+      this.currentStep = 5;
+    } else if (data.errors) {
+      // error validasi JSON dari Laravel
+      const first = Object.values(data.errors)[0][0];
+      alert(first);
+    } else {
+      alert(data.message || 'Terjadi kesalahan saat menyimpan reservasi.');
+    }
+  } catch (e) {
+    alert('Gagal mengirim data ke server.\n' + (e?.message || ''));
+  }
+}
+
     }
 }
 </script>
