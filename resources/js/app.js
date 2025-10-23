@@ -1,14 +1,10 @@
 import './bootstrap';
-<<<<<<< HEAD
-
 import Alpine from 'alpinejs';
-
-window.Alpine = Alpine;
-
-Alpine.start();
-
-=======
 import Chart from 'chart.js/auto';
+
+// Inisialisasi Alpine.js
+window.Alpine = Alpine;
+Alpine.start();
 
 // Grafik Layanan
 const ctxLayanan = document.getElementById('chartLayanan');
@@ -42,4 +38,3 @@ if (ctxBulan) {
     }
   });
 }
->>>>>>> b8b22b9aa63bc256fd5fe7fe48e52544b8352ceb
