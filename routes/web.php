@@ -23,9 +23,9 @@ use App\Http\Controllers\Customer\FaqController as CustomerFaqController;
 // ==========================
 Route::get('/', [LandingPageController::class, 'index'])->name('landingpage');
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::prefix('admin')->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+});
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
