@@ -16,15 +16,9 @@ use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\Admin\FeedbackController as AdminFeedbackController;
 use App\Http\Controllers\Admin\FaqController as AdminFaqController;
 use App\Http\Controllers\Customer\FaqController as CustomerFaqController;
-<<<<<<< HEAD
-
-=======
-use App\Http\Controllers\LandingPageController;
-use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Admin\ReservationAdminController;
 use App\Http\Controllers\ReservationHistoryController;
->>>>>>> 2ecc4f31a4267163115066c244ff1ef1533615c4
 
 // ==========================
 // LANDING PAGE
@@ -132,12 +126,6 @@ Route::prefix('admin')->group(function () {
 // ==========================
 Route::get('/faq', [CustomerFaqController::class, 'index']);
 
-<<<<<<< HEAD
-// Route untuk dashboard admin
-Route::get('/dashboard', [DashboardController::class, 'index']);
-
-Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
-=======
 Route::middleware(['auth'])->group(function () {
     Route::get('/reservasi', [ReservationController::class, 'index'])->name('reservasi.index');
     Route::post('/reservasi', [ReservationController::class, 'store'])->name('reservasi.store');
@@ -153,5 +141,4 @@ Route::get('/reservations/create', [ReservationHistoryController::class, 'create
 Route::get('/riwayat-reservasi', [ReservationHistoryController::class, 'index'])->name('reservations.history');
 Route::get('/reservations/{reservation}', [ReservationHistoryController::class, 'show'])->name('reservations.show');
 Route::post('/reservations/{reservation}/cancel', [ReservationHistoryController::class, 'cancel'])->name('reservations.cancel');
->>>>>>> 2ecc4f31a4267163115066c244ff1ef1533615c4
 
