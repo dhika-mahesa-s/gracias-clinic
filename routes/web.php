@@ -16,12 +16,68 @@ use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\Admin\FeedbackController as AdminFeedbackController;
 use App\Http\Controllers\Admin\FaqController as AdminFaqController;
 use App\Http\Controllers\Customer\FaqController as CustomerFaqController;
+<<<<<<< HEAD
 
+=======
+use App\Http\Controllers\LandingPageController;
+use App\Http\Controllers\ReservationController;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Admin\ReservationAdminController;
+use App\Http\Controllers\ReservationHistoryController;
+>>>>>>> 2ecc4f31a4267163115066c244ff1ef1533615c4
 
 // ==========================
 // LANDING PAGE
 // ==========================
 Route::get('/', [LandingPageController::class, 'index'])->name('landingpage');
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register web routes for your application. These
+| routes are loaded by the RouteServiceProvider and all of them will
+| be assigned to the "web" middleware group. Make something great!
+|
+*/
+use App\Http\Controllers\TreatmentController;
+
+
+Route::prefix('treatments')->group(function () {
+    Route::get('/', [TreatmentController::class, 'index'])->name('treatments.index');
+    Route::get('/{treatment}', [TreatmentController::class, 'show'])->name('treatments.show');
+    
+    // Admin / Management
+    Route::get('/manage/list', [TreatmentController::class, 'manage'])->name('treatments.manage');
+    Route::get('/manage/create', [TreatmentController::class, 'create'])->name('treatments.create');
+    Route::post('/manage/store', [TreatmentController::class, 'store'])->name('treatments.store');
+    Route::delete('/manage/{treatment}', [TreatmentController::class, 'destroy'])->name('treatments.destroy');
+
+      // NEW: edit & update
+    Route::get('/manage/{treatment}/edit', [TreatmentController::class, 'edit'])->name('treatments.edit');
+    Route::put('/manage/{treatment}',      [TreatmentController::class, 'update'])->name('treatments.update');
+});
+
+// ==========================
+// AUTH ROUTES
+// ==========================
+Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [LoginController::class, 'login']);
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
+// Register Routes
+use App\Http\Controllers\Auth\RegisterController;
+
+Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
+Route::post('/register', [RegisterController::class, 'register']);
+
+// Password Reset Routes
+use App\Http\Controllers\Auth\PasswordResetController;
+
+Route::get('/forgot-password', [PasswordResetController::class, 'showLinkRequestForm'])->name('password.request');
+Route::post('/forgot-password', [PasswordResetController::class, 'sendResetLinkEmail'])->name('password.email');
+
+
 
 Route::prefix('admin')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
@@ -76,8 +132,26 @@ Route::prefix('admin')->group(function () {
 // ==========================
 Route::get('/faq', [CustomerFaqController::class, 'index']);
 
+<<<<<<< HEAD
 // Route untuk dashboard admin
 Route::get('/dashboard', [DashboardController::class, 'index']);
 
 Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+=======
+Route::middleware(['auth'])->group(function () {
+    Route::get('/reservasi', [ReservationController::class, 'index'])->name('reservasi.index');
+    Route::post('/reservasi', [ReservationController::class, 'store'])->name('reservasi.store');
+    Route::get('/reservasi/jadwal/{doctor}/{date}', [ReservationController::class, 'getSchedule']);
+});
+
+Route::prefix('admin')->middleware(['auth'])->group(function () {
+    Route::get('/reservasi', [ReservationAdminController::class, 'index'])->name('reservasi.admin');
+    Route::post('/reservasi/{id}/konfirmasi', [ReservationAdminController::class, 'konfirmasi'])->name('admin.reservasi.konfirmasi');
+});
+
+Route::get('/reservations/create', [ReservationHistoryController::class, 'create'])->name('reservations.create');
+Route::get('/riwayat-reservasi', [ReservationHistoryController::class, 'index'])->name('reservations.history');
+Route::get('/reservations/{reservation}', [ReservationHistoryController::class, 'show'])->name('reservations.show');
+Route::post('/reservations/{reservation}/cancel', [ReservationHistoryController::class, 'cancel'])->name('reservations.cancel');
+>>>>>>> 2ecc4f31a4267163115066c244ff1ef1533615c4
 

@@ -1,5 +1,6 @@
 import './bootstrap';
 import Alpine from 'alpinejs';
+<<<<<<< HEAD
 import Chart from 'chart.js/auto';
 
 // Inisialisasi Alpine.js
@@ -38,3 +39,7 @@ if (ctxBulan) {
     }
   });
 }
+=======
+window.Alpine = Alpine;
+Alpine.start();
+>>>>>>> 2ecc4f31a4267163115066c244ff1ef1533615c4

@@ -1,0 +1,65 @@
+:root{
+  --gray-blue: #434F5D;
+  --gray-azure: #526D82;
+  --light-gray: #b2b4b3;
+  --light-gray-2: #d3d5d4;
+  --nav-bg: #D9D9D9;
+}
+
+/* ensure body not overridden by nav color */
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: #f7f7f7;
+  color: #222;
+}
+
+/* NAVBAR styling - only navbar */
+.navbar-custom {
+  background-color: var(--nav-bg) !important;
+}
+.navbar-custom .nav-link {
+  color: #000 !important;
+}
+.navbar-custom .brand-text { color: #000; font-weight:700; }
+.navbar-custom .nav-logo { height:40px; width:auto; }
+
+.nav-logo {
+    height: 40px;
+}
+
+.brand-text {
+    font-weight: bold;
+    color: #333;
+}
+
+/* Logout button style */
+.btn-logout {
+  background: var(--gray-blue);
+  border-color: var(--gray-blue);
+  color: #fff;
+}
+
+/* HERO area (page header) */
+.page-hero {
+  background-color: #434F5D;
+  color: #fff;
+  padding: 28px 0;
+}
+/* paste semua CSS dari <style> tadi ke file ini */
+.page-hero {
+  background-color: #434F5D;
+  color: #fff;
+  padding: 28px 0;
+}
+.search-bar{ background:#fff; border-radius:12px; padding:8px 12px; }
+.stat-card{ background:#fff; color:#333; border-radius:12px; padding:18px; text-align:center; }
+.card-res{ border-radius:12px; box-shadow:0 6px 18px rgba(0,0,0,0.06); }
+.badge-status{ border-radius:12px; padding:6px 10px; font-size:0.9rem; }
+
+/* filter collapse spacing */
+.filter-row { margin-top:12px; }
+
+/* small responsive tweaks */
+@media (max-width:576px) {
+  .nav-logo { height:32px; }
+}

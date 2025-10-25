@@ -11,22 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-      Schema::create('feedbacks', function (Blueprint $table) {
-    $table->id();
-    $table->string('name');
-    $table->string('email');
-    $table->string('phone')->nullable();
-    $table->string('service_type')->nullable();
-    $table->integer('staff_rating');
-    $table->integer('professional_rating');
-    $table->integer('result_rating');
-    $table->integer('return_rating');
-    $table->integer('overall_rating');
-    $table->text('message')->nullable();
-    $table->boolean('is_approved')->default(false);
-    $table->boolean('is_hidden')->default(false);
-    $table->timestamps();
-});
+        Schema::create('feedbacks', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->tinyInteger('rating')->unsigned()->nullable()->comment('skala 1-5');
+            $table->text('message')->nullable();
+            $table->timestamps();
+        });
     }
 
     /**
