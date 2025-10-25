@@ -1,11 +1,1 @@
-/* File: resources/css/app.css */
-
-/* Aktifkan direktif Tailwind */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-/* (Opsional) Style tambahan kamu sendiri */
-body {
-    @apply bg-gray-50 text-gray-800;
-}
+@import "tailwindcss";
