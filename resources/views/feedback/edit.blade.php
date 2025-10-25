@@ -3,10 +3,7 @@
 @section('content')
 <!-- Include Tailwind CSS -->
 <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-<link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
-/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 
 <div class="min-h-screen bg-gray-50 py-8">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -30,50 +27,67 @@
                         </h5>
                         
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <!-- Nama Lengkap -->
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">
                                     Nama Lengkap <span class="text-red-500">*</span>
                                 </label>
-                                <input type="text" 
-                                       name="name" 
-                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent @error('name') border-red-500 @enderror" 
-                                       value="{{ old('name', $feedback->name) }}" 
-                                       required>
+                                <input 
+                                    type="text" 
+                                    name="name" 
+                                    class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent {{ $errors->has('name') ? 'border-red-500' : 'border-gray-300' }}" 
+                                    value="{{ old('name', $feedback->name) }}" 
+                                    required
+                                >
                                 @error('name')
                                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                 @enderror
                             </div>
 
+                            <!-- Email -->
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">
                                     Email <span class="text-red-500">*</span>
                                 </label>
-                                <input type="email" 
-                                       name="email" 
-                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent @error('email') border-red-500 @enderror" 
-                                       value="{{ old('email', $feedback->email) }}" 
-                                       required>
+                                <input 
+                                    type="email" 
+                                    name="email" 
+                                    class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent {{ $errors->has('email') ? 'border-red-500' : 'border-gray-300' }}" 
+                                    value="{{ old('email', $feedback->email) }}" 
+                                    required
+                                >
                                 @error('email')
                                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                 @enderror
                             </div>
 
+                            <!-- Nomor Telepon -->
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Nomor Telepon</label>
-                                <input type="tel" 
-                                       name="phone" 
-                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent @error('phone') border-red-500 @enderror" 
-                                       value="{{ old('phone', $feedback->phone) }}" 
-                                       placeholder="Opsional"
-                                       oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    Nomor Telepon
+                                </label>
+                                <input 
+                                    type="tel" 
+                                    name="phone" 
+                                    class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent {{ $errors->has('phone') ? 'border-red-500' : 'border-gray-300' }}" 
+                                    value="{{ old('phone', $feedback->phone) }}" 
+                                    placeholder="Opsional"
+                                    oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                                >
                                 @error('phone')
                                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                 @enderror
                             </div>
 
+                            <!-- Jenis Layanan -->
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Jenis Layanan</label>
-                                <select name="service_type" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent @error('service_type') border-red-500 @enderror">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    Jenis Layanan
+                                </label>
+                                <select 
+                                    name="service_type" 
+                                    class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent {{ $errors->has('service_type') ? 'border-red-500' : 'border-gray-300' }}"
+                                >
                                     <option value="">Pilih Layanan</option>
                                     <option value="Facial" {{ old('service_type', $feedback->service_type) == 'Facial' ? 'selected' : '' }}>Facial</option>
                                     <option value="Injection" {{ old('service_type', $feedback->service_type) == 'Injection' ? 'selected' : '' }}>Injection</option>
@@ -110,7 +124,11 @@
                                     <label class="block text-sm font-medium text-gray-700 mb-2">
                                         {{ $label }} <span class="text-red-500">*</span>
                                     </label>
-                                    <select name="{{ $name }}" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent @error($name) border-red-500 @enderror" required>
+                                    <select 
+                                        name="{{ $name }}" 
+                                        class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent {{ $errors->has($name) ? 'border-red-500' : 'border-gray-300' }}" 
+                                        required
+                                    >
                                         <option value="">Pilih Rating</option>
                                         @for ($i = 1; $i <= 5; $i++)
                                             <option value="{{ $i }}" {{ old($name, $feedback->$name) == $i ? 'selected' : '' }}>
@@ -131,10 +149,12 @@
                         <h5 class="text-blue-600 font-semibold mb-4 flex items-center">
                             <i class="fas fa-comment mr-2"></i>Pesan Tambahan
                         </h5>
-                        <textarea name="message" 
-                                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent @error('message') border-red-500 @enderror" 
-                                  rows="3" 
-                                  placeholder="Masukkan pesan atau komentar tambahan...">{{ old('message', $feedback->message) }}</textarea>
+                        <textarea 
+                            name="message" 
+                            class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent {{ $errors->has('message') ? 'border-red-500' : 'border-gray-300' }}" 
+                            rows="3" 
+                            placeholder="Masukkan pesan atau komentar tambahan..."
+                        >{{ old('message', $feedback->message) }}</textarea>
                         @error('message')
                             <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                         @enderror
@@ -197,40 +217,33 @@
 </div>
 
 <style>
-    /* Custom styling untuk select options dengan bintang */
     select option {
         padding: 8px;
     }
-    
-    /* Responsive design */
+
     @media (max-width: 768px) {
         .text-3xl {
             font-size: 1.5rem;
         }
-        
         .grid-cols-2 {
             grid-template-columns: repeat(2, 1fr);
         }
-        
         .flex-col {
             flex-direction: column;
         }
-        
         .w-full {
             width: 100%;
         }
     }
-    
+
     @media (max-width: 480px) {
         .px-4 {
             padding-left: 1rem;
             padding-right: 1rem;
         }
-        
         .p-6 {
             padding: 1rem;
         }
-        
         .text-lg {
             font-size: 1rem;
         }
