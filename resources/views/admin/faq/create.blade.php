@@ -3,168 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <title>Tambah FAQ - Gracias Clinic</title>
+
+    @vite('resources/css/app.css')
+
+    <!-- Font & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=Playfair+Display:wght@500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
         body {
-            font-family: "Poppins", sans-serif;
-            background-color: #f7f7f7;
-            margin: 0;
-            padding-top: 90px; /* supaya konten tidak ketutup navbar */
-        }
-
-        /* Navbar */
-        .navbar {
-            background-color: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(8px);
-        }
-
-        .navbar-brand {
-            font-weight: bold;
-            font-family: 'Playfair Display', serif;
-        }
-
-        .navbar-brand img {
-            margin-right: 10px;
-        }
-
-        .nav-link {
-            color: #333 !important;
-            font-weight: 400;
-        }
-
-        .nav-link:hover,
-        .nav-link.active {
-            color: #2e8b8b !important;
-        }
-
-        main {
-            background-color: white;
-            width: 90%;
-            max-width: 600px;
-            margin: 60px auto;
-            padding: 40px 50px;
-            border-radius: 16px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
-
-        h1 {
-            font-size: 24px;
-            text-align: center;
-            margin-bottom: 30px;
-            color: #2b2b2b;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            color: #333;
-            font-weight: 500;
-        }
-
-        input[type="text"],
-        textarea {
-            width: 100%;
-            padding: 12px 15px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            font-size: 15px;
-            transition: border-color 0.3s ease;
-        }
-
-        input[type="text"]:focus,
-        textarea:focus {
-            border-color: #4b5a68;
-            outline: none;
-        }
-
-        .btn {
-            padding: 10px 20px;
-            border-radius: 8px;
-            border: none;
-            cursor: pointer;
-            font-size: 15px;
-            transition: 0.3s;
-        }
-
-        .btn-save {
-            background-color: #4b5a68;
-            color: white;
-        }
-
-        .btn-save:hover {
-            background-color: #2e8b8b;
-        }
-
-        .btn-cancel {
-            background-color: #ccc;
-            color: #333;
-            text-decoration: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            display: inline-block;
-        }
-
-        .btn-cancel:hover {
-            background-color: #aaa;
-        }
-
-        .form-buttons {
-            display: flex;
-            justify-content: flex-end;
-            gap: 15px;
+            font-family: 'Poppins', sans-serif;
         }
     </style>
 </head>
-<body>
+<body class="flex flex-col min-h-screen bg-gray-100 text-gray-800">
 
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light shadow-sm fixed-top">
-        <div class="container">
-            <a class="navbar-brand d-flex align-items-center" href="#">
-                <img src="{{ asset('storage/images/logo.png') }}" alt="Logo" width="50" height="50">
-                Gracias Aesthetic Clinic
+    <nav class="fixed top-0 left-0 w-full bg-white/90 backdrop-blur-md shadow-sm z-50">
+        <div class="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
+            <a href="#" class="flex items-center space-x-2 text-gray-800 font-semibold text-lg font-[Playfair_Display]">
+                <img src="{{ asset('storage/images/logo.png') }}" alt="Logo" class="w-10 h-10">
+                <span>Gracias Aesthetic Clinic</span>
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-                <ul class="navbar-nav">
-                    <li class="nav-item"><a class="nav-link active" href="#">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Our Team</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Product</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Promo</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Contact Us</a></li>
-                </ul>
-            </div>
+            <ul class="hidden md:flex items-center space-x-8 text-sm font-medium">
+                <li><a href="#" class="hover:text-teal-600 text-gray-700">Home</a></li>
+                <li><a href="#" class="hover:text-teal-600 text-gray-700">Our Team</a></li>
+                <li><a href="#" class="hover:text-teal-600 text-gray-700">Product</a></li>
+                <li><a href="#" class="hover:text-teal-600 text-gray-700">Promo</a></li>
+                <li><a href="#" class="hover:text-teal-600 text-gray-700">Contact Us</a></li>
+            </ul>
         </div>
     </nav>
 
     <!-- Main Content -->
-    <main>
-        <h1>Tambah FAQ Baru</h1>
+    <main class="flex-grow pt-28">
+        <div class="max-w-lg mx-auto bg-white rounded-2xl shadow-lg p-10">
+            <h1 class="text-2xl font-semibold text-center mb-6 text-gray-800">Tambah FAQ Baru</h1>
 
-        <form action="{{ url('admin/faq') }}" method="POST">
-            @csrf
-            <label>Pertanyaan:</label>
-            <input type="text" name="question" required>
+            <form action="{{ url('admin/faq') }}" method="POST" class="space-y-6">
+                @csrf
 
-            <label>Jawaban:</label>
-            <textarea name="answer" rows="4" required></textarea>
+                <div>
+                    <label for="question" class="block text-sm font-medium text-gray-700 mb-2">Pertanyaan:</label>
+                    <input type="text" id="question" name="question" required
+                        class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-transparent transition">
+                </div>
 
-            <div class="form-buttons">
-                <button type="submit" class="btn btn-save">
-                    <i class="fa-solid fa-floppy-disk"></i> Simpan
-                </button>
-                <a href="{{ url('admin/faq') }}" class="btn btn-cancel">
-                    <i class="fa-solid fa-xmark"></i> Batal
-                </a>
-            </div>
-        </form>
+                <div>
+                    <label for="answer" class="block text-sm font-medium text-gray-700 mb-2">Jawaban:</label>
+                    <textarea id="answer" name="answer" rows="4" required
+                        class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-teal-600 focus:border-transparent transition"></textarea>
+                </div>
+
+                <div class="flex justify-end space-x-3 pt-2">
+                    <a href="{{ url('admin/faq') }}"
+                        class="inline-flex items-center bg-gray-300 hover:bg-gray-400 text-gray-800 text-sm px-4 py-2 rounded-lg transition">
+                        <i class="fa-solid fa-xmark mr-2"></i> Batal
+                    </a>
+                    <button type="submit"
+                        class="inline-flex items-center bg-teal-700 hover:bg-teal-600 text-white text-sm px-4 py-2 rounded-lg transition">
+                        <i class="fa-solid fa-floppy-disk mr-2"></i> Simpan
+                    </button>
+                </div>
+            </form>
+        </div>
     </main>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Footer Wave -->
+    <footer class="w-full mt-auto">
+        <div class="w-full h-24 bg-[#4b5a68] rounded-t-[100%_100%]"></div>
+    </footer>
+
 </body>
 </html>

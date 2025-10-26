@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <title>Admin FAQ - Gracias Clinic</title>
 
-    <!-- Bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    @vite('resources/css/app.css')
 
     <!-- Font & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=Playfair+Display:wght@500&display=swap" rel="stylesheet">
@@ -13,193 +12,83 @@
 
     <style>
         body {
-            margin: 0;
             font-family: 'Poppins', sans-serif;
-            background-color: #f9f9f9;
-            color: #2b2b2b;
-            padding-top: 90px; /* agar konten tidak tertutup navbar */
-        }
-
-        /* Navbar */
-        .navbar {
-            background-color: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(8px);
-        }
-
-        .navbar-brand {
-            font-weight: bold;
-            font-family: 'Playfair Display', serif;
-        }
-
-        .navbar-brand img {
-            margin-right: 10px;
-        }
-
-        .nav-link {
-            color: #333 !important;
-            font-weight: 400;
-        }
-
-        .nav-link:hover,
-        .nav-link.active {
-            color: #2e8b8b !important;
-        }
-
-        /* Main content */
-        main {
-            background-color: white;
-            border-radius: 16px;
-            max-width: 1000px;
-            margin: 60px auto;
-            padding: 40px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-
-        h2 {
-            font-weight: 600;
-            font-size: 26px;
-            margin-bottom: 30px;
-        }
-
-        .add-faq {
-            display: inline-block;
-            background-color: #4b5a68;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 8px;
-            text-decoration: none;
-            margin-bottom: 20px;
-            font-size: 15px;
-            transition: 0.3s;
-        }
-
-        .add-faq:hover {
-            background-color: #2e8b8b;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 15px;
-        }
-
-        th, td {
-            border: 1px solid #ccc;
-            padding: 16px;
-            text-align: left;
-            vertical-align: top;
-        }
-
-        th {
-            background-color: #f2f2f2;
-            color: #444;
-            font-weight: 600;
-        }
-
-        tr:nth-child(even) {
-            background-color: #fafafa;
-        }
-
-        .action-buttons {
-            display: flex;
-            gap: 10px;
-        }
-
-        .btn {
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 18px;
-            color: #4b5a68;
-            transition: 0.2s;
-        }
-
-        .btn:hover {
-            color: #2e8b8b;
-        }
-
-        /* Footer Wave */
-        .footer-wave {
-            width: 100%;
-            height: 120px;
-            background: #4b5a68;
-            clip-path: ellipse(100% 100% at 50% 100%);
-            margin-top: 50px;
         }
     </style>
 </head>
-<body>
+<body class="flex flex-col min-h-screen bg-gray-100 text-gray-800">
 
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light shadow-sm fixed-top">
-        <div class="container">
-            <a class="navbar-brand d-flex align-items-center" href="#">
-               <img src="{{ asset('storage/images/logo.png') }}" alt="Logo" width="50" height="50">
-
-
-  
-                Gracias Aesthetic Clinic
+    <nav class="fixed top-0 left-0 w-full bg-white/90 backdrop-blur-md shadow-sm z-50">
+        <div class="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
+            <a href="#" class="flex items-center space-x-2 text-gray-800 font-semibold text-lg font-[Playfair_Display]">
+                <img src="{{ asset('storage/images/logo.png') }}" alt="Logo" class="w-10 h-10">
+                <span>Gracias Aesthetic Clinic</span>
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-                <ul class="navbar-nav">
-                    <li class="nav-item"><a class="nav-link active" href="#">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Our Team</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Product</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Promo</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Contact Us</a></li>
-                </ul>
-            </div>
+            <ul class="hidden md:flex items-center space-x-8 text-sm font-medium">
+                <li><a href="#" class="hover:text-teal-600 text-gray-700">Home</a></li>
+                <li><a href="#" class="hover:text-teal-600 text-gray-700">Our Team</a></li>
+                <li><a href="#" class="hover:text-teal-600 text-gray-700">Product</a></li>
+                <li><a href="#" class="hover:text-teal-600 text-gray-700">Promo</a></li>
+                <li><a href="#" class="hover:text-teal-600 text-gray-700">Contact Us</a></li>
+            </ul>
         </div>
     </nav>
 
-    <!-- Main Section -->
-    <main>
-        <h2>Kelola FAQ</h2>
+    <!-- Main Content -->
+    <main class="flex-grow pt-24">
+        <div class="max-w-5xl mx-auto bg-white rounded-2xl shadow-lg p-10 mt-10">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-2xl font-semibold text-gray-800">Kelola FAQ</h2>
+                <a href="{{ url('admin/faq/create') }}" class="inline-flex items-center bg-teal-700 hover:bg-teal-600 text-white text-sm px-4 py-2 rounded-lg transition">
+                    <i class="fa-solid fa-plus mr-2"></i> Tambah FAQ
+                </a>
+            </div>
 
-        <a href="{{ url('admin/faq/create') }}" class="add-faq">
-            <i class="fa-solid fa-plus"></i> Tambah FAQ
-        </a>
-
-        <table>
-            <thead>
-                <tr>
-                    <th>Pertanyaan</th>
-                    <th>Jawaban</th>
-                    <th>Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($faqs as $faq)
-                <tr>
-                    <td>{{ $faq->question ?? $faq->pertanyaan }}</td>
-                    <td>{{ $faq->answer ?? $faq->jawaban }}</td>
-                    <td>
-                        <div class="action-buttons">
-                            <a href="{{ url('admin/faq/'.$faq->id.'/edit') }}" class="btn" title="Edit">
-                                <i class="fa-solid fa-pen-to-square"></i>
-                            </a>
-                            <form action="{{ url('admin/faq/'.$faq->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus FAQ ini?')">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn" title="Hapus">
-                                    <i class="fa-solid fa-trash"></i>
-                                </button>
-                            </form>
-                        </div>
-                    </td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
+            <div class="overflow-x-auto">
+                <table class="w-full border border-gray-200 text-sm rounded-lg overflow-hidden">
+                    <thead class="bg-gray-100 text-gray-700 font-semibold">
+                        <tr>
+                            <th class="border-b border-gray-200 px-4 py-3 text-left">Pertanyaan</th>
+                            <th class="border-b border-gray-200 px-4 py-3 text-left">Jawaban</th>
+                            <th class="border-b border-gray-200 px-4 py-3 text-left">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($faqs as $faq)
+                        <tr class="even:bg-gray-50 hover:bg-gray-100 transition">
+                            <td class="border-b border-gray-200 px-4 py-3 align-top">{{ $faq->question ?? $faq->pertanyaan }}</td>
+                            <td class="border-b border-gray-200 px-4 py-3 align-top">{{ $faq->answer ?? $faq->jawaban }}</td>
+                            <td class="border-b border-gray-200 px-4 py-3">
+                                <div class="flex space-x-3">
+                                    <a href="{{ url('admin/faq/'.$faq->id.'/edit') }}" class="text-blue-600 hover:text-blue-800 transition" title="Edit">
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                    </a>
+                                    <form action="{{ url('admin/faq/'.$faq->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus FAQ ini?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="text-red-600 hover:text-red-800 transition" title="Hapus">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="3" class="text-center py-4 text-gray-500 italic">Belum ada data FAQ</td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </main>
 
-    <!-- Footer -->
-    <div class="footer-wave"></div>
+    <!-- Footer Wave -->
+    <footer class="w-full mt-auto">
+        <div class="w-full h-24 bg-[#4b5a68] rounded-t-[100%_100%]"></div>
+    </footer>
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
