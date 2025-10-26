@@ -36,6 +36,6 @@ class LoginController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect('/');
+        return redirect('/')->with('logout_success', 'Anda telah berhasil logout.');
     }
 }
