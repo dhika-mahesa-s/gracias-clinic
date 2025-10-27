@@ -87,7 +87,7 @@
             </div>            
         </div>
         <div class="mt-10 text-right">
-                <a href="{{ route('admin.downloadReport') }}" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition">Unduh Laporan</a>
+                <a href="{{ route('admin.dashboard.downloadReport') }}" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition">Unduh Laporan</a>
         </div>
     </main>
 </div>

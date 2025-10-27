@@ -74,11 +74,11 @@ class DashboardController extends Controller
             ->whereMonth('reservation_date', $currentMonth)
             ->sum('total_price');
 
-        $newVisitorsThisMonth = Reservation::select('customer_email')
-            ->whereMonth('reservation_date', $currentMonth)
-            ->groupBy('customer_email')
-            ->get()
-            ->count();
+        // Ganti di DashboardController@Index:
+        $newVisitorsThisMonth = Reservation::whereMonth('reservation_date', $currentMonth)
+        ->distinct('user_id')
+        ->count('user_id');
+
 
         $reservationsByMonth = Reservation::select(
             DB::raw('MONTH(reservation_date) as month'),

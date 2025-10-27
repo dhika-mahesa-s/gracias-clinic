@@ -140,8 +140,7 @@ Route::post('/reservations/{reservation}/cancel', [ReservationHistoryController:
 // ==========================
 // DASHBOARD ROUTES
 // ==========================
-Route::prefix('admin')->group(function () {
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+Route::prefix('admin')->name('admin.')->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard/download-report', [DashboardController::class, 'downloadReport'])->name('dashboard.downloadReport');
 });
-
-Route::get('/admin/dashboard/report', [DashboardController::class, 'downloadReport'])->name('admin.downloadReport');
