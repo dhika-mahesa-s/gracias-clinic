@@ -66,7 +66,7 @@
     }
 </style>
 
-<div class="container mx-auto my-8 px-4">
+<div class="container mx-auto my-8 px-4 bg-[#E3EAF2]">
     <!-- Header -->
     <div class="text-center mb-8">
         <h1 class="playfair-font font-semibold text-2xl sm:text-3xl md:text-4xl text-gray-800 leading-tight">
