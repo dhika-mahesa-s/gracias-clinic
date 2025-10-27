@@ -1,17 +1,16 @@
+// vite.config.js
 import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
-import tailwindcss from '@tailwindcss/vite'
-
 
 export default defineConfig({
     plugins: [
-        tailwindcss(),
         laravel({
             input: [
-                'resources/sass/app.scss',
+                'resources/css/app.css', // Pastikan ini .css
                 'resources/js/app.js',
             ],
             refresh: true,
         }),
     ],
+    // PASTIKAN BLOK 'css: { postcss: {...} }' DIHAPUS JIKA ADA
 });
