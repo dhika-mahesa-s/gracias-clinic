@@ -1,56 +1,66 @@
+@php 
+    use Illuminate\Support\Facades\Storage; 
+@endphp
+
 @extends('layouts.app')
 
 @section('content')
-<div class="card p-5">
+<section class="min-h-screen bg-[#F1F5F9] text-[#526D82] py-10 px-4">
+  <div class="container mx-auto max-w-6xl">
 
-  {{-- Header kiri + tombol kembali --}}
-  <div class="mb-4 d-flex justify-content-between align-items-center">
-    <h3 class="mb-0 text-start">Treatment Kami</h3>
-    <a href="{{ url()->previous() }}" class="btn btn-outline-secondary btn-sm">← Kembali</a>
-  </div>
+    {{-- Header --}}
+    <div class="flex justify-between items-center mb-8">
+      <h2 class="text-3xl font-bold flex items-center gap-2 text-[#27374D] ">
+        Treatment Kami
+      </h2>
+      <a href="{{ route('treatments.manage') }}" 
+         class="px-5 py-2.5 rounded-lg border border-[#526D82] text-[#526D82] hover:bg-[#526D82] hover:text-white transition shadow-sm font-medium">
+        ← Kembali
+      </a>
+    </div>
 
-  @php use Illuminate\Support\Facades\Storage; @endphp
+    {{-- Grid Treatment --}}
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      @foreach($treatments as $t)
+        @php
+          $price = 'Rp ' . number_format($t->price, 0, ',', '.');
 
-  <div class="row g-4">
-    @foreach($treatments as $t)
-      @php
-        // Format harga Rp. 200.000
-        $price = 'Rp. ' . number_format($t->price, 0, ',', '.');
+          if ($t->image) {
+              if (preg_match('#^https?://#', $t->image)) {
+                  $img = $t->image;
+              } elseif (Storage::disk('public')->exists($t->image)) {
+                  $img = Storage::url($t->image);
+              } else {
+                  $img = 'https://via.placeholder.com/300x200?text=No+Image';
+              }
+          } else {
+              $img = 'https://via.placeholder.com/300x200?text=No+Image';
+          }
+        @endphp
 
-        // Tentukan path gambar
-        if ($t->image) {
-            if (preg_match('#^https?://#', $t->image)) {
-                // Jika full URL
-                $img = $t->image;
-            } elseif (Storage::disk('public')->exists($t->image)) {
-                // Jika file ada di storage/app/public/treatments
-                $img = Storage::url($t->image); // → /storage/treatments/nama-file.jpg
-            } else {
-                // Jika file tidak ditemukan
-                $img = 'https://via.placeholder.com/100?text=No+Image';
-            }
-        } else {
-            // Jika belum upload gambar
-            $img = 'https://via.placeholder.com/100?text=No+Image';
-        }
-      @endphp
+        {{-- Card Treatment --}}
+        <div class="bg-gray-100 border border-gray-300 rounded-2xl shadow-md p-6 hover:shadow-lg transition">
+          <img src="{{ $img }}" alt="{{ $t->name }}" 
+               class="w-full h-48 object-cover rounded-xl mb-4 border border-gray-300 shadow-sm">
 
-      <div class="col-12 col-md-4">
-        <div class="card p-3 text-center">
-          {{-- Gambar treatment --}}
-          <img src="{{ $img }}" alt="{{ $t->name }}" width="100" height="100" class="mx-auto mb-3 rounded object-fit-cover">
+          <h3 class="text-xl font-semibold text-[#27374D] mb-2">{{ $t->name }}</h3>
+          <p class="text-sm text-[#526D82] mb-3">{{ \Illuminate\Support\Str::limit($t->description, 100) }}</p>
+          <p class="text-lg font-bold text-[#27374D] mb-5">{{ $price }}</p>
 
-          <h5 class="mb-1">{{ $t->name }}</h5>
-          <p class="mb-2">{{ \Illuminate\Support\Str::limit($t->description, 100) }}</p>
-          <p class="fw-bold mb-3">{{ $price }}</p>
-
-          <div class="d-flex justify-content-center gap-2">
-            <a href="{{ route('reservasi.index') }}" class="btn btn-primary btn-sm">Reservasi Sekarang</a>
-            <a href="{{ route('treatments.show', $t) }}" class="btn btn-secondary btn-sm">Baca Selengkapnya</a>
+          <div class="flex justify-center gap-3">
+            <a href="{{ route('reservasi.index') }}" 
+               class="px-4 py-2 rounded-lg text-white bg-primary hover:bg-primary/90 transition-all duration-300 text-sm font-medium shadow-md">
+               🗓️ Reservasi
+            </a>
+            <a href="{{ route('treatments.show', $t) }}" 
+               class="px-4 py-2 rounded-lg border border-[#526D82] text-[#526D82] text-sm font-medium hover:bg-[#526D82] hover:text-white transition shadow-sm">
+               ℹ️ Selengkapnya
+            </a>
           </div>
         </div>
-      </div>
-    @endforeach
+      @endforeach
+    </div>
+
   </div>
-</div>
+</section>
 @endsection
