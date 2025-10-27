@@ -9,9 +9,9 @@
         {{-- Desktop menu --}}
         <div class="hidden md:flex items-center space-x-8">
             <a href="{{ url('/') }}" class="relative text-gray-700 font-medium hover:text-black">Home</a>
-            <a href="{{ route('reservasi.index') }}" class="relative text-gray-700 font-medium hover:text-black">Treatments</a>
+            <a href="{{ route('treatments.index') }}" class="relative text-gray-700 font-medium hover:text-black">Treatments</a>
             <a href="#" class="relative text-gray-700 font-medium hover:text-black">About Us</a>
-            <a href="#" class="relative text-gray-700 font-medium hover:text-black">FAQ</a>
+            <a href="{{ route('customer.faq.index') }}" class="relative text-gray-700 font-medium hover:text-black">FAQ</a>
 
             @guest
                 <a href="{{ route('login') }}" class="px-4 py-2 border border-gray-800 rounded-lg font-medium hover:bg-gray-900 hover:text-white transition">
@@ -47,7 +47,7 @@
     <div x-show="open" x-transition class="md:hidden bg-white/90 backdrop-blur-md border-t border-gray-200">
         <div class="px-4 py-3 space-y-2">
             <a href="{{ url('/') }}" class="block text-gray-700 font-medium hover:text-black">Home</a>
-            <a href="{{ route('reservasi.index') }}" class="block text-gray-700 font-medium hover:text-black">Treatments</a>
+            <a href="{{ route('treatments.index') }}" class="block text-gray-700 font-medium hover:text-black">Treatments</a>
             <a href="#" class="block text-gray-700 font-medium hover:text-black">About Us</a>
             <a href="#" class="block text-gray-700 font-medium hover:text-black">FAQ</a>
 

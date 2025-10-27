@@ -108,7 +108,7 @@ Route::prefix('admin')->group(function () {
 });
 
 Route::prefix('admin')->group(function () {
-    Route::get('/faq', [AdminFaqController::class, 'index']);
+    Route::get('/faq', [AdminFaqController::class, 'index'])->name('admin.faq.index');
     Route::get('/faq/create', [AdminFaqController::class, 'create']);
     Route::post('/faq', [AdminFaqController::class, 'store']);
     Route::get('/faq/{id}/edit', [AdminFaqController::class, 'edit']);
@@ -119,7 +119,7 @@ Route::prefix('admin')->group(function () {
 // ==========================
 // CUSTOMER FAQ
 // ==========================
-Route::get('/faq', [CustomerFaqController::class, 'index']);
+Route::get('/faq', [CustomerFaqController::class, 'index'])->name('customer.faq.index');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/reservasi', [ReservationController::class, 'index'])->name('reservasi.index');

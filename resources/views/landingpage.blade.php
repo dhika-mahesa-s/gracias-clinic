@@ -118,7 +118,7 @@
                     </div>
         
                     <div class="mt-10">
-                        <a href="{{ route('reservasi.index') }}" class="inline-flex items-center px-6 py-3 border border-[#526D82] text-[#526D82] rounded-lg hover:bg-gray-200 transition">
+                        <a href="{{ route('treatments.index') }}" class="inline-flex items-center px-6 py-3 border border-[#526D82] text-[#526D82] rounded-lg hover:bg-gray-200 transition">
                             Lihat Semua Treatment
                             <svg xmlns="http://www.w3.org/2000/svg" class="ml-2 w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
@@ -164,7 +164,7 @@
             </div>
 
             <div class="mt-10">
-                <a href="#" class="inline-flex items-center px-6 py-3 border border-gray-800 text-gray-800 rounded-lg hover:bg-gray-800 hover:text-white transition">
+                <a href="{{ route ('feedback.create') }}" class="inline-flex items-center px-6 py-3 border border-gray-800 text-gray-800 rounded-lg hover:bg-gray-800 hover:text-white transition">
                     Berikan Feedback Anda
                 </a>
             </div>

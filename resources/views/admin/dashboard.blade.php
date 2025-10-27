@@ -31,7 +31,12 @@
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('feedback.index') }}" class="block px-4 py-2 rounded-lg hover:bg-blue-50 text-gray-700 font-medium">
+                    <a href="{{ route('admin.faq.index') }}" class="block px-4 py-2 rounded-lg hover:bg-blue-50 text-gray-700 font-medium">
+                        Kelola FAQ
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('admin.feedback.index') }}" class="block px-4 py-2 rounded-lg hover:bg-blue-50 text-gray-700 font-medium">
                         Kelola Feedback
                     </a>
                 </li>                
