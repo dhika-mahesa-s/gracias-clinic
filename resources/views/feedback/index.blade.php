@@ -22,7 +22,7 @@
             <div>
                 <form method="GET" action="{{ route('feedback.index') }}">
                     <div class="flex">
-                        <div class="relative flex-grow">
+                        <div class="relative grow">
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                 <i class="fas fa-search text-gray-400"></i>
                             </div>
