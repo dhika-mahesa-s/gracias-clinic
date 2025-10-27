@@ -209,6 +209,11 @@
             <p class="text-foreground">
                 ID Reservasi: <span class="font-mono text-primary" x-text="reservationCode"></span>
             </p>
+            <a :href="`/reservasi/${reservationCode}/cetak`" target="_blank"
+                   class="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-green-600 text-white font-medium
+                          hover:bg-green-700 transition-all duration-300 shadow-sm hover:shadow-md">
+                    <i class="fa-solid fa-file-pdf"></i> Download Resi (PDF)
+                </a>
             <a href="{{ route('landingpage') }}" class="inline-flex items-center gap-2 px-6 py-2 rounded-xl bg-primary text-white font-medium
                            hover:bg-primary/90 transition-all duration-300 shadow-sm hover:shadow-md">
                 <i class="fa-solid fa-house"></i> Kembali ke Dashboard

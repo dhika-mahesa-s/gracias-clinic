@@ -9,7 +9,18 @@
         {{-- Desktop menu --}}
         <div class="hidden md:flex items-center space-x-8">
             <a href="{{ url('/') }}" class="relative text-gray-700 font-medium hover:text-black">Home</a>
-            <a href="{{ route('reservasi.index') }}" class="relative text-gray-700 font-medium hover:text-black">Treatments</a>
+            <a href="{{ route('treatments.index') }}" class="relative text-gray-700 font-medium hover:text-black">Treatments</a>
+            <a href="{{ route('reservasi.index') }}" class="relative text-gray-700 font-medium hover:text-black">Reservasi</a>
+
+            {{-- Tampilkan hanya jika user sudah punya reservasi --}}
+            @auth
+                @if($hasReservation)
+                    <a href="{{ route('reservations.history') }}" class="relative text-gray-700 font-medium hover:text-black">
+                        Riwayat Reservasi
+                    </a>
+                @endif
+            @endauth
+
             <a href="#" class="relative text-gray-700 font-medium hover:text-black">About Us</a>
             <a href="#" class="relative text-gray-700 font-medium hover:text-black">FAQ</a>
 
@@ -31,23 +42,14 @@
                 </form>
             @endauth
         </div>
-
-        {{-- Mobile toggle --}}
-        <button @click="open = !open" class="md:hidden focus:outline-none">
-            <svg x-show="!open" xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 text-gray-800" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16" />
-            </svg>
-            <svg x-show="open" xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 text-gray-800" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-        </button>
-    </div>
+    
 
     {{-- Mobile menu --}}
     <div x-show="open" x-transition class="md:hidden bg-white/90 backdrop-blur-md border-t border-gray-200">
         <div class="px-4 py-3 space-y-2">
             <a href="{{ url('/') }}" class="block text-gray-700 font-medium hover:text-black">Home</a>
-            <a href="{{ route('reservasi.index') }}" class="block text-gray-700 font-medium hover:text-black">Treatments</a>
+            <a href="{{ route('treatments.index') }}" class="block text-gray-700 font-medium hover:text-black">Treatments</a>
+            <a href="{{ route('reservasi.index') }}" class="block text-gray-700 font-medium hover:text-black">Reservasi</a>
             <a href="#" class="block text-gray-700 font-medium hover:text-black">About Us</a>
             <a href="#" class="block text-gray-700 font-medium hover:text-black">FAQ</a>
 
@@ -56,6 +58,13 @@
                 <a href="{{ route('register') }}" class="block px-4 py-2 bg-gray-900 text-white rounded-lg text-center font-medium hover:bg-black transition">Daftar Sekarang</a>
             @endguest
 
+            @auth
+                @if($hasReservation)
+                <a href="{{ route('reservations.history') }}" class="block text-gray-700 font-medium hover:text-black">Riwayat Reservasi</a>
+                @endif
+            @endauth
+
+            
             @auth
                 <form action="{{ route('logout') }}" method="POST" class="mt-2 text-center">
                     @csrf
