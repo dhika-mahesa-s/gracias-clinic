@@ -56,16 +56,16 @@
         {{-- Cards --}}
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             <div class="bg-white shadow rounded-2xl p-6 text-center">
-                <h2 class="text-sm text-gray-500">Total Reservasi</h2>
-                <p class="text-3xl font-bold text-blue-600">{{ $totalReservations }}</p>
+                <h2 class="text-sm text-gray-500">Total Reservasi Hari Ini</h2>
+                <p class="text-3xl font-bold text-blue-600">{{ $reservationsToday }}</p>
             </div>
             <div class="bg-white shadow rounded-2xl p-6 text-center">
-                <h2 class="text-sm text-gray-500">Total Pendapatan</h2>
+                <h2 class="text-sm text-gray-500">Total Pendapatan Bulan Ini</h2>
                 <p class="text-3xl font-bold text-green-600">Rp {{ number_format($totalRevenue, 0, ',', '.') }}</p>
             </div>
             <div class="bg-white shadow rounded-2xl p-6 text-center">
-                <h2 class="text-sm text-gray-500">Customer Unik</h2>
-                <p class="text-3xl font-bold text-purple-600">{{ $uniqueCustomers }}</p>
+                <h2 class="text-sm text-gray-500">Total Pengunjung Baru (Bulan Ini)</h2>
+                <p class="text-3xl font-bold text-purple-600">{{ $newVisitorsThisMonth }}</p>
             </div>
         </div>
 
@@ -84,7 +84,10 @@
             <div class="bg-white shadow rounded-2xl p-6 lg:col-span-2">
                 <h2 class="text-lg font-semibold text-gray-700 mb-4">Reservasi per Treatment</h2>
                 <canvas id="chartTreatment" height="100"></canvas>
-            </div>
+            </div>            
+        </div>
+        <div class="mt-10 text-right">
+                <a href="{{ route('admin.downloadReport') }}" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition">Unduh Laporan</a>
         </div>
     </main>
 </div>

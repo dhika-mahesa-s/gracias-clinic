@@ -72,11 +72,6 @@ Route::get('/forgot-password', [PasswordResetController::class, 'showLinkRequest
 Route::post('/forgot-password', [PasswordResetController::class, 'sendResetLinkEmail'])->name('password.email');
 
 
-
-Route::prefix('admin')->group(function () {
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
-});
-
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -142,3 +137,11 @@ Route::get('/riwayat-reservasi', [ReservationHistoryController::class, 'index'])
 Route::get('/reservations/{reservation}', [ReservationHistoryController::class, 'show'])->name('reservations.show');
 Route::post('/reservations/{reservation}/cancel', [ReservationHistoryController::class, 'cancel'])->name('reservations.cancel');
 
+// ==========================
+// DASHBOARD ROUTES
+// ==========================
+Route::prefix('admin')->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+});
+
+Route::get('/admin/dashboard/report', [DashboardController::class, 'downloadReport'])->name('admin.downloadReport');
