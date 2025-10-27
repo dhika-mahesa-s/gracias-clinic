@@ -144,3 +144,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/dashboard/download-report', [DashboardController::class, 'downloadReport'])->name('dashboard.downloadReport');
 });
+
+// ==========================
+// ABOUT US ROUTES
+// ==========================
+Route::get('/about', [App\Http\Controllers\AboutController::class, 'index'])->name('about');

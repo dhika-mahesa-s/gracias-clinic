@@ -12,14 +12,13 @@
     </style>
 </head>
 <body>
-    <h1>Laporan Dashboard</h1>
+    <h1>Laporan Penjualan</h1>
     <h2>{{ now()->format('d F Y') }}</h2>
 
-    <p><strong>Total Reservasi:</strong> {{ $reservationsByMonth }}</p>
     <p><strong>Total Pendapatan:</strong> Rp {{ number_format($totalRevenue, 0, ',', '.') }}</p>
     <p><strong>Reservasi Hari Ini:</strong> {{ $reservationsToday }}</p>
 
-    <h3>📅 Reservasi per Bulan</h3>
+    <h3>Reservasi per Bulan</h3>
     <table>
         <tr><th>Bulan</th><th>Total Reservasi</th></tr>
         @foreach ($reservationsByMonth as $item)
@@ -30,7 +29,7 @@
         @endforeach
     </table>
 
-    <h3>📊 Reservasi per Status</h3>
+    <h3>Reservasi per Status</h3>
     <table>
         <tr><th>Status</th><th>Total</th></tr>
         @foreach ($reservationsByStatus as $item)
@@ -41,7 +40,7 @@
         @endforeach
     </table>
 
-    <h3>💆‍♀️ Reservasi per Treatment</h3>
+    <h3>Reservasi per Treatment</h3>
     <table>
         <tr><th>Treatment</th><th>Total</th></tr>
         @foreach ($reservationsByTreatment as $item)
