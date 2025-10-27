@@ -1,12 +1,21 @@
 <?php
 
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+
+use App\Http\Controllers\LandingPageController;
+use App\Http\Controllers\ReservationController;
+use App\Http\Controllers\Admin\DashboardController;
+
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+*/
 use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\Admin\FeedbackController as AdminFeedbackController;
 use App\Http\Controllers\Admin\FaqController as AdminFaqController;
 use App\Http\Controllers\Customer\FaqController as CustomerFaqController;
-use App\Http\Controllers\LandingPageController;
-use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Admin\ReservationAdminController;
 use App\Http\Controllers\ReservationHistoryController;
@@ -63,7 +72,20 @@ Route::get('/forgot-password', [PasswordResetController::class, 'showLinkRequest
 Route::post('/forgot-password', [PasswordResetController::class, 'sendResetLinkEmail'])->name('password.email');
 
 
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
 
+// ✅ tambahkan route reservasi di sini
+Route::middleware(['auth'])->group(function () {
+    Route::get('/reservasi', [ReservationController::class, 'index'])->name('reservasi.index');
+    Route::post('/reservasi', [ReservationController::class, 'store'])->name('reservasi.store');
+    Route::get('/reservasi/jadwal/{doctor}/{date}', [ReservationController::class, 'getSchedule']);
+});
+
+require __DIR__.'/auth.php';
 // ==========================
 // FEEDBACK (User Side)
 // ==========================
@@ -79,14 +101,12 @@ Route::resource('feedback', FeedbackController::class);
 // ==========================
 // ADMIN FEEDBACK
 // ==========================
+
 Route::prefix('admin')->group(function () {
-    Route::get('/feedback', [AdminFeedbackController::class, 'index'])->name('admin.feedback.index');
-    Route::post('/feedback/{id}/toggle-visibility', [AdminFeedbackController::class, 'toggleVisibility'])->name('admin.feedback.toggle');
+    Route::get('/feedback', [FeedbackController::class, 'index'])->name('admin.feedback.index');
+    Route::post('/feedback/{id}/toggle-visibility', [FeedbackController::class, 'toggleVisibility'])->name('admin.feedback.toggle');
 });
 
-// ==========================
-// ADMIN FAQ
-// ==========================
 Route::prefix('admin')->group(function () {
     Route::get('/faq', [AdminFaqController::class, 'index']);
     Route::get('/faq/create', [AdminFaqController::class, 'create']);
@@ -117,3 +137,10 @@ Route::get('/riwayat-reservasi', [ReservationHistoryController::class, 'index'])
 Route::get('/reservations/{reservation}', [ReservationHistoryController::class, 'show'])->name('reservations.show');
 Route::post('/reservations/{reservation}/cancel', [ReservationHistoryController::class, 'cancel'])->name('reservations.cancel');
 
+// ==========================
+// DASHBOARD ROUTES
+// ==========================
+Route::prefix('admin')->name('admin.')->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard/download-report', [DashboardController::class, 'downloadReport'])->name('dashboard.downloadReport');
+});
