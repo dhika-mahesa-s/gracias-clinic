@@ -1,5 +1,5 @@
 <nav x-data="{ open: false }"
-    class="fixed top-0 left-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-white/30 shadow-sm transition-all duration-300">
+    class="fixed top-0 left-0 w-full z-50 bg-white/80 backdrop-blur-md  shadow-sm transition-all duration-300">
     <div class="max-w-7xl mx-auto px-4 flex items-center justify-between h-20">
         <a href="{{ url('/') }}" class="flex items-center space-x-2 font-semibold text-gray-800 text-lg">
             <img src="{{ asset('images/logo.png') }}" alt="Logo" class="w-14 h-14 md:w-16 md:h-16">

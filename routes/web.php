@@ -105,6 +105,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/reservasi', [ReservationController::class, 'index'])->name('reservasi.index');
     Route::post('/reservasi', [ReservationController::class, 'store'])->name('reservasi.store');
     Route::get('/reservasi/jadwal/{doctor}/{date}', [ReservationController::class, 'getSchedule']);
+    Route::get('/reservasi/{code}/cetak', [ReservationController::class, 'cetakResi'])->name('reservasi.cetak');
 });
 
 Route::prefix('admin')->middleware(['auth'])->group(function () {
