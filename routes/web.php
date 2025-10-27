@@ -111,6 +111,8 @@ Route::middleware(['auth'])->group(function () {
 Route::prefix('admin')->middleware(['auth'])->group(function () {
     Route::get('/reservasi', [ReservationAdminController::class, 'index'])->name('reservasi.admin');
     Route::post('/reservasi/{id}/konfirmasi', [ReservationAdminController::class, 'konfirmasi'])->name('admin.reservasi.konfirmasi');
+    Route::post('/reservasi/{id}/selesai', [ReservationAdminController::class, 'selesai'])->name('admin.reservasi.selesai');
+    Route::post('/reservasi/{id}/batalkan', [ReservationAdminController::class, 'batalkan'])->name('admin.reservasi.batalkan');
 });
 
 Route::get('/reservations/create', [ReservationHistoryController::class, 'create'])->name('reservations.create');
