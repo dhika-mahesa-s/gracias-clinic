@@ -12,7 +12,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Header -->
         <div class="text-center mb-8">
-            <h1 class="text-4xl font-bold text-gray-900 mb-2">Gracias Clinic</h1>
+            <h1 class="text-4xl font-bold text-gray-900 mb-2 pt-10">Gracias Clinic</h1>
             <h2 class="text-xl text-gray-600">Kelola Feedback</h2>
         </div>
 
@@ -28,7 +28,7 @@
                             </div>
                             <input type="text" 
                                    name="search" 
-                                   class="block w-full pl-10 pr-3 py-2 border border-r-0 border-gray-300 rounded-l-lg focus:ring-blue-500 focus:border-blue-500"
+                                   class="block w-full pl-10 pr-3 py-2 border border-r-0 bg-white border-gray-300 rounded-l-lg focus:ring-blue-500 focus:border-blue-500"
                                    placeholder="Cari nama..." 
                                    value="{{ request('search') }}">
                         </div>
@@ -48,7 +48,7 @@
             <div>
                 <form method="GET" action="{{ route('feedback.index') }}" id="filterForm">
                     <div class="flex items-center space-x-2">
-                        <select name="rating_filter" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" onchange="document.getElementById('filterForm').submit()">
+                        <select name="rating_filter" class="w-full px-3 py-2 border bg-white border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" onchange="document.getElementById('filterForm').submit()">
                             <option value="">Filter Bintang</option>
                             <option value="5" {{ request('rating_filter') == '5' ? 'selected' : '' }}>★★★★★ (5 Bintang)</option>
                             <option value="4" {{ request('rating_filter') == '4' ? 'selected' : '' }}>★★★★☆ (4 Bintang ke atas)</option>
