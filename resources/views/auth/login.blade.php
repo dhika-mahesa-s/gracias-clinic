@@ -71,6 +71,9 @@
                     {{ __('Login') }}
                 </button>
             </div>
+            <a class="text-primary hover:underline" href="{{ route('register') }}">
+                        {{ __('Daftar Sekarang') }}
+                    </a>
         </form>
     </div>
 </div>

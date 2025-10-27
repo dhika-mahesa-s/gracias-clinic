@@ -39,29 +39,28 @@
             
             <div>
                 <label class="block font-medium text-foreground mb-1">Treatment</label>
-                <select x-model="form.treatment_id" 
-                        :class="{'border-red-500 focus:border-red-500': errors.treatment_id}"
+                <select id="treatment-select"
+                        x-model="form.treatment_id" 
                         class="w-full border-input focus:ring-primary focus:border-primary rounded-lg p-2.5 bg-background">
                     <option value="">-- Pilih Treatment --</option>
                     @foreach ($treatments as $t)
                         <option value="{{ $t->id }}">{{ $t->name }} - Rp{{ number_format($t->price) }}</option>
                     @endforeach
                 </select>
-                <p x-show="errors.treatment_id" x-text="errors.treatment_id" class="text-red-500 text-sm mt-1"></p>
             </div>
-
+            
             <div>
                 <label class="block font-medium text-foreground mb-1">Dokter</label>
-                <select x-model="form.doctor_id" 
-                        :class="{'border-red-500 focus:border-red-500': errors.doctor_id}"
+                <select id="doctor-select"
+                        x-model="form.doctor_id" 
                         class="w-full border-input focus:ring-primary focus:border-primary rounded-lg p-2.5 bg-background">
                     <option value="">-- Pilih Dokter --</option>
                     @foreach ($doctors as $d)
                         <option value="{{ $d->id }}">{{ $d->name }}</option>
                     @endforeach
                 </select>
-                <p x-show="errors.doctor_id" x-text="errors.doctor_id" class="text-red-500 text-sm mt-1"></p>
             </div>
+            
 
             <div class="flex justify-end mt-8">
                 <button @click="nextStep" 
@@ -180,6 +179,7 @@
                 <p><strong>Email:</strong> <span x-text="form.email"></span></p>
                 <p><strong>Nomor HP:</strong> <span x-text="form.phone"></span></p>
             </div>
+            
 
             <div class="flex justify-between mt-10">
                 <button 
@@ -209,15 +209,20 @@
             <p class="text-foreground">
                 ID Reservasi: <span class="font-mono text-primary" x-text="reservationCode"></span>
             </p>
-            <a :href="`/reservasi/${reservationCode}/cetak`" target="_blank"
+            <div class="flex justify-center gap-3 mt-8">
+                <a :href="`/reservasi/${reservationCode}/cetak`" target="_blank"
                    class="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-green-600 text-white font-medium
                           hover:bg-green-700 transition-all duration-300 shadow-sm hover:shadow-md">
                     <i class="fa-solid fa-file-pdf"></i> Download Resi (PDF)
                 </a>
-            <a href="{{ route('landingpage') }}" class="inline-flex items-center gap-2 px-6 py-2 rounded-xl bg-primary text-white font-medium
-                           hover:bg-primary/90 transition-all duration-300 shadow-sm hover:shadow-md">
-                <i class="fa-solid fa-house"></i> Kembali ke Dashboard
-            </a>
+            
+                <a href="{{ route('landingpage') }}" 
+                   class="flex items-center gap-2 px-6 py-2.5 rounded-xl border border-primary text-primary font-medium
+                          hover:bg-primary hover:text-white transition-all duration-300 shadow-sm hover:shadow-md">
+                    <i class="fa-solid fa-house"></i> Kembali ke Beranda
+                </a>
+            </div>
+            
         </div>
     </div>
 </div>
@@ -287,13 +292,19 @@ function reservationForm() {
         prevStep() { if (this.currentStep > 1) this.currentStep--; },
 
         get selectedTreatment() {
-            const el = document.querySelector(`[value='${this.form.treatment_id}']`);
-            return el ? el.textContent : '-';
+            const select = document.getElementById('treatment-select');
+            if (!select) return '-';
+            const option = select.querySelector(`option[value='${this.form.treatment_id}']`);
+            return option ? option.textContent : '-';
         },
+
         get selectedDoctor() {
-            const el = document.querySelector(`[value='${this.form.doctor_id}']`);
-            return el ? el.textContent : '-';
+            const select = document.getElementById('doctor-select');
+            if (!select) return '-';
+            const option = select.querySelector(`option[value='${this.form.doctor_id}']`);
+            return option ? option.textContent : '-';
         },
+
 
         async loadAvailableSlots() {
             const url = `/reservasi/jadwal/${this.form.doctor_id}/${this.form.date}`;
@@ -326,6 +337,14 @@ function reservationForm() {
             const token = this.$root.dataset.csrf;
 
             try {
+                // --- PERBAIKAN BUG TANGGAL BERGESER UTC ---
+                const formData = { ...this.form };
+                if (formData.date) {
+                    const d = new Date(formData.date);
+                    formData.date = d.toLocaleDateString('en-CA'); // hasil: "2025-10-27"
+                }
+                // -------------------------------------------
+
                 const res = await fetch(url, {
                     method: 'POST',
                     headers: {
@@ -334,7 +353,7 @@ function reservationForm() {
                         'X-CSRF-TOKEN': token,
                         'X-Requested-With': 'XMLHttpRequest',
                     },
-                    body: JSON.stringify(this.form)
+                    body: JSON.stringify(formData)
                 });
 
                 const data = await res.json();
@@ -351,6 +370,7 @@ function reservationForm() {
                 alert('Gagal mengirim data ke server.\n' + (e?.message || ''));
             }
         }
+
     }
 }
 </script>

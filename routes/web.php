@@ -22,7 +22,6 @@ use App\Http\Controllers\ReservationHistoryController;
 use App\Http\Controllers\TreatmentController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\PasswordResetController;
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -46,6 +45,7 @@ Route::post('/register', [RegisterController::class, 'register']);
 Route::get('/forgot-password', [PasswordResetController::class, 'showLinkRequestForm'])->name('password.request');
 Route::post('/forgot-password', [PasswordResetController::class, 'sendResetLinkEmail'])->name('password.email');
 
+
 // ==========================
 // FEEDBACK & FAQ (Publik)
 // ==========================
@@ -53,7 +53,7 @@ Route::get('/feedback', [FeedbackController::class, 'create'])->name('feedback.c
 Route::post('/feedback', [FeedbackController::class, 'store'])->name('feedback.store');
 Route::get('/feedback/thankyou', [FeedbackController::class, 'thankyou'])->name('feedback.thankyou');
 Route::resource('feedback', FeedbackController::class);
-Route::get('/faq', [CustomerFaqController::class, 'index']); // Customer FAQ
+Route::get('/faq', [CustomerFaqController::class, 'index'])->name('customer.faq.index'); // Customer FAQ
 //treatments
 Route::prefix('treatments')->group(function () {
     Route::get('/list', [TreatmentController::class, 'index'])->name('treatments.index');
@@ -74,12 +74,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/reservasi', [ReservationController::class, 'index'])->name('reservasi.index');
     Route::post('/reservasi', [ReservationController::class, 'store'])->name('reservasi.store');
     Route::get('/reservasi/jadwal/{doctor}/{date}', [ReservationController::class, 'getSchedule']);
-  
+    //cetak resi
+    Route::get('/reservasi/{code}/cetak', [ReservationController::class, 'cetakResi'])->name('reservasi.cetak');
     // RIWAYAT RESERVASI (CUSTOMER) - Panggilan ke index
     Route::get('/riwayat-reservasi', [ReservationHistoryController::class, 'index'])->name('reservations.history');
     Route::get('/reservations/{reservation}', [ReservationHistoryController::class, 'show'])->name('reservations.show');
     Route::post('/reservations/{reservation}/cancel', [ReservationHistoryController::class, 'cancel'])->name('reservations.cancel');
     
+
 
     // Admin / Management (Membutuhkan Auth/Role)
     Route::middleware(['auth', 'admin'])->group(function () { // Pindahkan middleware ke sini jika diperlukan
