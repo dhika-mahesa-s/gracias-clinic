@@ -108,6 +108,6 @@ class DashboardController extends Controller
         ]);
 
         // Download file PDF
-        return $pdf->download('laporan-dashboard.pdf');
+        return $pdf->download('laporan-penjualan.pdf');
     }
 }

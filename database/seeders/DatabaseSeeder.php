@@ -13,9 +13,15 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        // ===== USERS =====
-       
-        // 3 user biasa
+        // ===== ADMIN USER =====
+        User::create([
+            'name' => 'Admin Gracias',
+            'email' => 'admin@gracias.com',
+            'password' => Hash::make('admin123'), // 🔐 default password
+            'role' => 'admin',
+        ]);
+
+        // ===== CUSTOMER USERS =====
         User::factory()->count(3)->create([
             'role' => 'customer',
         ]);
@@ -49,7 +55,7 @@ class DatabaseSeeder extends Seeder
 
         // ===== SCHEDULES =====
         $days = ['Monday', 'Wednesday', 'Friday'];
-        foreach (Doctor::all() as $i => $doctor) {
+        foreach (Doctor::all() as $doctor) {
             foreach ($days as $day) {
                 Schedule::create([
                     'doctor_id' => $doctor->id,
@@ -62,10 +68,6 @@ class DatabaseSeeder extends Seeder
             }
         }
 
-        echo "✅ Seeder berhasil dijalankan.\n";
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+        echo "✅ Seeder berhasil dijalankan. Akun admin: admin@gracias.com / admin123\n";
     }
 }

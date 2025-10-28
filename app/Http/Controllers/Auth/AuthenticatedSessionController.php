@@ -29,7 +29,12 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->route('landingpage');
+        $user = Auth::user();
+        if ($user->role === 'admin') {
+            return redirect('/admin/dashboard');
+        } else {
+            return redirect()->route('landingpage');
+        }
     }
 
     /**
@@ -43,6 +48,6 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerateToken();
 
-        return redirect('/');
+        return redirect('/')->with('logout_success','Anda telah keluar akun anda');
     }
 }

@@ -1,42 +1,28 @@
-<nav class="bg-white/90 backdrop-blur-md shadow-md fixed top-0 w-full z-10 transition-all duration-300">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between items-center h-16">
 
-            {{-- LOGO dan Nama Brand --}}
-            <a class="flex items-center space-x-3" href="{{ url('/') }}">
-                <img src="{{ asset('images/logo-gracias-clinic.png') }}" alt="Gracias Clinic Logo" class="h-20 w-auto">
-                <span class="text-xl font-extrabold text-gray-800">Gracias Aesthetic Clinic</span>
+    {{-- 🌟 Navbar Dashboard Admin --}}
+    <nav class="fixed top-0 left-0 right-0 bg-primary text-primary-foreground shadow-sm border-b border-border z-50">
+    <div class="flex items-center justify-between px-6 py-3">
+        {{-- Kiri: Logo dan Nama --}}
+        <div class="flex items-center space-x-3">
+            <div class="flex items-center justify-center bg-white/80 rounded-full p-1 shadow-sm">
+                <img src="{{ asset('images/logo.png') }}" alt="Logo" class="w-10 h-10 md:w-12 md:h-12 object-contain">
+            </div>
+            <span class="font-semibold text-lg md:text-xl tracking-wide">Gracias Admin Dashboard</span>
+        </div>
+
+        {{-- Kanan: Salam dan Tombol Logout --}}
+        <div class="flex items-center space-x-4">
+            <span class="text-sm md:text-base">Halo, <b>Admin</b></span>
+            <a href="{{ route('logout') }}"
+               onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
+               class="flex items-center gap-2 bg-secondary text-secondary-foreground px-4 py-2 rounded-lg hover:bg-secondary/90 transition-all shadow-sm">
+               <i class="fa-solid fa-right-from-bracket"></i>
+               <span>Logout</span>
             </a>
-
-            {{-- TOMBOL NAVIGASI --}}
-            <div class="hidden sm:ml-6 sm:flex sm:space-x-4 items-center">
-                <a href="{{ url('/') }}" class="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">Home</a>
-                <a href="{{ url('/treatments') }}" class="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">Treatments</a>
-                <a href="{{ route('reservations.history') }}" class="text-indigo-600 border-b-2 border-indigo-600 px-3 py-2 text-sm font-medium">Riwayat Reservasi</a>
-                <a href="{{ url('/faq') }}" class="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">FAQ</a>
-
-                {{-- AUTH BUTTONS --}}
-                <div class="ml-4 flex items-center space-x-2">
-                    @auth
-                    <form method="POST" action="{{ url('/logout') }}">
-                        @csrf
-                        <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded-md text-sm font-medium">Logout</button>
-                    </form>
-                    @else
-                    <a href="{{ route('login') }}" class="text-gray-700 hover:text-indigo-600 border border-gray-300 px-3 py-1.5 rounded-md text-sm font-medium">Login</a>
-                    <a href="{{ route('register') }}" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1.5 rounded-md text-sm font-medium">Daftar Sekarang</a>
-                    @endauth
-                </div>
-            </div>
-
-            {{-- Mobile Menu Button --}}
-            <div class="sm:hidden">
-                <button type="button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-800 hover:text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500" aria-expanded="false">
-                    <svg class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                    </svg>
-                </button>
-            </div>
+            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">
+                @csrf
+            </form>
         </div>
     </div>
 </nav>
+

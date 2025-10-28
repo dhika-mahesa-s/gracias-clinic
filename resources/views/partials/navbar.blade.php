@@ -21,7 +21,7 @@
                 @endif
             @endauth
 
-            <a href="#" class="relative text-gray-700 font-medium hover:text-black">About Us</a>
+            <a href="{{ route('about') }}" class="relative text-gray-700 font-medium hover:text-black">About Us</a>
             <a href="{{ route('customer.faq.index') }}" class="relative text-gray-700 font-medium hover:text-black">FAQ</a>
 
             @guest
@@ -50,7 +50,7 @@
             <a href="{{ url('/') }}" class="block text-gray-700 font-medium hover:text-black">Home</a>
             <a href="{{ route('treatments.index') }}" class="block text-gray-700 font-medium hover:text-black">Treatments</a>
             <a href="{{ route('reservasi.index') }}" class="block text-gray-700 font-medium hover:text-black">Reservasi</a>
-            <a href="#" class="block text-gray-700 font-medium hover:text-black">About Us</a>
+            <a href="{{ route('about') }}" class="block text-gray-700 font-medium hover:text-black">About Us</a>
             <a href="#" class="block text-gray-700 font-medium hover:text-black">FAQ</a>
 
             @guest
