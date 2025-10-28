@@ -1,12 +1,9 @@
-@extends('layouts.app')
+@extends('layouts.dashboard')
+
+@section('title', 'Kelola Reservasi - Gracias Aesthetic Clinic')
 
 @section('content')
-<div class="max-w-6xl mx-auto mt-10 mb-20 p-6 rounded-2xl shadow-lg bg-card text-card-foreground">
-
-    {{-- Judul --}}
-    <div class="flex items-center justify-between mb-6">
-        <h2 class="text-2xl font-semibold text-foreground">Daftar Reservasi</h2>
-    </div>
+    <h1 class="text-3xl font-bold mb-6">Kelola Reservasi</h1>
 
     {{-- Flash Message --}}
     @if(session('success'))
@@ -24,9 +21,9 @@
     @endif
 
     {{-- Tabel --}}
-    <div class="overflow-x-auto rounded-xl border border-border bg-background">
-        <table class="min-w-full text-sm text-left text-foreground">
-            <thead class="bg-muted text-muted-foreground uppercase text-xs font-semibold">
+    <div class="overflow-x-auto rounded-2xl border border-border bg-white shadow-sm">
+        <table class="min-w-full text-sm text-left text-gray-800">
+            <thead class="bg-gray-100 text-gray-700 uppercase text-xs font-semibold">
                 <tr>
                     <th class="px-4 py-3">Kode</th>
                     <th class="px-4 py-3">Nama Pelanggan</th>
@@ -40,7 +37,7 @@
             </thead>
             <tbody>
                 @forelse ($reservations as $r)
-                    <tr class="border-t border-border hover:bg-muted/50 transition">
+                    <tr class="border-t border-gray-200 hover:bg-gray-50 transition">
                         <td class="px-4 py-3 font-medium">{{ $r->reservation_code }}</td>
                         <td class="px-4 py-3">{{ $r->customer_name }}</td>
                         <td class="px-4 py-3">{{ $r->treatment->name }}</td>
@@ -54,19 +51,16 @@
                                         Pending
                                     </span>
                                     @break
-
                                 @case('confirmed')
                                     <span class="px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                                         Confirmed
                                     </span>
                                     @break
-
                                 @case('completed')
                                     <span class="px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
                                         Completed
                                     </span>
                                     @break
-
                                 @case('cancel')
                                     <span class="px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
                                         Cancelled
@@ -75,14 +69,14 @@
                             @endswitch
                         </td>
 
-                        {{-- ✅ Tombol aksi responsif dan tidak menumpuk --}}
+                        {{-- Tombol Aksi --}}
                         <td class="px-4 py-3 text-center">
                             <div class="flex justify-center flex-wrap gap-2">
                                 @if($r->status === 'pending')
                                     <form action="{{ route('admin.reservasi.konfirmasi', $r->id) }}" method="POST" class="inline">
                                         @csrf
                                         <button type="submit"
-                                            class="px-3 py-1.5 text-sm font-medium text-white bg-primary hover:bg-primary/90 rounded-lg transition">
+                                            class="px-3 py-1.5 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition">
                                             Konfirmasi
                                         </button>
                                     </form>
@@ -123,7 +117,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="8" class="px-4 py-6 text-center text-muted-foreground">
+                        <td colspan="8" class="px-4 py-6 text-center text-gray-500">
                             Belum ada data reservasi.
                         </td>
                     </tr>
@@ -136,5 +130,4 @@
     <div class="mt-6">
         {{ $reservations->links('vendor.pagination.tailwind') }}
     </div>
-</div>
 @endsection

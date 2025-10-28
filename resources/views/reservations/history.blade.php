@@ -9,10 +9,6 @@
     <div class="mb-6">
         <div class="flex items-center space-x-4 mb-4">
             {{-- Tombol Kembali - Sederhana --}}
-            <a href="javascript:history.back()" class="text-indigo-600 hover:text-indigo-800 text-sm font-medium flex items-center">
-                <span class="mr-1 text-xl leading-none">&larr;</span>
-                <span>Kembali</span>
-            </a>
             <h1 class="text-3xl font-semibold text-gray-800">Riwayat Reservasi</h1>
         </div>
 

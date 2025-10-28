@@ -171,33 +171,5 @@
         </div>
     </section>
 
-{{-- 👩‍⚕️ Dokter Kami --}}
-    <section class="py-20 bg-[#F8FAFC] text-center">
-        <div class="max-w-6xl mx-auto px-4">
-            <h2 class="text-3xl font-bold mb-3">Dokter Kami</h2>
-            <p class="text-gray-600 mb-12">Tim profesional berpengalaman di bidang estetika</p>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="bg-white p-8 rounded-2xl shadow-lg hover:-translate-y-2 transition">
-                    <img src="{{ asset('images/dokter1.jpg') }}" class="w-32 h-32 rounded-full mx-auto mb-4 border-4 border-[#FFD700]">
-                    <h3 class="font-semibold text-lg">Dr. Sarah Williams</h3>
-                    <p class="text-gray-500">Dermatologi & Estetika</p>
-                    <span class="inline-block mt-3 px-4 py-1 text-sm font-semibold bg-gray-100 rounded-full">10 tahun pengalaman</span>
-                </div>
-                <div class="bg-white p-8 rounded-2xl shadow-lg hover:-translate-y-2 transition">
-                    <img src="{{ asset('images/dokter2.jpg') }}" class="w-32 h-32 rounded-full mx-auto mb-4 border-4 border-[#FFD700]">
-                    <h3 class="font-semibold text-lg">Dr. Michael Chen</h3>
-                    <p class="text-gray-500">Bedah Plastik</p>
-                    <span class="inline-block mt-3 px-4 py-1 text-sm font-semibold bg-gray-100 rounded-full">8 tahun pengalaman</span>
-                </div>
-                <div class="bg-white p-8 rounded-2xl shadow-lg hover:-translate-y-2 transition">
-                    <img src="{{ asset('images/dokter3.jpg') }}" class="w-32 h-32 rounded-full mx-auto mb-4 border-4 border-[#FFD700]">
-                    <h3 class="font-semibold text-lg">Dr. Amanda Lee</h3>
-                    <p class="text-gray-500">Anti-Aging Specialist</p>
-                    <span class="inline-block mt-3 px-4 py-1 text-sm font-semibold bg-gray-100 rounded-full">12 tahun pengalaman</span>
-                </div>
-            </div>
-        </div>
-    </section>
 
 @endsection
