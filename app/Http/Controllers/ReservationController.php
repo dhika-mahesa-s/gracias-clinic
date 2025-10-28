@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class ReservationController extends Controller
 {
@@ -156,4 +157,17 @@ class ReservationController extends Controller
             'available_slots' => array_map(fn($t) => substr($t, 0, 5), $available)
         ]);
     }
+
+    public function cetakResi($code){
+    $reservasi = Reservation::where('reservation_code', $code)->firstOrFail();
+
+    $pdf = Pdf::loadView('reservasi.resi', compact('reservasi'))
+        ->setPaper('a5', 'portrait');
+
+    $filename = 'resi-' . $reservasi->reservation_code . '.pdf'; 
+
+    return $pdf->download($filename);
 }
+}
+
+

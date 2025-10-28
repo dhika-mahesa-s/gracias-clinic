@@ -1,313 +1,278 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container mt-4">
-    <!-- Header -->
-    <div class="text-center mb-5">
-        <h1 class="display-4 fw-bold text-dark mb-2">Gracias Clinic</h1>
-        <h2 class="h3 text-muted">Kelola Feedback</h2>
-    </div>
+<!-- Include Tailwind CSS -->
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+<link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+/>
 
-    <!-- Search and Filter -->
-    <div class="row mb-4 gy-3">
-        <div class="col-12 col-md-6">
-            <form method="GET" action="{{ route('feedback.index') }}">
-                <div class="input-group">
-                    <span class="input-group-text bg-light border-end-0">
-                        <i class="fas fa-search text-muted"></i>
-                    </span>
-                    <input type="text" 
-                           name="search" 
-                           class="form-control border-start-0" 
-                           placeholder="Cari nama..." 
-                           value="{{ request('search') }}">
-                    <button type="submit" class="btn btn-primary">Cari</button>
-                    @if(request('search'))
-                        <a href="{{ route('feedback.index') }}" class="btn btn-outline-secondary">Clear</a>
-                    @endif
-                </div>
-            </form>
+<div class="min-h-screen bg-[#E3EAF2]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-gray-900 mb-2 pt-10">Gracias Clinic</h1>
+            <h2 class="text-xl text-gray-600">Kelola Feedback</h2>
         </div>
-        <div class="col-md-6">
-            <form method="GET" action="{{ route('feedback.index') }}" id="filterForm">
-                <select name="rating_filter" class="form-select" onchange="document.getElementById('filterForm').submit()">
-                    <option value="">Filter Bintang</option>
-                    <option value="5" {{ request('rating_filter') == '5' ? 'selected' : '' }}>★★★★★ (5 Bintang)</option>
-                    <option value="4" {{ request('rating_filter') == '4' ? 'selected' : '' }}>★★★★☆ (4 Bintang ke atas)</option>
-                    <option value="3" {{ request('rating_filter') == '3' ? 'selected' : '' }}>★★★☆☆ (3 Bintang ke atas)</option>
-                    <option value="2" {{ request('rating_filter') == '2' ? 'selected' : '' }}>★★☆☆☆ (2 Bintang ke atas)</option>
-                    <option value="1" {{ request('rating_filter') == '1' ? 'selected' : '' }}>★☆☆☆☆ (1 Bintang ke atas)</option>
-                </select>
-                @if(request('rating_filter'))
-                    <a href="{{ route('feedback.index') }}" class="btn btn-sm btn-outline-secondary mt-2">Clear Filter</a>
-                @endif
-            </form>
-        </div>
-    </div>
 
-    @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    @endif
-
-    <!-- Info Filter Aktif -->
-    @if(request('search') || request('rating_filter'))
-    <div class="alert alert-info mb-4">
-        <strong>Filter Aktif:</strong>
-        @if(request('search')) Pencarian: "{{ request('search') }}" @endif
-        @if(request('search') && request('rating_filter')) | @endif
-        @if(request('rating_filter')) Rating: {{ request('rating_filter') }} bintang ke atas @endif
-        <a href="{{ route('feedback.index') }}" class="float-end">Tampilkan Semua</a>
-    </div>
-    @endif
-
-    <!-- Feedback List Table -->
-    <div class="card shadow-sm border-0">
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-hover align-middle">
-                    <thead class="table-light">
-                        <tr>
-                            <th width="5%">#</th>
-                            <th width="25%">Nama</th>
-                            <th width="20%">Email</th>
-                            <th width="15%">Layanan</th>
-                            <th width="15%">Rating Rata-rata</th>
-                            <th width="15%">Tanggal</th>
-                            <th width="10%" class="text-center">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($feedbacks as $feedback)
-                            @php
-                                $avg = ($feedback->staff_rating + $feedback->professional_rating + $feedback->result_rating + $feedback->return_rating + $feedback->overall_rating) / 5;
-                            @endphp
-                            <tr>
-                                <td>{{ $loop->iteration + (($feedbacks->currentPage() - 1) * $feedbacks->perPage()) }}</td>
-                                <td>
-                                    <div class="fw-semibold text-dark">{{ $feedback->name }}</div>
-                                    @if($feedback->phone)
-                                        <small class="text-muted">{{ $feedback->phone }}</small>
-                                    @endif
-                                </td>
-                                <td>{{ $feedback->email }}</td>
-                                <td>
-                                    <span class="badge bg-info text-dark">{{ $feedback->service_type ?? 'General' }}</span>
-                                </td>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <div class="text-warning me-2">
-                                            @for($i = 1; $i <= 5; $i++)
-                                                <i class="fas fa-star{{ $i <= round($avg) ? '' : '-empty' }} small"></i>
-                                            @endfor
-                                        </div>
-                                        <span class="fw-semibold">{{ number_format($avg, 1) }}/5</span>
-                                    </div>
-                                </td>
-                                <td>
-                                    <small class="text-muted">{{ $feedback->created_at->format('d M Y') }}</small>
-                                </td>
-                                <td class="text-center">
-                                    <div class="btn-group btn-group-sm" role="group">
-                                        <!-- Button Detail -->
-                                        <a href="{{ route('feedback.show', $feedback->id) }}" 
-                                           class="btn btn-info btn-sm" 
-                                           title="Detail Feedback">
-                                            <i class="fas fa-eye"></i>
-                                        </a>
-                                        
-                                        <!-- Button Hapus -->
-                                        <form action="{{ route('feedback.destroy', $feedback->id) }}" 
-                                              method="POST" 
-                                              class="d-inline"
-                                              onsubmit="return confirm('Apakah Anda yakin ingin menghapus feedback dari {{ $feedback->name }}?')">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-danger btn-sm" title="Hapus Feedback">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </form>
-                                    </div>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="7" class="text-center py-5">
-                                    <div class="text-muted">
-                                        <i class="fas fa-inbox fa-3x mb-3"></i>
-                                        <h4 class="text-muted">
-                                            @if(request('search') || request('rating_filter'))
-                                                Tidak ada feedback yang sesuai dengan filter
-                                            @else
-                                                Belum ada feedback
-                                            @endif
-                                        </h4>
-                                        <p class="text-muted">
-                                            @if(request('search') || request('rating_filter'))
-                                                Coba ubah kata kunci pencarian atau filter rating
-                                            @else
-                                                Belum ada pengguna yang memberikan feedback.
-                                            @endif
-                                        </p>
-                                        <a href="{{ route('feedback.create') }}" class="btn btn-primary mt-2">
-                                            <i class="fas fa-plus me-2"></i>Tambah Feedback Pertama
-                                        </a>
-                                        @if(request('search') || request('rating_filter'))
-                                            <a href="{{ route('feedback.index') }}" class="btn btn-outline-secondary mt-2">
-                                                Tampilkan Semua Feedback
-                                            </a>
-                                        @endif
-                                    </div>
-                                </td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+        <!-- Search and Filter -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            <!-- Search Form -->
+            <div>
+                <form method="GET" action="{{ route('feedback.index') }}">
+                    <div class="flex">
+                        <div class="relative flex-grow">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-search text-gray-400"></i>
+                            </div>
+                            <input type="text" 
+                                   name="search" 
+                                   class="block w-full pl-10 pr-3 py-2 border border-r-0 bg-white border-gray-300 rounded-l-lg focus:ring-blue-500 focus:border-blue-500"
+                                   placeholder="Cari nama..." 
+                                   value="{{ request('search') }}">
+                        </div>
+                        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-r-lg border border-blue-600">
+                            Cari
+                        </button>
+                        @if(request('search'))
+                            <a href="{{ route('feedback.index') }}" class="ml-2 bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg border border-gray-300">
+                                Clear
+                            </a>
+                        @endif
+                    </div>
+                </form>
             </div>
 
-            <!-- Pagination -->
-            @if($feedbacks->hasPages())
-                <div class="pagination-container text-center mt-4">
-                    <!-- Tombol Pagination -->
-                    <div class="d-flex justify-content-center mb-2">
-                        {{ $feedbacks->appends(request()->query())->links('pagination::bootstrap-5') }}
+            <!-- Filter Form -->
+            <div>
+                <form method="GET" action="{{ route('feedback.index') }}" id="filterForm">
+                    <div class="flex items-center space-x-2">
+                        <select name="rating_filter" class="w-full px-3 py-2 border bg-white border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" onchange="document.getElementById('filterForm').submit()">
+                            <option value="">Filter Bintang</option>
+                            <option value="5" {{ request('rating_filter') == '5' ? 'selected' : '' }}>★★★★★ (5 Bintang)</option>
+                            <option value="4" {{ request('rating_filter') == '4' ? 'selected' : '' }}>★★★★☆ (4 Bintang ke atas)</option>
+                            <option value="3" {{ request('rating_filter') == '3' ? 'selected' : '' }}>★★★☆☆ (3 Bintang ke atas)</option>
+                            <option value="2" {{ request('rating_filter') == '2' ? 'selected' : '' }}>★★☆☆☆ (2 Bintang ke atas)</option>
+                            <option value="1" {{ request('rating_filter') == '1' ? 'selected' : '' }}>★☆☆☆☆ (1 Bintang ke atas)</option>
+                        </select>
+                        @if(request('rating_filter'))
+                            <a href="{{ route('feedback.index') }}" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 py-2 rounded-lg border border-gray-300 text-sm whitespace-nowrap">
+                                Clear Filter
+                            </a>
+                        @endif
                     </div>
+                </form>
+            </div>
+        </div>
 
-                    <!-- Teks jumlah hasil -->
-                    <div class="text-muted small">
-                        Showing 
-                        {{ $feedbacks->firstItem() }} 
-                        to 
-                        {{ $feedbacks->lastItem() }} 
-                        of 
-                        {{ $feedbacks->total() }} 
-                        results
-                    </div>
+        @if(session('success'))
+            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6 relative" role="alert">
+                <span class="block sm:inline">{{ session('success') }}</span>
+                <button type="button" class="absolute top-0 right-0 px-4 py-3" onclick="this.parentElement.style.display='none'">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        @endif
+
+        <!-- Info Filter Aktif -->
+        @if(request('search') || request('rating_filter'))
+        <div class="bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded mb-6 relative">
+            <strong>Filter Aktif:</strong>
+            @if(request('search')) Pencarian: "{{ request('search') }}" @endif
+            @if(request('search') && request('rating_filter')) | @endif
+            @if(request('rating_filter')) Rating: {{ request('rating_filter') }} bintang ke atas @endif
+            <a href="{{ route('feedback.index') }}" class="absolute top-3 right-3 text-blue-600 hover:text-blue-800">Tampilkan Semua</a>
+        </div>
+        @endif
+
+        <!-- Tombol Tambah Feedback - DITAMBAHKAN DI SINI -->
+        <div class="mb-6 text-right">
+            <a href="{{ route('feedback.create') }}" class="inline-flex items-center bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg">
+                <i class="fas fa-plus mr-2"></i>
+                Tambah Feedback Baru
+            </a>
+        </div>
+
+        <!-- Feedback List Table -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+            <div class="p-6">
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-12">#</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/4">Nama</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/5">Email</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/6">Layanan</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/6">Rating Rata-rata</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/6">Tanggal</th>
+                                <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-24">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            @forelse($feedbacks as $feedback)
+                                @php
+                                    $avg = ($feedback->staff_rating + $feedback->professional_rating + $feedback->result_rating + $feedback->return_rating + $feedback->overall_rating) / 5;
+                                @endphp
+                                <tr class="hover:bg-gray-50 transition-colors duration-150">
+                                    <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
+                                        {{ $loop->iteration + (($feedbacks->currentPage() - 1) * $feedbacks->perPage()) }}
+                                    </td>
+                                    <td class="px-4 py-3 whitespace-nowrap">
+                                        <div class="font-semibold text-gray-900">{{ $feedback->name }}</div>
+                                        @if($feedback->phone)
+                                            <div class="text-sm text-gray-500">{{ $feedback->phone }}</div>
+                                        @endif
+                                    </td>
+                                    <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
+                                        {{ $feedback->email }}
+                                    </td>
+                                    <td class="px-4 py-3 whitespace-nowrap">
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                            {{ $feedback->service_type ?? 'General' }}
+                                        </span>
+                                    </td>
+                                    <td class="px-4 py-3 whitespace-nowrap">
+                                        <div class="flex items-center space-x-2">
+                                            <div class="flex text-yellow-400">
+                                                @for($i = 1; $i <= 5; $i++)
+                                                    <i class="fas fa-star{{ $i <= round($avg) ? '' : ' text-gray-300' }} text-sm"></i>
+                                                @endfor
+                                            </div>
+                                            <span class="font-semibold text-gray-900">{{ number_format($avg, 1) }}/5</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
+                                        {{ $feedback->created_at->format('d M Y') }}
+                                    </td>
+                                    <td class="px-4 py-3 whitespace-nowrap text-center">
+                                        <div class="flex justify-center space-x-1">
+                                            <!-- Button Detail -->
+                                            <a href="{{ route('feedback.show', $feedback->id) }}" 
+                                               class="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-lg transition-colors duration-200"
+                                               title="Detail Feedback">
+                                                <i class="fas fa-eye w-4 h-4"></i>
+                                            </a>
+                                            
+                                            <!-- Button Hapus -->
+                                            <form action="{{ route('feedback.destroy', $feedback->id) }}" 
+                                                  method="POST" 
+                                                  class="inline"
+                                                  onsubmit="return confirm('Apakah Anda yakin ingin menghapus feedback dari {{ $feedback->name }}?')">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="bg-red-600 hover:bg-red-700 text-white p-2 rounded-lg transition-colors duration-200" title="Hapus Feedback">
+                                                    <i class="fas fa-trash w-4 h-4"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="7" class="px-4 py-12 text-center">
+                                        <div class="text-gray-500">
+                                            <i class="fas fa-inbox text-4xl mb-3"></i>
+                                            <h4 class="text-lg font-medium text-gray-900 mb-2">
+                                                @if(request('search') || request('rating_filter'))
+                                                    Tidak ada feedback yang sesuai dengan filter
+                                                @else
+                                                    Belum ada feedback
+                                                @endif
+                                            </h4>
+                                            <p class="text-gray-600 mb-4">
+                                                @if(request('search') || request('rating_filter'))
+                                                    Coba ubah kata kunci pencarian atau filter rating
+                                                @else
+                                                    Belum ada pengguna yang memberikan feedback.
+                                                @endif
+                                            </p>
+                                            <div class="space-y-2">
+                                                <a href="{{ route('feedback.create') }}" class="inline-flex items-center bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors duration-200">
+                                                    <i class="fas fa-plus mr-2"></i>Tambah Feedback Pertama
+                                                </a>
+                                                @if(request('search') || request('rating_filter'))
+                                                    <a href="{{ route('feedback.index') }}" class="inline-flex items-center bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg transition-colors duration-200 ml-2">
+                                                        Tampilkan Semua Feedback
+                                                    </a>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
                 </div>
-            @endif
 
+                <!-- Pagination -->
+                @if($feedbacks->hasPages())
+                    <div class="mt-6">
+                        <!-- Teks jumlah hasil -->
+                        <div class="text-sm text-gray-600 text-center mb-4">
+                            Menampilkan 
+                            {{ $feedbacks->firstItem() }} 
+                            sampai 
+                            {{ $feedbacks->lastItem() }} 
+                            dari 
+                            {{ $feedbacks->total() }} 
+                            hasil
+                        </div>
+
+                        <!-- Tombol Pagination -->
+                        <div class="flex justify-center">
+                            <div class="flex space-x-1">
+                                {{ $feedbacks->appends(request()->query())->links('vendor.pagination.tailwind') }}
+                            </div>
+                        </div>
+                    </div>
+                @endif
+            </div>
         </div>
     </div>
 </div>
 
-<!-- Add Font Awesome for icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-
 <style>
-    .card {
-        border-radius: 15px;
-    }
-    
-    .table th {
-        border-top: none;
-        font-weight: 600;
-        color: #495057;
-        background-color: #f8f9fa;
-    }
-    
-    .table td {
-        vertical-align: middle;
-        padding: 12px 8px;
-    }
-    
     .fa-star {
-        color: #ffc107;
-        font-size: 0.7rem;
+        color: #fbbf24;
     }
     
-    .fa-star-empty {
-        color: #dee2e6;
-        font-size: 0.7rem;
+    .fa-star.text-gray-300 {
+        color: #d1d5db;
     }
     
-    .badge {
-        border-radius: 6px;
-        font-weight: 500;
-        font-size: 0.75rem;
+    /* Custom pagination styling jika menggunakan default Tailwind pagination */
+    .pagination {
+        display: flex;
+        list-style: none;
+        padding: 0;
+        margin: 0;
     }
     
-    .btn-group .btn {
-        border-radius: 6px;
+    .pagination li {
         margin: 0 2px;
     }
     
-    .table-hover tbody tr:hover {
-        background-color: rgba(0, 0, 0, 0.02);
-    }
-
-    /* 🔧 CSS UNTUK PAGINATION YANG LEBIH KONSISTEN */
-    .pagination {
-        font-size: 0.875rem;
-        margin-bottom: 0;
-    }
-    
-    .pagination-container {
-        text-align: center;
-        margin-top: 1rem;
-    }
-
-    .pagination-container .text-muted {
-        margin-top: 4px;
-        font-size: 0.875rem;
-        color: #6c757d;
-    }
-
-
-
-    .page-link {
-        padding: 0.375rem 0.75rem;
-        font-size: 0.875rem;
-        border-radius: 0.375rem;
-        color: #6c757d;
-        border: 1px solid #dee2e6;
+    .pagination .page-link {
+        display: block;
+        padding: 8px 12px;
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+        color: #374151;
+        text-decoration: none;
+        transition: all 0.2s;
     }
     
-    .page-item.active .page-link {
-        background-color: #0d6efd;
-        border-color: #0d6efd;
+    .pagination .page-link:hover {
+        background-color: #f3f4f6;
+        border-color: #9ca3af;
     }
     
-    .page-link:hover {
-        color: #0d6efd;
-        background-color: #e9ecef;
-        border-color: #dee2e6;
+    .pagination .active .page-link {
+        background-color: #3b82f6;
+        border-color: #3b82f6;
+        color: white;
     }
-    
-    /* Menyamakan ukuran semua tombol pagination */
-    .pagination .page-item:first-child .page-link,
-    .pagination .page-item:last-child .page-link {
-        border-radius: 0.375rem;
-        padding: 0.375rem 0.75rem;
-    }
-
-
-    /* Responsive font size untuk layar kecil */
-@media (max-width: 576px) {
-    .card-body {
-        font-size: 0.85rem; /* perkecil teks di card */
-    }
-
-    table th,
-    table td {
-        font-size: 0.8rem; /* kecilkan teks tabel */
-        padding: 6px 4px; /* rapatkan padding antar sel */
-    }
-
-    .btn {
-        font-size: 0.75rem; /* kecilkan tombol */
-        padding: 4px 6px;
-    }
-
-    h1.display-4 {
-        font-size: 1.5rem; /* judul utama lebih kecil */
-    }
-
-    h2.h3 {
-        font-size: 1rem; /* subjudul juga ikut kecil */
-    }
-}
-
 </style>
 @endsection

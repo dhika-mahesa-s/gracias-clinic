@@ -1,6 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
+<!-- Include Tailwind CSS -->
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 <link
     rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
@@ -13,89 +15,7 @@
         font-family: 'Inter', sans-serif;
     }
 
-    .feedback-header {
-        text-align: center;
-        margin-bottom: 2rem;
-    }
-
-    .feedback-header h1 {
-        font-family: 'Playfair Display', serif;
-        font-weight: 600;
-        font-size: 2.3rem;
-        color: #2b2b2b;
-        line-height: 1.3;
-    }
-
-    .feedback-card {
-        background: rgba(255, 255, 255, 0.15);
-        border-radius: 20px;
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-        backdrop-filter: blur(15px);
-        -webkit-backdrop-filter: blur(15px);
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        padding: 3rem;
-        max-width: 1100px;
-        margin: 0 auto;
-        transition: all 0.3s ease;
-    }
-
-    .feedback-card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
-        background: rgba(255, 255, 255, 0.25);
-    }
-
-    @media (max-width: 992px) {
-        .feedback-card {
-            padding: 2rem;
-            max-width: 95%;
-        }
-
-        .feedback-header h1 {
-            font-size: 1.8rem;
-        }
-    }
-
-    @media (max-width: 576px) {
-        .feedback-card {
-            padding: 1.5rem;
-            border-radius: 15px;
-        }
-
-        .feedback-header h1 {
-            font-size: 1.6rem;
-        }
-
-        .btn {
-            width: 100%;
-        }
-    }
-
-    label {
-        font-weight: 500;
-        color: #333;
-    }
-
-    .form-control {
-        border-radius: 10px;
-        padding: 10px 14px;
-    }
-
-    textarea {
-        resize: none;
-        border-radius: 10px;
-    }
-
     /* ⭐ STAR RATING STYLE */
-    .rating-stars {
-        display: flex;
-        gap: 8px;
-        cursor: pointer;
-        font-size: 1.6rem;
-        color: #ccc;
-        transition: all 0.3s ease;
-    }
-
     .rating-stars i {
         transition: all 0.15s ease;
     }
@@ -109,88 +29,55 @@
         transform: scale(1.15);
     }
 
-    .btn-primary {
-        background-color: #304ffe;
-        border-color: #304ffe;
-        border-radius: 10px;
-        padding: 10px 25px;
-        font-weight: 500;
+    /* Custom styles untuk efek glassmorphism yang sama */
+    .glass-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(15px);
+        -webkit-backdrop-filter: blur(15px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
     }
 
-    .btn-primary:hover {
-        background-color: #1e40ff;
+    /* Pastikan font Playfair Display digunakan */
+    .playfair-font {
+        font-family: 'Playfair Display', serif;
     }
 
-    hr {
-        border-top: 1px solid #e0e0e0;
+    /* Style khusus untuk tombol agar pasti muncul */
+    .submit-button {
+        background-color: #434F5D !important;
+        color: white !important;
+        padding: 12px 32px !important;
+        border-radius: 10px !important;
+        font-weight: 500 !important;
+        font-size: 16px !important;
+        border: none !important;
+        cursor: pointer !important;
+        display: inline-block !important;
+        text-align: center !important;
+        text-decoration: none !important;
+        transition: all 0.3s ease !important;
     }
 
-    /* 🧭 Responsivitas tambahan */
-    @media (max-width: 768px) {
-        label {
-            font-size: 0.95rem;
-        }
-
-        .form-control {
-            font-size: 0.95rem;
-            padding: 8px 12px;
-        }
-
-        input::placeholder,
-        textarea::placeholder {
-            font-size: 0.9rem;
-            white-space: normal;
-        }
-
-        .rating-stars {
-            font-size: 1.4rem;
-        }
-
-        h5.text-center {
-            font-size: 1rem;
-        }
-    }
-
-    @media (max-width: 480px) {
-        .feedback-card {
-            padding: 1.2rem;
-            border-radius: 10px;
-        }
-
-        .feedback-header h1 {
-            font-size: 1.4rem;
-        }
-
-        .form-control,
-        label {
-            width: 100%;
-        }
-
-        input::placeholder,
-        textarea::placeholder {
-            font-size: 0.85rem;
-        }
-
-        .btn {
-            width: 100%;
-            font-size: 0.95rem;
-        }
-
-        .rating-stars {
-            justify-content: space-between;
-        }
+    .submit-button:hover {
+        background-color: #374151 !important;
+        transform: translateY(-2px) !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
     }
 </style>
 
-<div class="container my-5">
-    <div class="feedback-header">
-        <h1>Better Care Starts<br>with Your Words</h1>
+<div class="container mx-auto my-8 px-4 bg-[#E3EAF2]">
+    <!-- Header -->
+    <div class="text-center mb-8">
+        <h1 class="playfair-font font-semibold text-2xl sm:text-3xl md:text-4xl text-gray-800 leading-tight">
+            Better Care Starts<br>with Your Words
+        </h1>
     </div>
 
     @if ($errors->any())
-        <div class="alert alert-danger">
-            <strong>Terjadi kesalahan:</strong>
-            <ul>
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
+            <strong class="font-bold">Terjadi kesalahan:</strong>
+            <ul class="mt-2 list-disc list-inside">
                 @foreach ($errors->all() as $error)
                     <li>{{ $error }}</li>
                 @endforeach
@@ -198,38 +85,39 @@
         </div>
     @endif
 
-    <div class="feedback-card">
+    <!-- Feedback Card -->
+    <div class="glass-card rounded-2xl shadow-lg p-6 md:p-8 lg:p-12 max-w-4xl lg:max-w-6xl mx-auto transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
         <form action="{{ route('feedback.store') }}" method="POST">
             @csrf
 
-            <!-- 🧍 Data Diri -->
-            <div class="row g-3">
-                <div class="col-12 col-md-6">
-                    <label for="name">Nama</label>
-                    <input type="text" id="name" name="name" class="form-control" placeholder="Masukkan nama Anda" required>
+            <!-- Data Diri -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                <div>
+                    <label for="name" class="block font-medium text-gray-700 mb-2">Nama</label>
+                    <input type="text" id="name" name="name" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Masukkan nama Anda" required>
                 </div>
 
-                <div class="col-12 col-md-6">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email" class="form-control" placeholder="Masukkan email Anda" required>
+                <div>
+                    <label for="email" class="block font-medium text-gray-700 mb-2">Email</label>
+                    <input type="email" id="email" name="email" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Masukkan email Anda" required>
                 </div>
 
-                <div class="col-12 col-md-6">
-                    <label for="phone">Nomor Telepon</label>
-                    <input type="tel" id="phone" name="phone" class="form-control" placeholder="Masukkan nomor telepon Anda" pattern="[0-9]{11,}" minlength="11" maxlength="15">
+                <div>
+                    <label for="phone" class="block font-medium text-gray-700 mb-2">Nomor Telepon</label>
+                    <input type="tel" id="phone" name="phone" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Masukkan nomor telepon Anda" pattern="[0-9]{11,}" minlength="11" maxlength="15">
                 </div>
 
-                <div class="col-12 col-md-6">
-                    <label for="service_type">Jenis Layanan</label>
-                    <input type="text" id="service_type" name="service_type" class="form-control" placeholder="Contoh: Perawatan wajah, terapi, dll">
+                <div>
+                    <label for="service_type" class="block font-medium text-gray-700 mb-2">Jenis Layanan</label>
+                    <input type="text" id="service_type" name="service_type" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Contoh: Perawatan wajah, terapi, dll">
                 </div>
             </div>
 
-            <hr class="my-4">
+            <hr class="my-6 md:my-8 border-gray-300">
 
-            <!-- 🌟 Penilaian -->
-            <h5 class="mb-3 text-center fw-bold text-secondary">Penilaian Anda (1–5 ⭐)</h5>
-            <div class="row g-4">
+            <!-- Penilaian -->
+            <h5 class="text-center font-bold text-gray-700 text-2xl md:text-2xl mb-4 md:mb-6">Penilaian Anda (1–5 ⭐)</h5>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
                 @php
                     $ratings = [
                         'staff_rating' => 'Staf klinik tanggap terhadap kebutuhan saya.',
@@ -241,9 +129,9 @@
                 @endphp
 
                 @foreach ($ratings as $field => $label)
-                    <div class="col-12 col-sm-6">
-                        <label>{{ $label }}</label>
-                        <div class="d-flex align-items-center justify-content-start rating-stars flex-wrap" data-field="{{ $field }}">
+                    <div>
+                        <label class="block font-medium text-gray-700 mb-2 text-sm md:text-base">{{ $label }}</label>
+                        <div class="flex items-center justify-start gap-2 flex-wrap rating-stars text-xl md:text-2xl text-gray-400 cursor-pointer" data-field="{{ $field }}">
                             @for ($i = 1; $i <= 5; $i++)
                                 <i class="fas fa-star" data-value="{{ $i }}"></i>
                             @endfor
@@ -253,15 +141,18 @@
                 @endforeach
             </div>
 
-            <!-- 💬 Pesan -->
-            <div class="mt-4">
-                <label for="message">Pesan / Saran</label>
-                <textarea id="message" name="message" class="form-control" rows="4" placeholder="Ceritakan pengalaman Anda..."></textarea>
+            <!-- Pesan -->
+            <div class="mt-6 md:mt-8">
+                <label for="message" class="block font-medium text-gray-700 mb-2">Pesan / Saran</label>
+                <textarea id="message" name="message" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" rows="4" placeholder="Ceritakan pengalaman Anda..."></textarea>
             </div>
 
-            <!-- 📨 Tombol Submit -->
-            <div class="text-center mt-4">
-                <button type="submit" class="btn btn-primary px-5 py-2 w-100 w-md-auto" style="background-color:#434F5D;border:none;">Kirim Feedback</button>
+            <!-- Tombol Submit - DIPERBAIKI DENGAN STYLE KHUSUS -->
+            <div class="text-center mt-8 pt-6">
+                <button type="submit" class="submit-button">
+                    <i class="fas fa-paper-plane mr-2"></i>
+                    Kirim Feedback
+                </button>
             </div>
         </form>
     </div>

@@ -5,77 +5,74 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Reservation;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Controller; // WAJIB: Import Controller
 
 class ReservationHistoryController extends Controller
 {
-    // No auth middleware here (public view). Cancel action checks auth.
-    // public function __construct() { $this->middleware('auth'); }
+    // app/Http/Controllers/ReservationHistoryController.php (HANYA FUNGSI INDEX DAN ADMININDEX)
 
-    public function create()
-    {
-        // nanti bisa arahkan ke form reservasi baru
-        return view('reservations.create');
-    }
+    // ...
 
+    /**
+     * Menampilkan riwayat HANYA untuk customer yang sedang login.
+     */
     public function index(Request $request)
     {
-        $query = Reservation::query();
+        if (!Auth::check()) {
+            return redirect()->route('login');
+        }
 
-        // Filter status (hanya jika diisi)
+        $query = Reservation::where('user_id', Auth::id());
+
+        // --- Logika Filter (Hanya contoh sederhana di sini) ---
         if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
+        // ... (Tambahkan logika filter lain dari kode lama Anda di sini) ...
+        // --- Akhir Logika Filter ---
 
-        // Filter tanggal (hanya jika valid)
-        if ($request->filled('date')) {
-            // GANTI 'reservation_date' DENGAN NAMA KOLOM TANGGAL ANDA YANG SEBENARNYA
-            $query->whereDate('reservation_date', $request->input('date'));
-        }
+        // >>> VARIABEL $reservations DIHILANGKAN, SEKARANG ADA LAGI <<<
+        $reservations = $query->latest('reservation_date')->paginate(10);
 
-        // Filter pencarian (nama pasien atau dokter)
-        if ($request->filled('search')) {
-            $search = $request->input('search');
+        // Perhitungan Stats
+        $baseQuery = Reservation::where('user_id', Auth::id());
+        $stats = [
+            'total' => $baseQuery->count(),
+            'done' => $baseQuery->where('status', 'Selesai')->count(),
+            'upcoming' => $baseQuery->whereIn('status', ['Pending', 'Dikonfirmasi'])->count(),
+            'cancelled' => $baseQuery->where('status', 'Dibatalkan')->count(),
+        ];
 
-            $query->where(function ($q) use ($search) {
-                // Asumsi: relasi 'user' punya kolom 'name' (untuk pasien)
-                $q->whereHas('user', function ($subQuery) use ($search) {
-                    $subQuery->where('name', 'like', "%{$search}%");
-                })
-                    // Asumsi: relasi 'doctor' punya kolom 'name' (untuk dokter)
-                    ->orWhereHas('doctor', function ($subQuery) use ($search) {
-                        $subQuery->where('name', 'like', "%{$search}%");
-                    });
-            });
-        }
-
-        $reservations = $query->latest()->get();
-
-        return view('reservations.history', compact('reservations'));
+        return view('reservations.history', compact('reservations', 'stats'));
     }
 
-    public function show(Reservation $reservation)
+    /**
+     * Menampilkan SEMUA riwayat untuk Admin.
+     */
+    public function adminIndex(Request $request)
     {
-        $reservation->load('doctor', 'treatment', 'user');
-        return response()->json($reservation);
+        // Query untuk SEMUA reservasi
+        $query = Reservation::query();
+
+        // --- Logika Filter ---
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+        // ... (Tambahkan logika filter lain dari kode lama Anda di sini) ...
+        // --- Akhir Logika Filter ---
+
+        // >>> VARIABEL $reservations DIHILANGKAN, SEKARANG ADA LAGI <<<
+        $reservations = $query->latest('reservation_date')->paginate(10);
+
+        // Perhitungan Stats Admin
+        $stats = [
+            'total' => Reservation::count(),
+            'done' => Reservation::where('status', 'Selesai')->count(),
+            'upcoming' => Reservation::whereIn('status', ['Pending', 'Dikonfirmasi'])->count(),
+            'cancelled' => Reservation::where('status', 'Dibatalkan')->count(),
+        ];
+
+        return view('admin.reservations.history', compact('reservations', 'stats'));
     }
-
-    public function cancel(Request $request, Reservation $reservation)
-    {
-        if (!Auth::check()) {
-            return redirect()->back()->with('error', 'Silakan login untuk membatalkan reservasi.');
-        }
-
-        if ($reservation->user_id !== Auth::id()) {
-            return redirect()->back()->with('error', 'Tidak berhak membatalkan reservasi ini.');
-        }
-
-        if (!in_array($reservation->status, ['Pending', 'Dikonfirmasi'])) {
-            return redirect()->back()->with('error', 'Reservasi tidak bisa dibatalkan.');
-        }
-
-        $reservation->status = 'Dibatalkan';
-        $reservation->save();
-
-        return redirect()->back()->with('success', 'Reservasi berhasil dibatalkan.');
-    }
+    // ...
 }
