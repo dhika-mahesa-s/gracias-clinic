@@ -139,6 +139,9 @@ Route::get('/riwayat-reservasi', [ReservationHistoryController::class, 'index'])
 Route::get('/reservations/{reservation}', [ReservationHistoryController::class, 'show'])->name('reservations.show');
 Route::post('/reservations/{reservation}/cancel', [ReservationHistoryController::class, 'cancel'])->name('reservations.cancel');
 
+Route::prefix('admin')->middleware(['auth'])->group(function () {
+    Route::get('/riwayat-reservasi', [ReservationHistoryController::class, 'adminIndex'])->name('admin.reservations.history');
+});
 // ==========================
 // DASHBOARD ROUTES
 // ==========================

@@ -1,6 +1,6 @@
 @php use Illuminate\Support\Facades\Storage; @endphp
 
-@extends('layouts.app')
+@extends('layouts.dashboard')
 
 @section('content')
 <section class="min-h-screen bg-[#EEF2F7] text-[#526D82] py-10 px-4">

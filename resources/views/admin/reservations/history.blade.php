@@ -1,6 +1,6 @@
-@extends('layouts.app')
+@extends('layouts.dashboard')
 
-@section('title', 'Manajemen Reservasi')
+@section('title', 'Manajemen Riwayat Reservasi')
 
 @section('content')
 {{-- HERO/HEADER SECTION (ADMIN LOOK) --}}
