@@ -1,4 +1,4 @@
-<footer class="bg-[#003366] text-white py-10">
+<footer class="bg-[#003366] text-white py-10 mt-20">
     <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-5 gap-8">
         <!-- Kolom 1 -->
         <div class="col-span-2">

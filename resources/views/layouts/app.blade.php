@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
 
 <head>
@@ -33,6 +33,6 @@
 
     {{-- 🌙 Footer --}}
     @include('partials.footer')
-
+    
 </body>
 </html>
