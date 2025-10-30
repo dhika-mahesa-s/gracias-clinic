@@ -37,13 +37,14 @@
                                title="Edit">
                                 <i class="fa-solid fa-pen-to-square"></i>
                             </a>
+
                             <form action="{{ url('admin/faq/'.$faq->id) }}" 
                                   method="POST" 
-                                  onsubmit="return confirm('Yakin ingin menghapus FAQ ini?')">
+                                  class="delete-form">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" 
-                                        class="text-red-600 hover:text-red-800 transition" 
+                                <button type="button" 
+                                        class="text-red-600 hover:text-red-800 transition delete-btn" 
                                         title="Hapus">
                                     <i class="fa-solid fa-trash"></i>
                                 </button>
@@ -63,6 +64,32 @@
     </div>
 </div>
 
-{{-- Tambahkan padding bawah biar nggak nempel ke footer --}}
 <div class="pb-20"></div>
+@endsection
+
+{{-- 🧠 Tambahkan script SweetAlert di bawah --}}
+@section('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+document.querySelectorAll('.delete-btn').forEach(button => {
+    button.addEventListener('click', function(e) {
+        e.preventDefault();
+        const form = this.closest('.delete-form');
+        Swal.fire({
+            title: 'Apakah Anda yakin?',
+            text: "Data FAQ ini akan dihapus permanen!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya, hapus!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit();
+            }
+        });
+    });
+});
+</script>
 @endsection
