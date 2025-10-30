@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\Doctor;
 use App\Models\Treatment;
 use App\Models\Schedule;
@@ -14,11 +15,15 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 class ReservationController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $treatments = Treatment::all();
         $doctors = Doctor::where('status', 'active')->get();
-        return view('reservasi.index', compact('treatments', 'doctors'));
+
+        // Get pre-selected treatment from query parameter
+        $preSelectedTreatmentId = $request->query('treatment_id');
+
+        return view('reservasi.index', compact('treatments', 'doctors', 'preSelectedTreatmentId'));
     }
 
     public function store(Request $request)
@@ -73,6 +78,11 @@ class ReservationController extends Controller
 
         $code = 'GRS-' . now()->format('Ymd') . '-' . strtoupper(Str::random(5));
 
+        $user = User::find(Auth::id());
+        if (!$user->phone){
+            $user->phone = $request->phone;
+            $user->save();
+        }
         Reservation::create([
             'reservation_code'  => $code,
             'user_id'           => Auth::id(),
