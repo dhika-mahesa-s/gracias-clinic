@@ -37,39 +37,51 @@
             
             <h2 class="text-2xl font-semibold text-foreground">Pilih Treatment & Dokter</h2>
             
+            <!-- Treatment -->
             <div>
                 <label class="block font-medium text-foreground mb-1">Treatment</label>
                 <select id="treatment-select"
                         x-model="form.treatment_id" 
+                        :class="{'border-red-500 focus:border-red-500': errors.treatment_id}"
                         class="w-full border-input focus:ring-primary focus:border-primary rounded-lg p-2.5 bg-background">
                     <option value="">-- Pilih Treatment --</option>
                     @foreach ($treatments as $t)
                         <option value="{{ $t->id }}">{{ $t->name }} - Rp{{ number_format($t->price) }}</option>
                     @endforeach
                 </select>
+                <!-- Pesan error treatment -->
+                <p x-show="errors.treatment_id" 
+                x-text="errors.treatment_id" 
+                class="text-red-500 text-sm mt-1"></p>
             </div>
             
+            <!-- Dokter -->
             <div>
                 <label class="block font-medium text-foreground mb-1">Dokter</label>
                 <select id="doctor-select"
                         x-model="form.doctor_id" 
+                        :class="{'border-red-500 focus:border-red-500': errors.doctor_id}"
                         class="w-full border-input focus:ring-primary focus:border-primary rounded-lg p-2.5 bg-background">
                     <option value="">-- Pilih Dokter --</option>
                     @foreach ($doctors as $d)
                         <option value="{{ $d->id }}">{{ $d->name }}</option>
                     @endforeach
                 </select>
+                <!-- Pesan error dokter -->
+                <p x-show="errors.doctor_id" 
+                x-text="errors.doctor_id" 
+                class="text-red-500 text-sm mt-1"></p>
             </div>
-            
 
             <div class="flex justify-end mt-8">
                 <button @click="nextStep" 
                     class="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-primary text-white font-medium
-                           hover:bg-primary/90 transition-all duration-300 shadow-sm hover:shadow-md">
+                        hover:bg-primary/90 transition-all duration-300 shadow-sm hover:shadow-md">
                     Lanjut <i class="fa-solid fa-arrow-right"></i>
                 </button>
             </div>
         </div>
+
 
         {{-- Step 2 --}}
         <div 
@@ -114,54 +126,57 @@
 
         {{-- Step 3 --}}
         <div 
-            x-show="currentStep === 3"
-            x-transition
-            class="space-y-5">
-            
-            <h2 class="text-2xl font-semibold text-foreground">Lengkapi Data Diri</h2>
-            
-            <div>
-                <input type="text" placeholder="Nama Lengkap" 
-                       x-model="form.name"
-                       :class="{'border-red-500 focus:border-red-500': errors.name}"
-                       class="w-full border-input focus:ring-primary focus:border-primary rounded-lg p-2.5 bg-background">
-                <p x-show="errors.name" x-text="errors.name" class="text-red-500 text-sm mt-1"></p>
-            </div>
+        x-show="currentStep === 3"
+        x-transition
+        class="space-y-5">
 
-            <div>
-                <input type="email" placeholder="Email" 
-                       x-model="form.email"
-                       :class="{'border-red-500 focus:border-red-500': errors.email}"
-                       class="w-full border-input focus:ring-primary focus:border-primary rounded-lg p-2.5 bg-background">
-                <p x-show="errors.email" x-text="errors.email" class="text-red-500 text-sm mt-1"></p>
-            </div>
+        <h2 class="text-2xl font-semibold text-foreground">Data Diri</h2>
 
-            <div>
-                <input type="text" placeholder="Nomor HP" 
-                       x-model="form.phone"
-                       :class="{'border-red-500 focus:border-red-500': errors.phone}"
-                       class="w-full border-input focus:ring-primary focus:border-primary rounded-lg p-2.5 bg-background">
-                <p x-show="errors.phone" x-text="errors.phone" class="text-red-500 text-sm mt-1"></p>
-            </div>
-
-            <div class="flex justify-between mt-10">
-                <button 
-                    type="button"
-                    @click="prevStep"
-                    class="flex items-center gap-2 px-6 py-2 rounded-xl border border-primary text-primary font-medium
-                           hover:bg-primary hover:text-white transition-all duration-300 shadow-sm hover:shadow-md">
-                    <i class="fa-solid fa-arrow-left"></i> Kembali
-                </button>
-
-                <button 
-                    type="button"
-                    @click="nextStep"
-                    class="flex items-center gap-2 px-6 py-2 rounded-xl bg-primary text-white font-medium
-                           hover:bg-primary/90 transition-all duration-300 shadow-sm hover:shadow-md">
-                    Lanjut <i class="fa-solid fa-arrow-right"></i>
-                </button>
-            </div>
+        <div>
+            <label class="block font-medium mb-1 text-foreground">Nama Lengkap</label>
+            <input type="text" 
+                x-model="form.name"
+                class="w-full border-input bg-gray-100 text-gray-600 rounded-lg p-2.5"
+                readonly>
         </div>
+
+        <div>
+            <label class="block font-medium mb-1 text-foreground">Email</label>
+            <input type="email" 
+                x-model="form.email"
+                class="w-full border-input bg-gray-100 text-gray-600 rounded-lg p-2.5"
+                readonly>
+        </div>
+
+        <div>
+            <label class="block font-medium mb-1 text-foreground">Nomor HP</label>
+            <input type="text"
+                x-model="form.phone"
+                placeholder="Masukkan nomor HP aktif Anda"
+                :class="{'border-red-500 focus:border-red-500': errors.phone}"
+                class="w-full border-input focus:ring-primary focus:border-primary rounded-lg p-2.5 bg-background">
+            <p x-show="errors.phone" x-text="errors.phone" class="text-red-500 text-sm mt-1"></p>
+        </div>
+
+        <div class="flex justify-between mt-10">
+            <button 
+                type="button"
+                @click="prevStep"
+                class="flex items-center gap-2 px-6 py-2 rounded-xl border border-primary text-primary font-medium
+                    hover:bg-primary hover:text-white transition-all duration-300 shadow-sm hover:shadow-md">
+                <i class="fa-solid fa-arrow-left"></i> Kembali
+            </button>
+
+            <button 
+                type="button"
+                @click="nextStep"
+                class="flex items-center gap-2 px-6 py-2 rounded-xl bg-primary text-white font-medium
+                    hover:bg-primary/90 transition-all duration-300 shadow-sm hover:shadow-md">
+                Lanjut <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </div>
+        </div>
+
 
         {{-- Step 4 --}}
         <div 
@@ -256,6 +271,11 @@ function reservationForm() {
                     if (val[key]) delete this.errors[key];
                 }
             }, { deep: true });
+
+            // Prefill data user login
+            this.form.name = @json(auth()->user()->name ?? '');
+            this.form.email = @json(auth()->user()->email ?? '');
+            this.form.phone = @json(auth()->user()->phone ?? '');
         },
 
         validateStep() {
