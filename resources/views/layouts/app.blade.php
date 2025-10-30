@@ -18,6 +18,10 @@
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
           crossorigin="anonymous"
           referrerpolicy="no-referrer">
+
+    {{-- ✅ Swiper.js (CSS) --}}
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+
 </head>
 
 <body x-data="{ dark: false }" :class="{ 'dark': dark }" 
@@ -33,6 +37,12 @@
 
     {{-- 🌙 Footer --}}
     @include('partials.footer')
+
+    {{-- ✅ Swiper.js (JS) --}}
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+
+    {{-- ✅ Stack untuk script halaman tertentu --}}
+    @stack('scripts')
     
 </body>
 </html>
