@@ -48,7 +48,7 @@
           <p class="text-lg font-bold text-[#27374D] mb-5">{{ $price }}</p>
 
           <div class="flex justify-center gap-3">
-            <a href="{{ route('reservasi.index') }}" 
+            <a href="{{ route('reservasi.index', ['treatment_id' => $t->id]) }}"
                class="px-4 py-2 rounded-lg text-white bg-primary hover:bg-primary/90 transition-all duration-300 text-sm font-medium shadow-md">
                🗓️ Reservasi
             </a>

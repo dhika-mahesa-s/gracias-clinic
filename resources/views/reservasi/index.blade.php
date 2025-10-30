@@ -1,11 +1,12 @@
 @extends('layouts.app')
 
 @section('content')
-<div 
-    x-data="reservationForm()" 
-    x-init="init()" 
-    data-store-url="{{ route('reservasi.store') }}" 
+<div
+    x-data="reservationForm()"
+    x-init="init()"
+    data-store-url="{{ route('reservasi.store') }}"
     data-csrf="{{ csrf_token() }}"
+    data-pre-selected-treatment="{{ $preSelectedTreatmentId ?? '' }}"
     class="max-w-3xl mx-auto mt-16 mb-24 p-8 bg-card rounded-2xl shadow-lg border border-border text-foreground relative overflow-hidden">
 
     {{-- Progress Bar --}}
@@ -29,67 +30,69 @@
     {{-- Step Container --}}
     <div class="min-h-[360px] relative">
        {{-- Step 1 --}}
-<div x-show="currentStep === 1" x-transition class="space-y-6">
-    <h2 class="text-2xl font-semibold text-foreground">Pilih Treatment & Dokter</h2>
+        <div x-show="currentStep === 1" x-transition class="space-y-6">
+        <h2 class="text-2xl font-semibold text-foreground">Pilih Treatment & Dokter</h2>
 
-    {{-- Treatment Cards --}}
-    <div>
-        <label class="block font-medium text-foreground mb-2">Treatment</label>
-        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            @foreach ($treatments as $t)
-                <div 
-                    @click="form.treatment_id = '{{ $t->id }}'"
-                    data-aos="fade-up"
-                    class="cursor-pointer rounded-xl border border-border bg-card overflow-hidden 
-                           transition-all duration-300 shadow-sm hover:shadow-md hover:-translate-y-1"
-                    :class="form.treatment_id == '{{ $t->id }}' ? 'ring-2 ring-primary scale-[1.02] bg-primary/5' : ''"
-                >
-                    @if ($t->image)
-                        <img src="{{ asset('storage/'.$t->image) }}" alt="{{ $t->name }}"
-                             class="w-full h-36 object-cover">
-                    @else
-                        <div class="w-full h-36 bg-muted flex items-center justify-center text-muted-foreground">
-                            <i class="fa-solid fa-image text-3xl"></i>
-                        </div>
-                    @endif
+        {{-- Treatment Cards --}}
+        <div>
+            <label class="block font-medium text-foreground mb-2">Treatment</label>
+            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                @foreach ($treatments as $t)
+                    <div 
+                        @click="form.treatment_id = '{{ $t->id }}'"
+                        data-treatment-id="{{ $t->id }}"
+                        data-treatment-name="{{ addslashes($t->name) }}"
+                        data-aos="fade-up"
+                        class="cursor-pointer rounded-xl border border-border bg-card overflow-hidden 
+                            transition-all duration-300 shadow-sm hover:shadow-md hover:-translate-y-1"
+                        :class="form.treatment_id == '{{ $t->id }}' ? 'ring-2 ring-primary scale-[1.02] bg-primary/5' : ''"
+                    >
+                        @if ($t->image)
+                            <img src="{{ asset('storage/'.$t->image) }}" alt="{{ $t->name }}"
+                                class="w-full h-36 object-cover">
+                        @else
+                            <div class="w-full h-36 bg-muted flex items-center justify-center text-muted-foreground">
+                                <i class="fa-solid fa-image text-3xl"></i>
+                            </div>
+                        @endif
 
-                    <div class="p-4 space-y-1">
-                        <h3 class="font-semibold text-lg text-foreground">{{ $t->name }}</h3>
-                        <p class="text-sm text-muted-foreground line-clamp-2">{{ $t->description }}</p>
-                        <div class="flex justify-between items-center pt-2">
-                            <p class="font-semibold text-primary">Rp{{ number_format($t->price, 0, ',', '.') }}</p>
-                            <i class="fa-solid fa-chevron-right text-muted-foreground text-sm"></i>
+                        <div class="p-4 space-y-1">
+                            <h3 class="font-semibold text-lg text-foreground">{{ $t->name }}</h3>
+                            <p class="text-sm text-muted-foreground line-clamp-2">{{ $t->description }}</p>
+                            <div class="flex justify-between items-center pt-2">
+                                <p class="font-semibold text-primary">Rp{{ number_format($t->price, 0, ',', '.') }}</p>
+                                <i class="fa-solid fa-chevron-right text-muted-foreground text-sm"></i>
+                            </div>
                         </div>
                     </div>
-                </div>
-            @endforeach
+                @endforeach
+            </div>
+            <p x-show="errors.treatment_id" x-text="errors.treatment_id" class="text-red-500 text-sm mt-1"></p>
         </div>
-        <p x-show="errors.treatment_id" x-text="errors.treatment_id" class="text-red-500 text-sm mt-1"></p>
-    </div>
 
-    {{-- Dokter --}}
-    <div>
-        <label class="block font-medium text-foreground mb-1">Dokter</label>
-        <select id="doctor-select"
-                x-model="form.doctor_id" 
-                :class="{'border-red-500 focus:border-red-500': errors.doctor_id}"
-                class="w-full border-input focus:ring-primary focus:border-primary rounded-lg p-2.5 bg-background">
-            <option value="">-- Pilih Dokter --</option>
-            @foreach ($doctors as $d)
-                <option value="{{ $d->id }}">{{ $d->name }}</option>
-            @endforeach
-        </select>
-        <p x-show="errors.doctor_id" x-text="errors.doctor_id" class="text-red-500 text-sm mt-1"></p>
-    </div>
+        {{-- Dokter --}}
+        <div>
+            <label class="block font-medium text-foreground mb-1">Dokter</label>
+            <select id="doctor-select"
+                    x-model="form.doctor_id" 
+                    :class="{'border-red-500 focus:border-red-500': errors.doctor_id}"
+                    class="w-full border-input focus:ring-primary focus:border-primary rounded-lg p-2.5 bg-background">
+                <option value="">-- Pilih Dokter --</option>
+                @foreach ($doctors as $d)
+                    <option value="{{ $d->id }}">{{ $d->name }}</option>
+                @endforeach
+            </select>
+            <p x-show="errors.doctor_id" x-text="errors.doctor_id" class="text-red-500 text-sm mt-1"></p>
+        </div>
 
-    <div class="flex justify-end mt-8">
-        <button @click="nextStep" 
-            class="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-primary text-white font-medium
-                hover:bg-primary/90 transition-all duration-300 shadow-sm hover:shadow-md">
-            Lanjut <i class="fa-solid fa-arrow-right"></i>
-        </button>
+        <div class="flex justify-end mt-8">
+            <button @click="nextStep" 
+                class="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-primary text-white font-medium
+                    hover:bg-primary/90 transition-all duration-300 shadow-sm hover:shadow-md">
+                Lanjut <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </div>
     </div>
-</div>
 
 
         {{-- Step 2 (Kalender & Waktu) --}}
@@ -197,7 +200,9 @@
 
             <div>
                 <label class="block font-medium mb-1 text-foreground">Nomor HP</label>
-                <input type="text" x-model="form.phone" placeholder="Masukkan nomor HP aktif Anda"
+                <input type="text" x-model="form.phone" 
+                    value="{{ auth()->user()->phone ?? '' }}"
+                    placeholder="Masukkan nomor HP aktif Anda"
                     :class="{'border-red-500 focus:border-red-500': errors.phone}"
                     class="w-full border-input focus:ring-primary focus:border-primary rounded-lg p-2.5 bg-background">
                 <p x-show="errors.phone" x-text="errors.phone" class="text-red-500 text-sm mt-1"></p>
@@ -287,6 +292,12 @@ function reservationForm() {
         init() {
             // render initial calendar
             this.updateCalendar();
+
+            // Pre-select treatment if provided via URL parameter
+            const preSelectedTreatment = this.$root.dataset.preSelectedTreatment;
+            if (preSelectedTreatment) {
+                this.form.treatment_id = preSelectedTreatment;
+            }
 
             // when doctor changes reset selected time & slots
             this.$watch('form.doctor_id', () => {
@@ -384,11 +395,11 @@ function reservationForm() {
         prevStep() { if (this.currentStep > 1) this.currentStep--; },
 
         get selectedTreatment() {
-            const select = document.getElementById('treatment-select');
-            if (!select) return '-';
-            const option = select.querySelector(`option[value='${this.form.treatment_id}']`);
-            return option ? option.textContent : '-';
+            if (!this.form.treatment_id) return '-';
+            const card = this.$root.querySelector(`[data-treatment-id='${this.form.treatment_id}']`);
+            return card ? card.dataset.treatmentName : '-';
         },
+
         get selectedDoctor() {
             const select = document.getElementById('doctor-select');
             if (!select) return '-';
