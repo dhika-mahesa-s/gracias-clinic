@@ -55,7 +55,7 @@ class ReservationAdminController extends Controller
             return back()->with('info', 'Reservasi sudah selesai atau dibatalkan.');
         }
 
-        $reservation->update(['status' => 'cancel']);
+        $reservation->update(['status' => 'cancelled']);
 
         return back()->with('error', 'Reservasi telah dibatalkan.');
     }
