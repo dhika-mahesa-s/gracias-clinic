@@ -33,12 +33,6 @@
 
     {{-- 🌙 Footer --}}
     @include('partials.footer')
-
-    {{-- ✅ Swiper.js (JS) --}}
-    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
-
-    {{-- ✅ Stack untuk script halaman tertentu --}}
-    @stack('scripts')
     
 </body>
 
