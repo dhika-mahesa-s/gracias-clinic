@@ -42,22 +42,7 @@
                                 <label class="block text-sm font-medium text-gray-500 mb-1">Email</label>
                                 <p class="text-gray-900 font-medium">{{ $feedback->email }}</p>
                             </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-500 mb-1">Nomor Telepon</label>
-                                <p class="text-gray-900 font-medium">{{ $feedback->phone ?? '-' }}</p>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-500 mb-1">Layanan</label>
-                                <p class="text-gray-900 font-medium">
-                                    @if($feedback->service_type)
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                                            {{ $feedback->service_type }}
-                                        </span>
-                                    @else
-                                        -
-                                    @endif
-                                </p>
-                            </div>
+                            
                             <div class="md:col-span-2">
                                 <label class="block text-sm font-medium text-gray-500 mb-1">Tanggal Submit</label>
                                 <p class="text-gray-900 font-medium">{{ $feedback->created_at->format('d F Y H:i') }}</p>
