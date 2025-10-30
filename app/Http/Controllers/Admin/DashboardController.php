@@ -40,12 +40,31 @@ class DashboardController extends Controller
         ->orderBy('month')
         ->get();
 
-        // 5️⃣ Grafik: Reservasi per status
+         // Grafik: Reservasi per minggu (dari tanggal)
+        $reservationsByWeek = Reservation::select(
+            DB::raw('WEEK(reservation_date, 1) as week'), // mode 1 = minggu dimulai dari Senin
+            DB::raw('COUNT(*) as total')
+        )
+        ->groupBy('week')
+        ->orderBy('week')
+        ->get();
+
+        // Grafik: Reservasi per hari (dalam 30 hari terakhir)
+        $reservationsByDay = Reservation::select(
+            DB::raw('DATE(reservation_date) as day'),
+            DB::raw('COUNT(*) as total')
+        )
+        ->where('reservation_date', '>=', Carbon::now()->subDays(30))
+        ->groupBy('day')
+        ->orderBy('day')
+        ->get();
+
+        // Grafik: Reservasi per status
         $reservationsByStatus = Reservation::select('status', DB::raw('COUNT(*) as total'))
             ->groupBy('status')
             ->get();
 
-        // 6️⃣ Grafik: Reservasi per treatment
+        // Grafik: Reservasi per treatment
         $reservationsByTreatment = Reservation::join('treatments', 'reservations.treatment_id', '=', 'treatments.id')
             ->select('treatments.name as treatment', DB::raw('COUNT(reservations.id) as total'))
             ->groupBy('treatments.name')
@@ -57,6 +76,8 @@ class DashboardController extends Controller
             'totalRevenue' => $totalRevenue,
             'newVisitorsThisMonth' => $newVisitorsThisMonth,
             'reservationsByMonth' => $reservationsByMonth,
+            'reservationsByWeek' => $reservationsByWeek, 
+            'reservationsByDay' => $reservationsByDay,   
             'reservationsByStatus' => $reservationsByStatus,
             'reservationsByTreatment' => $reservationsByTreatment,
         ]);
