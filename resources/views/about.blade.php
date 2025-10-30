@@ -3,6 +3,47 @@
 @section('content')
 <div class="bg-gray-50 min-h-screen py-16 px-6">
     <div class="max-w-5xl mx-auto text-center mb-12">
+        {{-- Section Video & Carousel --}}
+        <div class="max-w-5xl mx-auto mb-12">
+            {{-- Video Section --}}
+            <div class="relative rounded-2xl overflow-hidden shadow-lg mb-8">
+                <video autoplay muted loop playsinline class="w-full h-80 object-cover">
+                    <source src="{{ asset('videos/profil-klinik.mp4') }}" type="video/mp4">
+                    Browser kamu tidak mendukung video tag.
+                </video>
+                <div class="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center">
+                    <h2 class="text-3xl md:text-4xl text-white font-semibold drop-shadow-lg">
+                        Selamat Datang di Gracias Aesthetic Clinic
+                    </h2>
+                </div>
+            </div>
+
+            {{-- Carousel Section (Swiper.js) --}}
+            <div class="relative rounded-2xl overflow-hidden shadow-lg">
+                <!-- Swiper -->
+                <div class="swiper mySwiper">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide">
+                            <img src="{{ asset('images/intro-1.jpg') }}" class="w-full h-80 object-cover" alt="Klinik 1">
+                        </div>
+                        <div class="swiper-slide">
+                            <img src="{{ asset('images/intro-2.jpg') }}" class="w-full h-80 object-cover" alt="Klinik 2">
+                        </div>
+                        <div class="swiper-slide">
+                            <img src="{{ asset('images/intro-3.jpg') }}" class="w-full h-80 object-cover" alt="Klinik 3">
+                        </div>
+                    </div>
+
+                    <!-- Navigation buttons -->
+                    <div class="swiper-button-next text-gray-800!"></div>
+                    <div class="swiper-button-prev text-gray-800!"></div>
+
+                    <!-- Pagination -->
+                    <div class="swiper-pagination"></div>
+                </div>
+            </div>
+        </div>
+
         <h1 class="text-4xl font-bold text-gray-800 mb-4">Tentang Kami</h1>
     </div>
 
@@ -49,7 +90,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-5xl mx-auto px-6">
             {{-- Dokter 1 --}}
             <div class="bg-white-50 rounded-2xl p-6 text-center shadow-md hover:shadow-xl transition duration-300 transform hover:-translate-y-1">
-                <img src="images/graciaslogo.png" alt="Dokter 1" class="w-40 h-40 object-cover rounded-full mx-auto mb-4">
+                <img src="images/intro-1.jpg" alt="Dokter 1" class="w-40 h-40 object-cover rounded-full mx-auto mb-4">
                 <h3 class="text-xl font-semibold text-gray-700">dr. Mutiara</h3>
                 <p class="text-gray-600">Spesialis Estetika Kulit</p>
                 <p class="mt-3 text-sm text-gray-500">Berpengalaman lebih dari 8 tahun dalam perawatan kulit wajah dan rejuvenasi.</p>
@@ -57,7 +98,7 @@
 
             {{-- Dokter 2 --}}
             <div class="bg-white-50 rounded-2xl p-6 text-center shadow-md hover:shadow-xl transition duration-300 transform hover:-translate-y-1">
-                <img src="images/graciaslogo.png" alt="Dokter 2" class="w-40 h-40 object-cover rounded-full mx-auto mb-4">
+                <img src="images/intro-2.jpg" alt="Dokter 2" class="w-40 h-40 object-cover rounded-full mx-auto mb-4">
                 <h3 class="text-xl font-semibold text-gray-700">dr. Fassya</h3>
                 <p class="text-gray-600">Ahli Dermatologi & Laser</p>
                 <p class="mt-3 text-sm text-gray-500">Fokus pada terapi laser, anti-aging, dan perawatan kulit berteknologi tinggi.</p>
@@ -66,3 +107,26 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    new Swiper(".mySwiper", {
+        loop: true,
+        autoplay: {
+            delay: 4000,
+            disableOnInteraction: false,
+        },
+        pagination: {
+            el: ".swiper-pagination",
+            clickable: true,
+        },
+        navigation: {
+            nextEl: ".swiper-button-next",
+            prevEl: ".swiper-button-prev",
+        },
+        effect: "slide",
+    });
+});
+</script>
+@endpush

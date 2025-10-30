@@ -7,16 +7,13 @@
     <title>@yield('title','Gracias Clinic')</title>
 
     <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
-        crossorigin="anonymous"
-        referrerpolicy="no-referrer">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+          crossorigin="anonymous"
+          referrerpolicy="no-referrer">
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+    {{-- ✅ Swiper.js (CSS) --}}
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
 
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-
-    @stack('styles')
 </head>
 
 {{-- Menggunakan kelas Tailwind untuk layout dasar --}}
@@ -37,14 +34,12 @@
     {{-- 🌙 Footer --}}
     @include('partials.footer')
 
-    <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
-    <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+    {{-- ✅ Swiper.js (JS) --}}
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 
-    <script>
-        document.addEventListener('alpine:init', () => {
-            setTimeout(() => AOS.init({ duration: 600, once: true }), 100);
-        });
-    </script>
+    {{-- ✅ Stack untuk script halaman tertentu --}}
+    @stack('scripts')
+    
 </body>
 
 </html>
