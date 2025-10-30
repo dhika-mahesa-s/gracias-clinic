@@ -28,45 +28,69 @@
 
     {{-- Step Container --}}
     <div class="min-h-[360px] relative">
-        {{-- Step 1 --}}
-        <div x-show="currentStep === 1" x-transition class="space-y-5">
-            <h2 class="text-2xl font-semibold text-foreground">Pilih Treatment & Dokter</h2>
-            <div>
-                <label class="block font-medium text-foreground mb-1">Treatment</label>
-                <select id="treatment-select"
-                        x-model="form.treatment_id" 
-                        :class="{'border-red-500 focus:border-red-500': errors.treatment_id}"
-                        class="w-full border-input focus:ring-primary focus:border-primary rounded-lg p-2.5 bg-background">
-                    <option value="">-- Pilih Treatment --</option>
-                    @foreach ($treatments as $t)
-                        <option value="{{ $t->id }}">{{ $t->name }} - Rp{{ number_format($t->price) }}</option>
-                    @endforeach
-                </select>
-                <p x-show="errors.treatment_id" x-text="errors.treatment_id" class="text-red-500 text-sm mt-1"></p>
-            </div>
+       {{-- Step 1 --}}
+<div x-show="currentStep === 1" x-transition class="space-y-6">
+    <h2 class="text-2xl font-semibold text-foreground">Pilih Treatment & Dokter</h2>
 
-            <div>
-                <label class="block font-medium text-foreground mb-1">Dokter</label>
-                <select id="doctor-select"
-                        x-model="form.doctor_id" 
-                        :class="{'border-red-500 focus:border-red-500': errors.doctor_id}"
-                        class="w-full border-input focus:ring-primary focus:border-primary rounded-lg p-2.5 bg-background">
-                    <option value="">-- Pilih Dokter --</option>
-                    @foreach ($doctors as $d)
-                        <option value="{{ $d->id }}">{{ $d->name }}</option>
-                    @endforeach
-                </select>
-                <p x-show="errors.doctor_id" x-text="errors.doctor_id" class="text-red-500 text-sm mt-1"></p>
-            </div>
+    {{-- Treatment Cards --}}
+    <div>
+        <label class="block font-medium text-foreground mb-2">Treatment</label>
+        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            @foreach ($treatments as $t)
+                <div 
+                    @click="form.treatment_id = '{{ $t->id }}'"
+                    data-aos="fade-up"
+                    class="cursor-pointer rounded-xl border border-border bg-card overflow-hidden 
+                           transition-all duration-300 shadow-sm hover:shadow-md hover:-translate-y-1"
+                    :class="form.treatment_id == '{{ $t->id }}' ? 'ring-2 ring-primary scale-[1.02] bg-primary/5' : ''"
+                >
+                    @if ($t->image)
+                        <img src="{{ asset('storage/'.$t->image) }}" alt="{{ $t->name }}"
+                             class="w-full h-36 object-cover">
+                    @else
+                        <div class="w-full h-36 bg-muted flex items-center justify-center text-muted-foreground">
+                            <i class="fa-solid fa-image text-3xl"></i>
+                        </div>
+                    @endif
 
-            <div class="flex justify-end mt-8">
-                <button @click="nextStep" 
-                    class="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-primary text-white font-medium
-                        hover:bg-primary/90 transition-all duration-300 shadow-sm hover:shadow-md">
-                    Lanjut <i class="fa-solid fa-arrow-right"></i>
-                </button>
-            </div>
+                    <div class="p-4 space-y-1">
+                        <h3 class="font-semibold text-lg text-foreground">{{ $t->name }}</h3>
+                        <p class="text-sm text-muted-foreground line-clamp-2">{{ $t->description }}</p>
+                        <div class="flex justify-between items-center pt-2">
+                            <p class="font-semibold text-primary">Rp{{ number_format($t->price, 0, ',', '.') }}</p>
+                            <i class="fa-solid fa-chevron-right text-muted-foreground text-sm"></i>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
         </div>
+        <p x-show="errors.treatment_id" x-text="errors.treatment_id" class="text-red-500 text-sm mt-1"></p>
+    </div>
+
+    {{-- Dokter --}}
+    <div>
+        <label class="block font-medium text-foreground mb-1">Dokter</label>
+        <select id="doctor-select"
+                x-model="form.doctor_id" 
+                :class="{'border-red-500 focus:border-red-500': errors.doctor_id}"
+                class="w-full border-input focus:ring-primary focus:border-primary rounded-lg p-2.5 bg-background">
+            <option value="">-- Pilih Dokter --</option>
+            @foreach ($doctors as $d)
+                <option value="{{ $d->id }}">{{ $d->name }}</option>
+            @endforeach
+        </select>
+        <p x-show="errors.doctor_id" x-text="errors.doctor_id" class="text-red-500 text-sm mt-1"></p>
+    </div>
+
+    <div class="flex justify-end mt-8">
+        <button @click="nextStep" 
+            class="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-primary text-white font-medium
+                hover:bg-primary/90 transition-all duration-300 shadow-sm hover:shadow-md">
+            Lanjut <i class="fa-solid fa-arrow-right"></i>
+        </button>
+    </div>
+</div>
+
 
         {{-- Step 2 (Kalender & Waktu) --}}
         <div x-show="currentStep === 2" x-transition class="space-y-6">
