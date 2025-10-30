@@ -208,15 +208,7 @@
                             <a href="{{ route('feedback.edit', $feedback->id) }}" class="w-full bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-3 rounded-lg transition-colors duration-200 flex items-center justify-center">
                                 <i class="fas fa-edit mr-2"></i>Edit Feedback
                             </a>
-                            <form action="{{ route('feedback.destroy', $feedback->id) }}" method="POST" class="w-full">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" 
-                                        class="w-full bg-red-600 hover:bg-red-700 text-white px-4 py-3 rounded-lg transition-colors duration-200 flex items-center justify-center"
-                                        onclick="return confirm('Apakah Anda yakin ingin menghapus feedback dari {{ $feedback->name }}?')">
-                                    <i class="fas fa-trash mr-2"></i>Hapus Feedback
-                                </button>
-                            </form>
+                            <!-- Button hapus telah dihapus dari sini -->
                         </div>
                     </div>
                 </div>
