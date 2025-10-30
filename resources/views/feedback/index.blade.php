@@ -86,14 +86,7 @@
         </div>
         @endif
 
-        <!-- Tombol Tambah Feedback - DITAMBAHKAN DI SINI -->
-        <div class="mb-6 text-right">
-            <a href="{{ route('feedback.create') }}" class="inline-flex items-center bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg">
-                <i class="fas fa-plus mr-2"></i>
-                Tambah Feedback Baru
-            </a>
-        </div>
-
+        
         <!-- Feedback List Table -->
         <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
             <div class="p-6">
