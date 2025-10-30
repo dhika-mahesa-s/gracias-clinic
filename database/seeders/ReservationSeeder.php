@@ -14,7 +14,7 @@ class ReservationSeeder extends Seeder
 {
     public function run()
     {
-        $user = User::first() ?? User::factory()->create([
+        $user = User::where('email', 'test@example.com')->first() ?? User::factory()->create([
             'name' => 'Test User',
             'email' => 'test@example.com',
         ]);
@@ -25,32 +25,48 @@ class ReservationSeeder extends Seeder
         $t1 = Treatment::first() ?? Treatment::create(['name' => 'Facial Premium', 'price' => 250000, 'duration' => 60]);
         $t2 = Treatment::skip(1)->first() ?? Treatment::create(['name' => 'Botox Mini', 'price' => 1200000, 'duration' => 45]);
 
+        // 1. STATUS SELESAI (Mengisi Kartu Selesai)
         Reservation::create([
-            'reservation_code' => 'GRC-' . strtoupper(Str::random(8)), // DIUBAH
+            'reservation_code' => 'GRC-' . strtoupper(Str::random(8)),
             'user_id' => $user->id,
             'doctor_id' => $dokterA->id,
             'treatment_id' => $t1->id,
-            'reservation_date' => Carbon::now()->subDays(10), // TANGGAL
-            'reservation_time' => '10:00:00',                 // WAKTU
-            'total_price' => $t1->price,                       // DIUBAH
+            'reservation_date' => Carbon::now()->subDays(10),
+            'reservation_time' => '10:00:00',
+            'total_price' => $t1->price,
             'status' => 'Selesai',
             'notes' => 'Pelayanan baik'
         ]);
 
+        // 2. STATUS DIKONFIRMASI (Mengisi Kartu Mendatang)
         Reservation::create([
-            'reservation_code' => 'GRC-' . strtoupper(Str::random(8)), // DIUBAH
+            'reservation_code' => 'GRC-' . strtoupper(Str::random(8)),
             'user_id' => $user->id,
             'doctor_id' => $dokterB->id,
             'treatment_id' => $t2->id,
-            'reservation_date' => Carbon::now()->addDays(3),
+            'reservation_date' => Carbon::now()->addDays(5),
             'reservation_time' => '14:30:00',
             'total_price' => $t2->price,
-            'status' => 'Pending',
-            'notes' => 'Permintaan jadwal sore'
+            'status' => 'Dikonfirmasi',
+            'notes' => 'Jadwal sudah dikonfirmasi admin'
         ]);
 
+        // 3. STATUS PENDING
         Reservation::create([
-            'reservation_code' => 'GRC-' . strtoupper(Str::random(8)), // DIUBAH
+            'reservation_code' => 'GRC-' . strtoupper(Str::random(8)),
+            'user_id' => $user->id,
+            'doctor_id' => $dokterA->id,
+            'treatment_id' => $t1->id,
+            'reservation_date' => Carbon::now()->addDays(1),
+            'reservation_time' => '11:00:00',
+            'total_price' => $t1->price,
+            'status' => 'Pending',
+            'notes' => 'Masih menunggu approval'
+        ]);
+
+        // 4. STATUS DIBATALKAN
+        Reservation::create([
+            'reservation_code' => 'GRC-' . strtoupper(Str::random(8)),
             'user_id' => $user->id,
             'doctor_id' => $dokterA->id,
             'treatment_id' => $t2->id,

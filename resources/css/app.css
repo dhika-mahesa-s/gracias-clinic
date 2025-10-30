@@ -1,9 +1,4 @@
 @import 'tailwindcss';
-@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
-@source '../../storage/framework/views/*.php';
-@source '../**/*.blade.php';
-@source '../**/*.js';
-
 :root {
   --background: oklch(0.9755 0.0045 258.3245);
   --foreground: oklch(0.2558 0.0433 268.0662);
@@ -163,4 +158,8 @@
   --shadow-lg: var(--shadow-lg);
   --shadow-xl: var(--shadow-xl);
   --shadow-2xl: var(--shadow-2xl);
+}
+
+body {
+  font-family: var(--font-sans); 
 }

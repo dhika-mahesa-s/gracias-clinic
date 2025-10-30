@@ -1,7 +1,5 @@
-// vite.config.js
 import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
-import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
     plugins: [
@@ -12,7 +10,5 @@ export default defineConfig({
             ],
             refresh: true,
         }),
-        tailwindcss(),
     ],
-    // PASTIKAN BLOK 'css: { postcss: {...} }' DIHAPUS JIKA ADA
 });

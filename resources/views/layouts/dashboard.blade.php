@@ -18,7 +18,7 @@
 <body class="font-[Poppins] bg-gray-50 text-gray-800">
 
     {{-- Navbar --}}
-    @include('partials.navbar-dashboard')
+    @include('partials.navbar')
 
     <div class="flex min-h-screen pt-16">
         {{-- Sidebar --}}
