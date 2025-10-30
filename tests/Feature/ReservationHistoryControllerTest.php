@@ -20,12 +20,13 @@ class ReservationHistoryControllerTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-
         // Buat user customer biasa
         $this->customerUser = User::factory()->create(['role' => 'customer']);
-
         // Buat user admin (asumsikan ada kolom 'role' di tabel users)
         $this->adminUser = User::factory()->create(['role' => 'admin']);
+
+        // Menjalankan seeder Anda (opsional, tapi disarankan jika Anda punya data dummy)
+        // $this->seed(\Database\Seeders\ReservationSeeder::class);
     }
 
     // ===================================
@@ -55,7 +56,7 @@ class ReservationHistoryControllerTest extends TestCase
     }
 
     /**
-     * Pastikan elemen utama tampil di halaman customer (setelah login).
+     * Pastikan elemen utama (5 kartu stats) tampil di halaman customer (setelah login).
      */
     public function test_customer_history_has_main_sections_when_logged_in()
     {
@@ -64,18 +65,20 @@ class ReservationHistoryControllerTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertSee('Total Reservasi');
-        $response->assertSee('Selesai');
+        $response->assertSee('Pending'); // REVISI: Tambahkan cek 'Pending'
         $response->assertSee('Mendatang');
+        $response->assertSee('Selesai');
         $response->assertSee('Dibatalkan');
     }
 
     /**
-     * Pastikan filter query di halaman customer tidak error (setelah login).
+     * Pastikan filter query (dengan status huruf kecil) di halaman customer tidak error.
      */
     public function test_customer_history_filter_query_does_not_fail_when_logged_in()
     {
         $response = $this->actingAs($this->customerUser)
-            ->get(route('reservations.history', ['status' => 'Selesai', 'search' => 'test'])); // Gunakan helper route
+            // REVISI: Gunakan status huruf kecil sesuai <select>
+            ->get(route('reservations.history', ['status' => 'completed', 'search' => 'test']));
 
         $response->assertStatus(200);
     }
@@ -96,15 +99,14 @@ class ReservationHistoryControllerTest extends TestCase
 
     /**
      * Pastikan halaman riwayat admin TIDAK bisa diakses oleh customer biasa.
-     * (Ini memerlukan middleware 'admin' atau cek role di controller/route)
      */
     public function test_admin_history_page_is_forbidden_for_customer()
     {
-        // Asumsi middleware 'admin' akan return 403 Forbidden
+        // Asumsi middleware 'check.admin' (atau nama alias Anda) mengembalikan 403 Forbidden
         $response = $this->actingAs($this->customerUser)
             ->get(route('admin.reservations.history'));
 
-        $response->assertStatus(403); // Atau 302 jika redirect ke halaman lain
+        $response->assertStatus(403);
     }
 
     /**
@@ -120,7 +122,7 @@ class ReservationHistoryControllerTest extends TestCase
     }
 
     /**
-     * Pastikan elemen utama tampil di halaman admin (setelah login admin).
+     * Pastikan elemen utama (5 kartu stats) tampil di halaman admin.
      */
     public function test_admin_history_has_main_sections_when_logged_in_as_admin()
     {
@@ -129,12 +131,9 @@ class ReservationHistoryControllerTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertSee('Total Reservasi');
+        $response->assertSee('Pending'); // REVISI: Tambahkan cek 'Pending'
+        $response->assertSee('Mendatang');
         $response->assertSee('Selesai');
-        // ... (assertions lain jika perlu)
+        $response->assertSee('Dibatalkan');
     }
-
-    // Anda bisa menambahkan test lain di sini, misalnya:
-    // - Test cancel reservation (sukses & gagal)
-    // - Test show reservation detail (API endpoint)
-    // - Test filter admin (memastikan data user lain muncul)
 }
