@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Feedback;
 use App\Models\Treatment;
+use Illuminate\Support\Facades\Log;
 
 class LandingPageController extends Controller
 {
@@ -33,16 +34,12 @@ class LandingPageController extends Controller
                 ->get();
 
             // 3. LOGGING UNTUK DEBUG (Optional)
-            \Log::info('LandingPage loaded', [
-                'feedbacks_count' => $featuredFeedbacks->count(),
-                'treatments_count' => $treatments->count()
-            ]);
 
             return view('landingpage', compact('featuredFeedbacks', 'treatments'));
 
         } catch (\Exception $e) {
             // 4. ERROR HANDLING - Fallback jika ada masalah
-            \Log::error('LandingPageController error: ' . $e->getMessage());
+            Log::error('LandingPageController error: ' . $e->getMessage());
             
             // Return view dengan data kosong (graceful degradation)
             return view('landingpage', [
