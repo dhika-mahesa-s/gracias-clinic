@@ -97,7 +97,6 @@
                                 <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-12">#</th>
                                 <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/4">Nama</th>
                                 <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/5">Email</th>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/6">Layanan</th>
                                 <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/6">Rating Rata-rata</th>
                                 <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/6">Tanggal</th>
                                 <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-24">Aksi</th>
@@ -122,11 +121,6 @@
                                         {{ $feedback->email }}
                                     </td>
                                     <td class="px-4 py-3 whitespace-nowrap">
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                                            {{ $feedback->service_type ?? 'General' }}
-                                        </span>
-                                    </td>
-                                    <td class="px-4 py-3 whitespace-nowrap">
                                         <div class="flex items-center space-x-2">
                                             <div class="flex text-yellow-400">
                                                 @for($i = 1; $i <= 5; $i++)
@@ -148,17 +142,6 @@
                                                 <i class="fas fa-eye w-4 h-4"></i>
                                             </a>
                                             
-                                            <!-- Button Hapus -->
-                                            <form action="{{ route('feedback.destroy', $feedback->id) }}" 
-                                                  method="POST" 
-                                                  class="inline"
-                                                  onsubmit="return confirm('Apakah Anda yakin ingin menghapus feedback dari {{ $feedback->name }}?')">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="bg-red-600 hover:bg-red-700 text-white p-2 rounded-lg transition-colors duration-200" title="Hapus Feedback">
-                                                    <i class="fas fa-trash w-4 h-4"></i>
-                                                </button>
-                                            </form>
                                         </div>
                                     </td>
                                 </tr>
