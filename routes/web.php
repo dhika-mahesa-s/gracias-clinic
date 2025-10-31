@@ -34,9 +34,7 @@ use App\Http\Controllers\ScheduleController;
 // ==========================
 // LANDING PAGE
 // ==========================
-Route::get('/', function(){
-    return view('landingpage');
-    })->name('landingpage');
+Route::get('/', [App\Http\Controllers\LandingPageController::class, 'index'])->name('landingpage');
 
 Route::get('/about', function () {
     return view('about');
@@ -111,8 +109,9 @@ Route::resource('feedback', FeedbackController::class);
 // ADMIN FEEDBACK
 // ==========================
 Route::prefix('admin')->middleware(['auth', 'check.admin'])->group(function () {
-    Route::get('/feedback', [FeedbackController::class, 'index'])->name('admin.feedback.index');
-    Route::post('/feedback/{id}/toggle-visibility', [FeedbackController::class, 'toggleVisibility'])->name('admin.feedback.toggle');
+    Route::get('/feedback', [AdminFeedbackController::class, 'index'])->name('admin.feedback.index');
+    Route::get('/feedback/{id}', [AdminFeedbackController::class, 'show'])->name('admin.feedback.show');
+    Route::post('/feedback/{id}/toggle-visibility', [AdminFeedbackController::class, 'toggleVisibility'])->name('admin.feedback.toggle');
 });
 
 // ==========================
