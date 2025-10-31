@@ -18,14 +18,14 @@
 <body class="font-[Poppins] bg-gray-50 text-gray-800">
 
     {{-- Navbar --}}
-    @include('partials.navbar')
+    @include('partials.navbar-dashboard')
 
     <div class="flex min-h-screen pt-16">
         {{-- Sidebar --}}
         @include('partials.sidebar')
 
         {{-- Konten Utama --}}
-        <main class="flex-1 p-6 bg-gray-50">
+        <main class="flex-1 p-6 mt-3 bg-gray-50">
             @yield('content')
         </main>
     </div>

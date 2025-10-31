@@ -1,6 +1,6 @@
 <aside class="w-64 bg-white shadow-md">
     <div class="pl-8 pt-6 mt-2">
-        <h6 class="text-lg font-bold text-gray-700">Menu Admin</h6>
+        <h6 class="text-2xl font-extrabold text-gray-700">Menu Admin</h6>
     </div>
     <nav class="p-4">
         <ul class="space-y-2">
@@ -35,7 +35,7 @@
             <li>
                 <a href="{{ route('treatments.manage') }}"
                    class="block px-4 py-2 rounded-lg 
-                   {{ Route::is('treatments.manage') ? 'bg-blue-500 text-white font-semibold' : 'hover:bg-blue-50 text-gray-700 font-medium' }}">
+                   {{ Route::is('treatments.*') ? 'bg-blue-500 text-white font-semibold' : 'hover:bg-blue-50 text-gray-700 font-medium' }}">
                     <i class="fa-solid fa-spa mr-2"></i> Kelola Treatment
                 </a>
             </li>

@@ -120,11 +120,11 @@ Route::prefix('admin')->middleware(['auth', 'check.admin'])->group(function () {
 // ==========================
 Route::prefix('admin')->middleware(['auth', 'check.admin'])->group(function () {
     Route::get('/faq', [AdminFaqController::class, 'index'])->name('admin.faq.index');
-    Route::get('/faq/create', [AdminFaqController::class, 'create']);
-    Route::post('/faq', [AdminFaqController::class, 'store']);
-    Route::get('/faq/{id}/edit', [AdminFaqController::class, 'edit']);
-    Route::put('/faq/{id}', [AdminFaqController::class, 'update']);
-    Route::delete('/faq/{id}', [AdminFaqController::class, 'destroy']);
+    Route::get('/faq/create', [AdminFaqController::class, 'create'])->name('admin.faq.create');
+    Route::post('/faq', [AdminFaqController::class, 'store'])->name('admin.faq.store');
+    Route::get('/faq/{id}/edit', [AdminFaqController::class, 'edit'])->name('admin.faq.edit');
+    Route::put('/faq/{id}', [AdminFaqController::class, 'update'])->name('admin.faq.update');
+    Route::delete('/faq/{id}', [AdminFaqController::class, 'destroy'])->name('admin.faq.destroy');
 });
 
 // ==========================

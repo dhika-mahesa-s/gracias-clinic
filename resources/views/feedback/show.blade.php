@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.dashboard')
 
 @section('content')
 <!-- Include Tailwind CSS -->
@@ -205,8 +205,7 @@
                     </div>
                     <div class="p-6">
                         <div class="space-y-3">
-                            <a href="{{ route('feedback.edit', $feedback->id) }}" class="w-full bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-3 rounded-lg transition-colors duration-200 flex items-center justify-center">
-                                <i class="fas fa-edit mr-2"></i>Edit Feedback
+                            <a href="{{ route('feedback.edit', $feedback->id) }}" class="w-full bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-3 rounded-lg transition-colors duration-200 flex items-center justify-center">                             <i class="fas fa-edit mr-2"></i>Edit Feedback
                             </a>
                             <form action="{{ route('feedback.destroy', $feedback->id) }}" method="POST" class="w-full">
                                 @csrf
