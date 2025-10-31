@@ -88,7 +88,7 @@
                                 @php
                                     $avg = ($feedback->staff_rating + $feedback->professional_rating + $feedback->result_rating + $feedback->return_rating + $feedback->overall_rating) / 5;
                                 @endphp
-                                <tr class="hover:bg-gray-50">
+                                <tr class="hover:bg-gray-50 transition">
                                     <td class="px-4 py-3 font-semibold text-gray-900">{{ $feedback->name }}</td>
                                     <td class="px-4 py-3 text-sm text-gray-700">{{ $feedback->email }}</td>
                                     <td class="px-4 py-3">
@@ -102,10 +102,26 @@
                                         @endif
                                     </td>
                                     <td class="px-4 py-3 text-center">
-                                        <button class="toggle-visibility bg-indigo-500 text-white px-3 py-1 rounded hover:bg-indigo-600 transition"
-                                            data-id="{{ $feedback->id }}">
-                                            {{ $feedback->is_visible ? 'Sembunyikan' : 'Tampilkan' }}
+                                        <div class="flex justify-center space-x-3">
+                                            <!-- Tombol Detail -->
+                                            <a href="{{ route('admin.feedback.show', $feedback->id) }}" 
+                                               class="min-w-[100px] bg-blue-600 hover:bg-blue-700 text-white text-xs px-4 py-2 rounded-lg transition flex items-center justify-center shadow-sm">
+                                                <i class="fas fa-info-circle text-xs mr-2"></i>Detail
+                                            </a>
+
+                                          <!-- Tombol Tampilkan / Sembunyikan -->
+                                        <button 
+                                            onclick="toggleVisibility({{ $feedback->id }})"
+                                            class="w-[120px] text-white text-sm px-2 py-1.5 rounded-md transition-colors duration-200 flex items-center justify-center shadow-sm 
+                                                {{ $feedback->is_visible ? 'bg-red-600 hover:bg-red-700' : 'bg-green-600 hover:bg-green-700' }}">
+                                            @if ($feedback->is_visible)
+                                                <i class="fas fa-eye-slash mr-1 text-xs"></i>Sembunyikan
+                                            @else
+                                                <i class="fas fa-eye mr-1 text-xs"></i>Tampilkan
+                                            @endif
                                         </button>
+
+                                        </div>
                                     </td>
                                 </tr>
                             @empty
@@ -130,26 +146,27 @@
 
 {{-- ⚡ AJAX Toggle --}}
 <script>
-document.querySelectorAll('.toggle-visibility').forEach(btn => {
-    btn.addEventListener('click', async () => {
-        const id = btn.dataset.id;
-
+async function toggleVisibility(id) {
+    try {
         const response = await fetch(`/admin/feedback/${id}/toggle-visibility`, {
             method: 'POST',
             headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            }
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Accept': 'application/json',
+            },
         });
 
         const data = await response.json();
-
         if (data.success) {
             alert(data.message);
             location.reload();
         } else {
             alert('Gagal mengubah visibilitas.');
         }
-    });
-});
+    } catch (error) {
+        console.error(error);
+        alert('Terjadi kesalahan.');
+    }
+}
 </script>
 @endsection

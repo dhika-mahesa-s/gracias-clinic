@@ -52,9 +52,11 @@ class FeedbackController extends Controller
     }
 
     // 📄 Detail feedback
-    public function show($id)
-    {
-        $feedback = Feedback::findOrFail($id);
-        return view('admin.feedback.show', compact('feedback'));
-    }
+   // 📄 Detail feedback
+public function show($id)
+{
+    $feedback = Feedback::findOrFail($id);
+    // ubah baris di bawah ini ⬇️
+    return view('feedback.show', compact('feedback'));
+}
 }

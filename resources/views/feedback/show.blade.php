@@ -16,9 +16,10 @@
                 <h1 class="text-3xl font-bold text-gray-900 mb-1">Detail Feedback</h1>
                 <p class="text-gray-600">Informasi lengkap feedback dari pengguna</p>
             </div>
-            <a href="{{ route('feedback.index') }}" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg transition-colors duration-200 flex items-center">
-                <i class="fas fa-arrow-left mr-2"></i>Kembali ke Daftar
-            </a>
+         <a href="{{ route('admin.feedback.index') }}" 
+   class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg transition-colors duration-200 flex items-center">
+    <i class="fas fa-arrow-left mr-2"></i>Kembali ke Daftar
+</a>
         </div>
 
         <!-- Main Content -->
