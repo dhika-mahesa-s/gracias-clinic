@@ -26,7 +26,7 @@
             <li>
                 <a href="{{ route('admin.reservations.history') }}"
                    class="block px-4 py-2 rounded-lg 
-                   {{ Route::is('admin.reservations.history') ? 'bg-blue-500 text-white font-semibold' : 'hover:bg-blue-50 text-gray-700 font-medium' }}">
+                   {{ Route::is('admin.reservations.*') ? 'bg-blue-500 text-white font-semibold' : 'hover:bg-blue-50 text-gray-700 font-medium' }}">
                     <i class="fa-solid fa-clock-rotate-left mr-2"></i> Riwayat Reservasi
                 </a>
             </li>
