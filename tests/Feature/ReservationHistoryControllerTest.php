@@ -48,6 +48,8 @@ class ReservationHistoryControllerTest extends TestCase
      */
     public function test_customer_history_page_is_accessible_when_logged_in()
     {
+        $this->withoutExceptionHandling();
+
         $response = $this->actingAs($this->customerUser) // Simulasi login sebagai customer
             ->get(route('reservations.history'));
 
@@ -118,7 +120,7 @@ class ReservationHistoryControllerTest extends TestCase
             ->get(route('admin.reservations.history'));
 
         $response->assertStatus(200);
-        $response->assertSee('Manajemen Reservasi'); // Judul halaman admin
+        $response->assertSee('Riwayat Reservasi'); // Judul halaman admin
     }
 
     /**
