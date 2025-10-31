@@ -18,6 +18,10 @@
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
           crossorigin="anonymous"
           referrerpolicy="no-referrer">
+
+    {{-- ✅ Swiper.js (CSS) --}}
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+
 </head>
 
 <body x-data="{ dark: false }" :class="{ 'dark': dark }" 
@@ -33,6 +37,14 @@
 
     {{-- 🌙 Footer --}}
     @include('partials.footer')
-    
+
+    <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+
+    <script>
+        document.addEventListener('alpine:init', () => {
+            setTimeout(() => AOS.init({ duration: 600, once: true }), 100);
+        });
+    </script>
 </body>
 </html>
