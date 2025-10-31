@@ -52,12 +52,8 @@
             {{-- Tombol Login/Register --}}
             @guest
                 <a href="{{ route('login') }}"
-                   class="px-4 py-2 border border-gray-800 rounded-lg font-medium hover:bg-gray-900 hover:text-white transition">
-                    Login
-                </a>
-                <a href="{{ route('register') }}"
                    class="px-4 py-2 bg-gray-900 text-white rounded-lg font-medium hover:bg-black transition">
-                    Daftar Sekarang
+                    Login
                 </a>
             @endguest
 

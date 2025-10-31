@@ -3,11 +3,8 @@
 @section('content')
 <div class="relative min-h-screen py-16 px-6 overflow-hidden">
     {{-- Background image --}}
-    <div class="absolute inset-0 bg-cover bg-center bg-[url('{{ asset('images/about-us2.jpg') }}')] z-0"></div>
-
-
-    {{-- Overlay putih transparan --}}
-    <div class="absolute inset-0 bg-white bg-opacity-05 z-0"></div>
+    <div class="absolute inset-0 bg-cover bg-center opacity-45" style="background-image: url('{{ asset('images/about-us3.jpg') }}') }}')] z-0"></div>
+  
 
     {{-- Konten utama --}}
     <div class="relative z-10">

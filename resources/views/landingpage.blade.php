@@ -3,12 +3,11 @@
 @section('content')
     <!-- Hero Section -->
 <section class="relative bg-background text-foreground min-h-screen flex flex-col items-center justify-center text-center px-6">
-    <div class="absolute inset-0 bg-cover bg-center opacity-20" style="background-image: url('{{ asset('images/clinic-bg.jpg') }}')"></div>
+    <div class="absolute inset-0 bg-cover bg-center opacity-32" style="background-image: url('{{ asset('images/about-us3.jpg') }}')"></div>
 
     <div class="relative z-10">
         <h1 class="text-4xl md:text-5xl font-bold mb-4 text-primary">Your Beauty, Our Priority</h1>
         <p class="text-muted-foreground max-w-2xl mx-auto mb-8">
-            Rasakan pengalaman beauty treatment premium dengan teknologi terdepan dan layanan dokter berpengalaman.
             Wujudkan kecantikan impian Anda bersama kami.
         </p>
 
@@ -16,12 +15,8 @@
         <div class="flex justify-center gap-4">
             @guest
                 {{-- Jika user belum login --}}
-                <a href="{{ route('login') }}"
-                    class="bg-primary text-primary-foreground px-6 py-3 rounded-lg shadow hover:bg-primary/90 transition">
-                    Login
-                </a>
                 <a href="{{ route('register') }}"
-                    class="border border-primary text-primary px-6 py-3 rounded-lg hover:bg-primary hover:text-primary-foreground transition">
+                    class="bg-primary text-primary-foreground px-6 py-3 rounded-lg shadow hover:bg-primary/90 transition">
                     Reservasi Sekarang
                 </a>
             @endguest
