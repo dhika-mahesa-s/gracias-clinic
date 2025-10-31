@@ -1,5 +1,6 @@
 @extends('layouts.app')
 
+
 @section('content')
     <!-- Hero Section -->
 <section class="relative bg-background text-foreground min-h-screen flex flex-col items-center justify-center text-center px-6">
@@ -135,7 +136,7 @@
             <p class="text-gray-600 mb-12">Pengalaman pelanggan kami</p>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                @if(isset($featuredFeedbacks) && $featuredFeedbacks->count() > 0)
+                @if($featuredFeedbacks->isNotEmpty())
                     @foreach($featuredFeedbacks as $feedback)
                         @php
                             // Hitung rata-rata rating yang lebih akurat

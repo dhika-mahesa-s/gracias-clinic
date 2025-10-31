@@ -147,18 +147,6 @@
                                                title="Detail Feedback">
                                                 <i class="fas fa-eye w-4 h-4"></i>
                                             </a>
-                                            
-                                            <!-- Button Hapus -->
-                                            <form action="{{ route('feedback.destroy', $feedback->id) }}" 
-                                                  method="POST" 
-                                                  class="inline"
-                                                  onsubmit="return confirm('Apakah Anda yakin ingin menghapus feedback dari {{ $feedback->name }}?')">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="bg-red-600 hover:bg-red-700 text-white p-2 rounded-lg transition-colors duration-200" title="Hapus Feedback">
-                                                    <i class="fas fa-trash w-4 h-4"></i>
-                                                </button>
-                                            </form>
                                         </div>
                                     </td>
                                 </tr>
