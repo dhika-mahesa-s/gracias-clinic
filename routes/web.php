@@ -129,9 +129,16 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/feedback/thankyou', [FeedbackController::class, 'thankyou'])->name('feedback.thankyou');
 });
 // ==========================
-// FEEDBACK RESOURCE (CRUD)
 // ==========================
-Route::resource('feedback', FeedbackController::class);
+// FEEDBACK (User Side)
+// ==========================
+Route::middleware(['auth'])->group(function () {
+    Route::get('/feedback', [FeedbackController::class, 'create'])->name('feedback.create');
+    Route::post('/feedback', [FeedbackController::class, 'store'])->name('feedback.store');
+    Route::get('/feedback/thankyou', [FeedbackController::class, 'thankyou'])->name('feedback.thankyou');
+});
+
+
 
 // ==========================
 // ADMIN FEEDBACK
@@ -141,7 +148,6 @@ Route::prefix('admin')->middleware(['auth', 'check.admin'])->group(function () {
     Route::get('/feedback/{id}', [AdminFeedbackController::class, 'show'])->name('admin.feedback.show');
     Route::post('/feedback/{id}/toggle-visibility', [AdminFeedbackController::class, 'toggleVisibility'])->name('admin.feedback.toggle');
 });
-
 // ==========================
 // ADMIN FAQ
 // ==========================

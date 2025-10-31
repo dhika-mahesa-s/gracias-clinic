@@ -1,5 +1,4 @@
 <?php
-// app/Http/Controllers/Admin/FeedbackController.php
 
 namespace App\Http\Controllers\Admin;
 
@@ -8,49 +7,54 @@ use Illuminate\Http\Request;
 use App\Models\Feedback;
 
 class FeedbackController extends Controller
-{ 
+{
     public function index(Request $request)
     {
         $query = Feedback::query();
-        
-        // Filter pencarian nama
-        if ($request->has('search') && $request->search != '') {
+
+        // 🔍 Filter pencarian nama
+        if ($request->filled('search')) {
             $query->where('name', 'like', '%' . $request->search . '%');
         }
-        
-        // Filter rating berdasarkan rata-rata
-        if ($request->has('rating_filter') && $request->rating_filter != '') {
-            $minRating = (int)$request->rating_filter;
+
+        // ⭐ Filter berdasarkan rata-rata rating
+        if ($request->filled('rating_filter')) {
+            $minRating = (int) $request->rating_filter;
             $query->whereRaw('(staff_rating + professional_rating + result_rating + return_rating + overall_rating) / 5 >= ?', [$minRating]);
         }
-        
-        // Gunakan paginate() agar mendukung currentPage() & perPage()
+
+        // 👁️ Filter visibilitas (tampil di homepage / tidak)
+        if ($request->filled('visibility')) {
+            $isVisible = $request->visibility === '1';
+            $query->where('is_visible', $isVisible);
+        }
+
+        // 🔄 Urutkan dari terbaru dan paginate
         $feedbacks = $query->latest()->paginate(10);
-        
-        // Tetap menggunakan view tanpa admin prefix
+
         return view('feedback.index', compact('feedbacks'));
     }
 
+    // 🔘 Toggle tampil/sembunyi dari homepage
     public function toggleVisibility($id)
-{
-    $feedback = Feedback::findOrFail($id);
+    {
+        $feedback = Feedback::findOrFail($id);
+        $feedback->is_visible = !$feedback->is_visible;
+        $feedback->save();
 
-    // Toggle nilai
-    $feedback->is_visible = !$feedback->is_visible;
-    $feedback->save();
+        return response()->json([
+            'success' => true,
+            'is_visible' => $feedback->is_visible,
+            'message' => $feedback->is_visible
+                ? 'Feedback berhasil ditampilkan di homepage.'
+                : 'Feedback disembunyikan dari homepage.'
+        ]);
+    }
 
-    // Kembalikan respons JSON agar bisa dibaca JS
-    return response()->json([
-        'success' => true,
-        'is_visible' => $feedback->is_visible,
-        'message' => $feedback->is_visible
-            ? 'Feedback berhasil ditampilkan di homepage.'
-            : 'Feedback disembunyikan dari homepage.'
-    ]);
-}
+    // 📄 Detail feedback
     public function show($id)
-{
-    $feedback = Feedback::findOrFail($id);
-    return view('admin.feedback.show', compact('feedback'));
-}
+    {
+        $feedback = Feedback::findOrFail($id);
+        return view('admin.feedback.show', compact('feedback'));
+    }
 }
