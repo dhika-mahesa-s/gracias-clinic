@@ -22,7 +22,7 @@
             <div>
                 <form method="GET" action="{{ route('feedback.index') }}">
                     <div class="flex">
-                        <div class="relative flex-grow">
+                        <div class="relative grow">
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                 <i class="fas fa-search text-gray-400"></i>
                             </div>
@@ -86,14 +86,7 @@
         </div>
         @endif
 
-        <!-- Tombol Tambah Feedback - DITAMBAHKAN DI SINI -->
-        <div class="mb-6 text-right">
-            <a href="{{ route('feedback.create') }}" class="inline-flex items-center bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg">
-                <i class="fas fa-plus mr-2"></i>
-                Tambah Feedback Baru
-            </a>
-        </div>
-
+        
         <!-- Feedback List Table -->
         <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
             <div class="p-6">
@@ -154,18 +147,6 @@
                                                title="Detail Feedback">
                                                 <i class="fas fa-eye w-4 h-4"></i>
                                             </a>
-                                            
-                                            <!-- Button Hapus -->
-                                            <form action="{{ route('feedback.destroy', $feedback->id) }}" 
-                                                  method="POST" 
-                                                  class="inline"
-                                                  onsubmit="return confirm('Apakah Anda yakin ingin menghapus feedback dari {{ $feedback->name }}?')">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="bg-red-600 hover:bg-red-700 text-white p-2 rounded-lg transition-colors duration-200" title="Hapus Feedback">
-                                                    <i class="fas fa-trash w-4 h-4"></i>
-                                                </button>
-                                            </form>
                                         </div>
                                     </td>
                                 </tr>

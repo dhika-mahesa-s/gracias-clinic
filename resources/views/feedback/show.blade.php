@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.dashboard')
 
 @section('content')
 <!-- Include Tailwind CSS -->
@@ -42,22 +42,7 @@
                                 <label class="block text-sm font-medium text-gray-500 mb-1">Email</label>
                                 <p class="text-gray-900 font-medium">{{ $feedback->email }}</p>
                             </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-500 mb-1">Nomor Telepon</label>
-                                <p class="text-gray-900 font-medium">{{ $feedback->phone ?? '-' }}</p>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-500 mb-1">Layanan</label>
-                                <p class="text-gray-900 font-medium">
-                                    @if($feedback->service_type)
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                                            {{ $feedback->service_type }}
-                                        </span>
-                                    @else
-                                        -
-                                    @endif
-                                </p>
-                            </div>
+                            
                             <div class="md:col-span-2">
                                 <label class="block text-sm font-medium text-gray-500 mb-1">Tanggal Submit</label>
                                 <p class="text-gray-900 font-medium">{{ $feedback->created_at->format('d F Y H:i') }}</p>
@@ -205,18 +190,19 @@
                     </div>
                     <div class="p-6">
                         <div class="space-y-3">
-                            <a href="{{ route('feedback.edit', $feedback->id) }}" class="w-full bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-3 rounded-lg transition-colors duration-200 flex items-center justify-center">
-                                <i class="fas fa-edit mr-2"></i>Edit Feedback
-                            </a>
-                            <form action="{{ route('feedback.destroy', $feedback->id) }}" method="POST" class="w-full">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" 
-                                        class="w-full bg-red-600 hover:bg-red-700 text-white px-4 py-3 rounded-lg transition-colors duration-200 flex items-center justify-center"
-                                        onclick="return confirm('Apakah Anda yakin ingin menghapus feedback dari {{ $feedback->name }}?')">
-                                    <i class="fas fa-trash mr-2"></i>Hapus Feedback
+                            @if($feedback->is_visible)
+                                <!-- Button Hide -->
+                                <button onclick="toggleVisibility({{ $feedback->id }})" 
+                                        class="w-full bg-red-600 hover:bg-red-700 text-white px-4 py-3 rounded-lg transition-colors duration-200 flex items-center justify-center">
+                                    <i class="fas fa-eye-slash mr-2"></i>Hide dari Homepage
                                 </button>
-                            </form>
+                            @else
+                                <!-- Button Show -->
+                                <button onclick="toggleVisibility({{ $feedback->id }})" 
+                                        class="w-full bg-green-600 hover:bg-green-700 text-white px-4 py-3 rounded-lg transition-colors duration-200 flex items-center justify-center">
+                                    <i class="fas fa-eye mr-2"></i>Show di Homepage
+                                </button>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -253,6 +239,30 @@
         </div>
     </div>
 </div>
+
+<script>
+function toggleVisibility(feedbackId) {
+    if (confirm('Apakah Anda yakin ingin mengubah status tampil feedback ini?')) {
+        fetch(`/admin/feedback/${feedbackId}/toggle-visibility`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload(); // Refresh halaman untuk update status
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Terjadi kesalahan saat mengubah status');
+        });
+    }
+}
+</script>
 
 <style>
     /* Custom styling untuk konsistensi */
