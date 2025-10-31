@@ -6,18 +6,18 @@
 <div class="max-w-2xl mx-auto mt-24 bg-white rounded-2xl shadow-lg p-10">
     <h1 class="text-2xl font-semibold text-center mb-8 text-gray-800">Tambah FAQ Baru</h1>
 
-    <form action="{{ url('admin/faq') }}" method="POST" class="space-y-6">
+    <form id="faqForm" action="{{ url('admin/faq') }}" method="POST" class="space-y-6">
         @csrf
 
         <div>
             <label for="question" class="block text-gray-700 font-medium mb-2">Pertanyaan:</label>
-            <input type="text" id="question" name="question" required
+            <input type="text" id="question" name="question"
                    class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:border-teal-700 focus:ring-2 focus:ring-teal-300 outline-none transition">
         </div>
 
         <div>
             <label for="answer" class="block text-gray-700 font-medium mb-2">Jawaban:</label>
-            <textarea id="answer" name="answer" rows="4" required
+            <textarea id="answer" name="answer" rows="4"
                       class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:border-teal-700 focus:ring-2 focus:ring-teal-300 outline-none transition"></textarea>
         </div>
 
@@ -33,4 +33,38 @@
         </div>
     </form>
 </div>
+
+{{-- SweetAlert2 --}}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+document.getElementById('faqForm').addEventListener('submit', function(event) {
+    const question = document.getElementById('question').value.trim();
+    const answer = document.getElementById('answer').value.trim();
+
+    // Jika salah satu kosong, cegah submit dan tampilkan pop-up
+    if (!question || !answer) {
+        event.preventDefault();
+        Swal.fire({
+            icon: 'error',
+            title: 'Gagal Menyimpan!',
+            text: 'Pertanyaan dan Jawaban wajib diisi.',
+            confirmButtonColor: '#0d9488'
+        });
+        return;
+    }
+
+    // Kalau semua terisi, tampilkan notifikasi berhasil (sebentar) sebelum submit
+    event.preventDefault();
+    Swal.fire({
+        icon: 'success',
+        title: 'Berhasil!',
+        text: 'FAQ berhasil disimpan.',
+        timer: 1500,
+        showConfirmButton: false
+    }).then(() => {
+        event.target.submit();
+    });
+});
+</script>
 @endsection

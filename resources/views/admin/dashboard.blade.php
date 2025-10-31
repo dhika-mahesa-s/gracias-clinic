@@ -24,8 +24,18 @@
     {{-- Charts --}}
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <div class="bg-white shadow rounded-2xl p-6">
-            <h2 class="text-lg font-semibold text-gray-700 mb-4">Reservasi per Bulan</h2>
-            <canvas id="chartPerBulan" height="100"></canvas>
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-lg font-semibold text-gray-700">Reservasi</h2>
+
+                <select id="chartFilter" 
+                        class="border border-gray-300 rounded-lg text-sm px-3 py-1 focus:ring-2 focus:ring-blue-500">
+                    <option value="bulan" selected>Per Bulan</option>
+                    <option value="minggu">Per Minggu</option>
+                    <option value="hari">Per Hari</option>
+                </select>
+            </div>
+
+                <canvas id="chartPerBulan" height="100"></canvas>
         </div>
 
         <div class="bg-white shadow rounded-2xl p-6">
@@ -49,27 +59,112 @@
 <script>
     const monthLabels = {!! json_encode($reservationsByMonth->pluck('month')) !!};
     const monthData = {!! json_encode($reservationsByMonth->pluck('total')) !!};
+
+    const weekLabels = {!! json_encode($reservationsByWeek->pluck('week')) !!};
+    const weekData = {!! json_encode($reservationsByWeek->pluck('total')) !!};
+
+    const dayLabels = {!! json_encode($reservationsByDay->pluck('day')) !!};
+    const dayData = {!! json_encode($reservationsByDay->pluck('total')) !!};
+
     const statusLabels = {!! json_encode($reservationsByStatus->pluck('status')) !!};
     const statusData = {!! json_encode($reservationsByStatus->pluck('total')) !!};
+    
     const treatmentLabels = {!! json_encode($reservationsByTreatment->pluck('treatment')) !!};
     const treatmentData = {!! json_encode($reservationsByTreatment->pluck('total')) !!};
 
-    new Chart(document.getElementById('chartPerBulan'), {
+    // Buat Chart Per Bulan
+    const ctxMonth = document.getElementById('chartPerBulan').getContext('2d');
+    const chartPerBulan = new Chart(ctxMonth, {
         type: 'line',
-        data: { labels: monthLabels.map(m => 'Bulan ' + m), datasets: [{ label: 'Total Reservasi', data: monthData, borderColor: '#3b82f6', fill: false, tension: 0.3 }] },
-        options: { responsive: true, scales: { y: { beginAtZero: true } } }
+        data: {
+            labels: monthLabels.map(m => 'Bulan ' + m),
+            datasets: [{
+                label: 'Total Reservasi',
+                data: monthData,
+                borderColor: '#3b82f6',
+                borderWidth: 2,
+                pointBackgroundColor: '#3b82f6',
+                fill: false,
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            animation: {
+                duration: 1000, // durasi animasi (ms)
+                easing: 'easeInOutQuart' // gaya transisi halus
+            },
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
     });
 
+    // Chart Status 
     new Chart(document.getElementById('chartStatus'), {
         type: 'doughnut',
-        data: { labels: statusLabels, datasets: [{ data: statusData, backgroundColor: ['#60a5fa', '#34d399', '#f87171', '#fbbf24'] }] },
-        options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+        data: {
+            labels: statusLabels,
+            datasets: [{
+                data: statusData,
+                backgroundColor: ['#60a5fa', '#34d399', '#f87171', '#fbbf24'],
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { position: 'bottom' },
+            }
+        }
     });
 
+    // Chart Treatment
     new Chart(document.getElementById('chartTreatment'), {
         type: 'bar',
-        data: { labels: treatmentLabels, datasets: [{ data: treatmentData, backgroundColor: '#6366f1' }] },
-        options: { responsive: true, scales: { y: { beginAtZero: true } } }
+        data: {
+            labels: treatmentLabels,
+            datasets: [{
+                data: treatmentData,
+                backgroundColor: '#6366f1'
+            }]
+        },
+        options: {
+            responsive: true,
+            animation: {
+                duration: 800,
+                easing: 'easeOutCubic'
+            },
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+    });
+
+    // Event Listener Dropdown 
+    document.getElementById('chartFilter').addEventListener('change', function() {
+        const selected = this.value;
+
+        let labels = [];
+        let data = [];
+
+        if (selected === 'bulan') {
+            labels = monthLabels.map(m => 'Bulan ' + m);
+            data = monthData;
+        } else if (selected === 'minggu') {
+            labels = weekLabels.map(w => 'Minggu ' + w);
+            data = weekData;
+        } else if (selected === 'hari') {
+            labels = dayLabels.map(d => 'Hari ' + d);
+            data = dayData;
+        }
+
+        // transisi halus ke data baru 
+        chartPerBulan.data.labels = labels;
+        chartPerBulan.data.datasets[0].data = data;
+        chartPerBulan.update({
+            duration: 800, // durasi animasi update
+            easing: 'easeInOutQuart'
+        });
     });
 </script>
 @endsection
