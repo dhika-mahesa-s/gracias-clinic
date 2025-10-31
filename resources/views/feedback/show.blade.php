@@ -242,7 +242,7 @@
 
 <script>
 function toggleVisibility(feedbackId) {
-    if (confirm('Apakah Anda yakin ingin mengubah status tampil feedback ini?')) {
+    if (confirm('Apakah Anda yakin ingin mengubah status tampil feedback ini di homepage?')) {
         fetch(`/admin/feedback/${feedbackId}/toggle-visibility`, {
             method: 'POST',
             headers: {
@@ -253,12 +253,15 @@ function toggleVisibility(feedbackId) {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                location.reload(); // Refresh halaman untuk update status
+                alert(data.message);
+                location.reload(); // Refresh halaman untuk update status tombol
+            } else {
+                alert('Gagal mengubah status feedback.');
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('Terjadi kesalahan saat mengubah status');
+            alert('Terjadi kesalahan saat mengubah status feedback.');
         });
     }
 }

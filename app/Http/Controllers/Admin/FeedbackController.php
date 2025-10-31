@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\Feedback;
 
 class FeedbackController extends Controller
-{
+{ 
     public function index(Request $request)
     {
         $query = Feedback::query();
@@ -32,22 +32,25 @@ class FeedbackController extends Controller
     }
 
     public function toggleVisibility($id)
-    {
-        $feedback = Feedback::findOrFail($id);
-        $feedback->is_visible = !$feedback->is_visible;
-        $feedback->save();
+{
+    $feedback = Feedback::findOrFail($id);
 
-        return response()->json([
-            'success' => true,
-            'is_visible' => $feedback->is_visible,
-            'message' => $feedback->is_visible ? 'Feedback ditampilkan di homepage' : 'Feedback disembunyikan dari homepage'
-        ]);
-    }
+    // Toggle nilai
+    $feedback->is_visible = !$feedback->is_visible;
+    $feedback->save();
 
+    // Kembalikan respons JSON agar bisa dibaca JS
+    return response()->json([
+        'success' => true,
+        'is_visible' => $feedback->is_visible,
+        'message' => $feedback->is_visible
+            ? 'Feedback berhasil ditampilkan di homepage.'
+            : 'Feedback disembunyikan dari homepage.'
+    ]);
+}
     public function show($id)
-    {
-        $feedback = Feedback::findOrFail($id);
-        // Tetap menggunakan view tanpa admin prefix
-        return view('feedback.show', compact('feedback'));
-    }
+{
+    $feedback = Feedback::findOrFail($id);
+    return view('admin.feedback.show', compact('feedback'));
+}
 }
