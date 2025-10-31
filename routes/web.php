@@ -18,6 +18,7 @@ use App\Http\Controllers\Admin\FaqController as AdminFaqController;
 use App\Http\Controllers\Customer\FaqController as CustomerFaqController;
 use App\Http\Controllers\Admin\ReservationAdminController;
 use App\Http\Controllers\ReservationHistoryController;
+use App\Http\Controllers\ScheduleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -146,6 +147,8 @@ Route::post('/reservations/{reservation}/cancel', [ReservationHistoryController:
 
 Route::prefix('admin')->middleware(['auth', 'check.admin'])->group(function () {
     Route::get('/riwayat-reservasi', [ReservationHistoryController::class, 'adminIndex'])->name('admin.reservations.history');
+    Route::resource('schedules', ScheduleController::class)->middleware('auth');
+
 });
 
 // ==========================
