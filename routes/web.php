@@ -129,18 +129,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/feedback/thankyou', [FeedbackController::class, 'thankyou'])->name('feedback.thankyou');
 });
 // ==========================
-// ==========================
-// FEEDBACK (User Side)
-// ==========================
-Route::middleware(['auth'])->group(function () {
-    Route::get('/feedback', [FeedbackController::class, 'create'])->name('feedback.create');
-    Route::post('/feedback', [FeedbackController::class, 'store'])->name('feedback.store');
-    Route::get('/feedback/thankyou', [FeedbackController::class, 'thankyou'])->name('feedback.thankyou');
-});
-
-
-
-// ==========================
 // ADMIN FEEDBACK
 // ==========================
 Route::prefix('admin')->middleware(['auth', 'check.admin'])->group(function () {
@@ -148,6 +136,7 @@ Route::prefix('admin')->middleware(['auth', 'check.admin'])->group(function () {
     Route::get('/feedback/{id}', [AdminFeedbackController::class, 'show'])->name('admin.feedback.show');
     Route::post('/feedback/{id}/toggle-visibility', [AdminFeedbackController::class, 'toggleVisibility'])->name('admin.feedback.toggle');
 });
+
 // ==========================
 // ADMIN FAQ
 // ==========================
@@ -175,7 +164,6 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware(['auth'])->group(function () {
 Route::get('/riwayat-reservasi', [ReservationHistoryController::class, 'index'])->name('reservations.history');
 Route::get('/reservations/{reservation}', [ReservationHistoryController::class, 'show'])->name('reservations.show');
-Route::post('/reservations/{reservation}/cancel', [ReservationHistoryController::class, 'cancel'])->name('reservations.cancel');
 Route::get('/riwayat-reservasi/cetak', [ReservationHistoryController::class, 'printReport'])->name('admin.reservations.print');
 });
 
