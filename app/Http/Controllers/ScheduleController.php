@@ -45,4 +45,24 @@ class ScheduleController extends Controller
 
         return redirect()->route('schedules.index')->with('success', 'Jadwal berhasil dihapus!');
     }
+    public function edit(Schedule $schedule)
+{
+    $doctors = Doctor::where('status', 'active')->get();
+    return view('schedules.edit', compact('schedule', 'doctors'));
+}
+
+public function update(Request $request, Schedule $schedule)
+{
+    $request->validate([
+        'doctor_id' => 'required|exists:doctors,id',
+        'day_of_week' => 'required',
+        'start_time' => 'required',
+        'end_time' => 'required|after:start_time',
+        'quota' => 'required|integer|min:1',
+    ]);
+
+    $schedule->update($request->all());
+
+    return redirect()->route('schedules.index')->with('success', 'Jadwal berhasil diperbarui!');
+}
 }
