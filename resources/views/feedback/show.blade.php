@@ -190,10 +190,19 @@
                     </div>
                     <div class="p-6">
                         <div class="space-y-3">
-                            <a href="{{ route('feedback.edit', $feedback->id) }}" class="w-full bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-3 rounded-lg transition-colors duration-200 flex items-center justify-center">
-                                <i class="fas fa-edit mr-2"></i>Edit Feedback
-                            </a>
-                            <!-- Button hapus telah dihapus dari sini -->
+                            @if($feedback->is_visible)
+                                <!-- Button Hide -->
+                                <button onclick="toggleVisibility({{ $feedback->id }})" 
+                                        class="w-full bg-red-600 hover:bg-red-700 text-white px-4 py-3 rounded-lg transition-colors duration-200 flex items-center justify-center">
+                                    <i class="fas fa-eye-slash mr-2"></i>Hide dari Homepage
+                                </button>
+                            @else
+                                <!-- Button Show -->
+                                <button onclick="toggleVisibility({{ $feedback->id }})" 
+                                        class="w-full bg-green-600 hover:bg-green-700 text-white px-4 py-3 rounded-lg transition-colors duration-200 flex items-center justify-center">
+                                    <i class="fas fa-eye mr-2"></i>Show di Homepage
+                                </button>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -230,6 +239,30 @@
         </div>
     </div>
 </div>
+
+<script>
+function toggleVisibility(feedbackId) {
+    if (confirm('Apakah Anda yakin ingin mengubah status tampil feedback ini?')) {
+        fetch(`/admin/feedback/${feedbackId}/toggle-visibility`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload(); // Refresh halaman untuk update status
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Terjadi kesalahan saat mengubah status');
+        });
+    }
+}
+</script>
 
 <style>
     /* Custom styling untuk konsistensi */
