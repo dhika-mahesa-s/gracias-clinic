@@ -1,4 +1,4 @@
-<footer class="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground py-12 mt-20 shadow-lg">
+<footer class="bg-linear-to-r from-primary to-primary/80 text-primary-foreground py-12 mt-20 shadow-lg">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6 lg:gap-8">
             <!-- Kolom 1: Logo dan Deskripsi -->
@@ -29,7 +29,7 @@
                     <i class="fa-brands fa-whatsapp text-accent text-xl mr-3"></i>
                     <p class="font-semibold text-lg">WhatsApp</p>
                 </div>
-                <a href="https://api.whatsapp.com/send/?phone=6282174973339&text&type=phone_number&app_absent=0" class="hover:text-accent transition-colors duration-300 text-sm sm:text-base break-words">
+                <a href="https://api.whatsapp.com/send/?phone=6282174973339&text&type=phone_number&app_absent=0" class="hover:text-accent transition-colors duration-300 text-sm sm:text-base wrap-break-word">
                     +62-8217-4973-339
                 </a>
             </div>
@@ -49,7 +49,7 @@
                     <i class="fa-solid fa-envelope text-accent text-xl mr-3"></i>
                     <p class="font-semibold text-lg">Email</p>
                 </div>
-                <a href="mailto:gracias.aestheticlinic@gmail.com" class="hover:text-accent transition-colors duration-300 text-sm sm:text-base break-words">gracias.aestheticlinic@gmail.com</a>
+                <a href="mailto:gracias.aestheticlinic@gmail.com" class="hover:text-accent transition-colors duration-300 text-sm sm:text-base wrap-break-word">gracias.aestheticlinic@gmail.com</a>
             </div>
         </div>
     </div>

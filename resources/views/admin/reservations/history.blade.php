@@ -20,7 +20,7 @@
             <svg class="w-5 h-5 text-gray-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
             </svg>
-            <input type="text" name="search" class="flex-grow focus:outline-none text-gray-700 bg-transparent text-sm" placeholder="Cari Kode Booking, Treatment, atau Dokter..." value="{{ request('search') }}">
+            <input type="text" name="search" class="grow focus:outline-none text-gray-700 bg-transparent text-sm" placeholder="Cari Kode Booking, Treatment, atau Dokter..." value="{{ request('search') }}">
             <button type="submit" class="text-sm font-medium text-indigo-600 hover:text-indigo-800 px-3 border-l border-gray-300 ml-3">
                 Cari
             </button>
@@ -78,7 +78,7 @@
 
         <div class="bg-white p-5 rounded-xl shadow-lg border border-gray-100">
             <div class="flex flex-col md:flex-row md:justify-between md:items-start">
-                <div class="flex-grow">
+                <div class="grow">
                     <div class="flex items-center mb-3">
                         <h5 class="text-xl font-bold mr-3">{{ optional($r->treatment)->name ?? '—' }}</h5>
                         @php

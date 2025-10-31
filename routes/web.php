@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Support\Str;
 use Laravel\Socialite\Socialite;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\FeedbackController;
@@ -23,6 +24,7 @@ use App\Http\Controllers\Admin\ReservationAdminController;
 use App\Http\Controllers\Admin\FaqController as AdminFaqController;
 use App\Http\Controllers\Customer\FaqController as CustomerFaqController;
 use App\Http\Controllers\Admin\FeedbackController as AdminFeedbackController;
+use App\Http\Controllers\LandingPageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,7 +40,7 @@ use App\Http\Controllers\Admin\FeedbackController as AdminFeedbackController;
 // ==========================
 // LANDING PAGE
 // ==========================
-Route::get('/', [App\Http\Controllers\LandingPageController::class, 'index'])->name('landingpage');
+Route::get('/', [LandingPageController::class, 'index'])->name('landingpage');
 
 Route::get('/about', function () {
     return view('about');
@@ -54,22 +56,21 @@ Route::get('/auth/redirect', function () {
 Route::get('/auth/callback', function () {
     $googleUser = Socialite::driver('google')->user();
 
-    // Cek apakah user sudah ada
     $user = User::where('email', $googleUser->getEmail())->first();
 
-    // Jika belum ada, buat baru
-    if (!$user) {
+    if (! $user) {
         $user = User::create([
             'name' => $googleUser->getName(),
             'email' => $googleUser->getEmail(),
-            'password' => bcrypt(Str::random(16)),
+            'google_id' => $googleUser->getId(),
+            'password' => Hash::make(Str::random(16))
         ]);
     }
 
     Auth::login($user);
-
-    return redirect('/'); // Arahkan ke landing page
+    return redirect('/');
 });
+
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 // Register Routes
 Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
