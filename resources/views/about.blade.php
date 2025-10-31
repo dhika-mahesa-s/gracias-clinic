@@ -7,7 +7,7 @@
 
 
     {{-- Overlay putih transparan --}}
-    <div class="absolute inset-0 bg-white bg-opacity-05 z-0"></div>
+    <div class="absolute inset-0 bg-opacity-05 z-0"></div>
 
     {{-- Konten utama --}}
     <div class="relative z-10">
