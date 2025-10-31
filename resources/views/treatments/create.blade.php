@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.dashboard')
 
 @section('content')
 <section class="min-h-screen bg-[#F1F5F9] py-12">

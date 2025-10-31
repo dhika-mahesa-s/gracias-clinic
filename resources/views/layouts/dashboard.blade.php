@@ -25,7 +25,7 @@
         @include('partials.sidebar')
 
         {{-- Konten Utama --}}
-        <main class="flex-1 p-6 bg-gray-50">
+        <main class="flex-1 p-6 mt-3 bg-gray-50">
             @yield('content')
         </main>
     </div>
