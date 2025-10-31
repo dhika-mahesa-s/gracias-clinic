@@ -4,21 +4,27 @@
 | Web Routes
 |--------------------------------------------------------------------------
 */
-use App\Http\Controllers\ProfileController;
+use App\Models\User;
+use Illuminate\Support\Str;
+use Laravel\Socialite\Socialite;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ReservationController;
-use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\Auth\RegisterController;
-use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\Auth\PasswordResetController;
-use App\Http\Controllers\TreatmentController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\FeedbackController;
-use App\Http\Controllers\Admin\FeedbackController as AdminFeedbackController;
+use App\Http\Controllers\ScheduleController;
+use App\Http\Controllers\TreatmentController;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\ReservationController;
+use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Auth\PasswordResetController;
+use App\Http\Controllers\ReservationHistoryController;
+use App\Http\Controllers\Admin\ReservationAdminController;
 use App\Http\Controllers\Admin\FaqController as AdminFaqController;
 use App\Http\Controllers\Customer\FaqController as CustomerFaqController;
-use App\Http\Controllers\Admin\ReservationAdminController;
-use App\Http\Controllers\ReservationHistoryController;
-use App\Http\Controllers\ScheduleController;
+use App\Http\Controllers\Admin\FeedbackController as AdminFeedbackController;
+use App\Http\Controllers\LandingPageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,7 +40,7 @@ use App\Http\Controllers\ScheduleController;
 // ==========================
 // LANDING PAGE
 // ==========================
-Route::get('/', [App\Http\Controllers\LandingPageController::class, 'index'])->name('landingpage');
+Route::get('/', [LandingPageController::class, 'index'])->name('landingpage');
 
 Route::get('/about', function () {
     return view('about');
@@ -43,6 +49,28 @@ Route::get('/about', function () {
 // ==========================
 // AUTH ROUTES
 // ==========================
+Route::get('/auth/redirect', function () {
+    return Socialite::driver('google')->redirect();
+})->name('auth.redirect');
+
+Route::get('/auth/callback', function () {
+    $googleUser = Socialite::driver('google')->user();
+
+    $user = User::where('email', $googleUser->getEmail())->first();
+
+    if (! $user) {
+        $user = User::create([
+            'name' => $googleUser->getName(),
+            'email' => $googleUser->getEmail(),
+            'google_id' => $googleUser->getId(),
+            'password' => Hash::make(Str::random(16))
+        ]);
+    }
+
+    Auth::login($user);
+    return redirect('/');
+});
+
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 // Register Routes
 Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
@@ -119,11 +147,11 @@ Route::prefix('admin')->middleware(['auth', 'check.admin'])->group(function () {
 // ==========================
 Route::prefix('admin')->middleware(['auth', 'check.admin'])->group(function () {
     Route::get('/faq', [AdminFaqController::class, 'index'])->name('admin.faq.index');
-    Route::get('/faq/create', [AdminFaqController::class, 'create']);
-    Route::post('/faq', [AdminFaqController::class, 'store']);
-    Route::get('/faq/{id}/edit', [AdminFaqController::class, 'edit']);
-    Route::put('/faq/{id}', [AdminFaqController::class, 'update']);
-    Route::delete('/faq/{id}', [AdminFaqController::class, 'destroy']);
+    Route::get('/faq/create', [AdminFaqController::class, 'create'])->name('admin.faq.create');
+    Route::post('/faq', [AdminFaqController::class, 'store'])->name('admin.faq.store');
+    Route::get('/faq/{id}/edit', [AdminFaqController::class, 'edit'])->name('admin.faq.edit');
+    Route::put('/faq/{id}', [AdminFaqController::class, 'update'])->name('admin.faq.update');
+    Route::delete('/faq/{id}', [AdminFaqController::class, 'destroy'])->name('admin.faq.destroy');
 });
 
 // ==========================
@@ -142,6 +170,7 @@ Route::middleware(['auth'])->group(function () {
 Route::get('/riwayat-reservasi', [ReservationHistoryController::class, 'index'])->name('reservations.history');
 Route::get('/reservations/{reservation}', [ReservationHistoryController::class, 'show'])->name('reservations.show');
 Route::post('/reservations/{reservation}/cancel', [ReservationHistoryController::class, 'cancel'])->name('reservations.cancel');
+Route::get('/riwayat-reservasi/cetak', [ReservationHistoryController::class, 'printReport'])->name('admin.reservations.print');
 });
 
 Route::prefix('admin')->middleware(['auth', 'check.admin'])->group(function () {

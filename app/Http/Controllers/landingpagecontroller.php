@@ -15,43 +15,15 @@ class LandingPageController extends Controller
      */
     public function index()
     {
-        try {
-            // 1. AMBIL FEEDBACK YANG DIPILIH ADMIN UNTUK HOMEPAGE
-            $featuredFeedbacks = Feedback::where('is_visible', true)
-                ->where('is_hidden', false)
-                ->whereNotNull('message') // Pastikan ada konten
-                ->where('message', '!=', '') // Pastikan message tidak kosong
-                ->with('user') // Eager loading untuk optimasi
-                ->latest()
-                ->take(3) // Sesuai dengan design 3 kolom
-                ->get();
-
-            // 2. AMBIL DATA TREATMENTS UNTUK SECTION LAYANAN
-            $treatments = Treatment::where('is_active', true)
-                ->select('id', 'name', 'description', 'image', 'price')
-                ->latest()
-                ->take(4) // Sesuai dengan design 4 kolom
-                ->get();
-
-            // 3. LOGGING UNTUK DEBUG (Optional)
-
-            return view('landingpage', compact('featuredFeedbacks', 'treatments'));
-
-        } catch (\Exception $e) {
-            // 4. ERROR HANDLING - Fallback jika ada masalah
-            Log::error('LandingPageController error: ' . $e->getMessage());
-            
-            // Return view dengan data kosong (graceful degradation)
-            return view('landingpage', [
-                'featuredFeedbacks' => collect(),
-                'treatments' => collect()
-            ]);
-        }
+        // Ambil feedback dari database
+        $featuredFeedbacks = Feedback::query()
+            ->where('is_visible', true)
+            ->orderByDesc('created_at')
+            ->take(5)
+            ->get();
+        return view('landingpage', compact('featuredFeedbacks'));
     }
 
-    /**
-     * API Endpoint untuk mendapatkan feedback (Optional - untuk AJAX)
-     */
     public function getFeaturedFeedbacks()
     {
         $feedbacks = Feedback::where('is_visible', true)

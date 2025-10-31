@@ -141,7 +141,6 @@
                                                title="Detail Feedback">
                                                 <i class="fas fa-eye w-4 h-4"></i>
                                             </a>
-                                            
                                         </div>
                                     </td>
                                 </tr>
