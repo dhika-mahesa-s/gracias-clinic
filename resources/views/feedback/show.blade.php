@@ -1,8 +1,6 @@
 @extends('layouts.dashboard')
 
 @section('content')
-<!-- Include Tailwind CSS -->
-<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 <link
     rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
@@ -16,9 +14,10 @@
                 <h1 class="text-3xl font-bold text-gray-900 mb-1">Detail Feedback</h1>
                 <p class="text-gray-600">Informasi lengkap feedback dari pengguna</p>
             </div>
-            <a href="{{ route('feedback.index') }}" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg transition-colors duration-200 flex items-center">
-                <i class="fas fa-arrow-left mr-2"></i>Kembali ke Daftar
-            </a>
+         <a href="{{ route('admin.feedback.index') }}" 
+   class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg transition-colors duration-200 flex items-center">
+    <i class="fas fa-arrow-left mr-2"></i>Kembali ke Daftar
+</a>
         </div>
 
         <!-- Main Content -->
@@ -242,7 +241,7 @@
 
 <script>
 function toggleVisibility(feedbackId) {
-    if (confirm('Apakah Anda yakin ingin mengubah status tampil feedback ini?')) {
+    if (confirm('Apakah Anda yakin ingin mengubah status tampil feedback ini di homepage?')) {
         fetch(`/admin/feedback/${feedbackId}/toggle-visibility`, {
             method: 'POST',
             headers: {
@@ -253,12 +252,15 @@ function toggleVisibility(feedbackId) {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                location.reload(); // Refresh halaman untuk update status
+                alert(data.message);
+                location.reload(); // Refresh halaman untuk update status tombol
+            } else {
+                alert('Gagal mengubah status feedback.');
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('Terjadi kesalahan saat mengubah status');
+            alert('Terjadi kesalahan saat mengubah status feedback.');
         });
     }
 }
