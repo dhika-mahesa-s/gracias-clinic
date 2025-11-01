@@ -18,7 +18,7 @@
                     {{ __('Nama Lengkap') }}
                 </label>
                 <input id="name" type="text"
-                    class="w-full px-4 py-2 border border-input rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-foreground placeholder:text-muted-foreground/70 @error('name') border-red-500 ring-red-200 @enderror"
+                    class="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-foreground placeholder:text-muted-foreground/70 {{ $errors->has('name') ? 'border-red-500 ring-red-200' : 'border-input' }}"
                     name="name" value="{{ old('name') }}" required autocomplete="name" autofocus
                     placeholder="Masukkan nama Anda">
 
@@ -33,7 +33,7 @@
                     {{ __('Email Address') }}
                 </label>
                 <input id="email" type="email"
-                    class="w-full px-4 py-2 border border-input rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-foreground placeholder:text-muted-foreground/70 @error('email') border-red-500 ring-red-200 @enderror"
+                    class="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-foreground placeholder:text-muted-foreground/70 {{ $errors->has('email') ? 'border-red-500 ring-red-200' : 'border-input' }}"
                     name="email" value="{{ old('email') }}" required autocomplete="email"
                     placeholder="Masukkan email Anda">
 
@@ -48,7 +48,7 @@
                     {{ __('Password') }}
                 </label>
                 <input id="password" type="password"
-                    class="w-full px-4 py-2 border border-input rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-foreground placeholder:text-muted-foreground/70 @error('password') border-red-500 ring-red-200 @enderror"
+                    class="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-foreground placeholder:text-muted-foreground/70 {{ $errors->has('password') ? 'border-red-500 ring-red-200' : 'border-input' }}"
                     name="password" required autocomplete="new-password"
                     placeholder="Masukkan password">
 
@@ -63,7 +63,7 @@
                     {{ __('Konfirmasi Password') }}
                 </label>
                 <input id="password-confirm" type="password"
-                    class="w-full px-4 py-2 border border-input rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-foreground placeholder:text-muted-foreground/70"
+                    class="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-foreground placeholder:text-muted-foreground/70 border-input"
                     name="password_confirmation" required autocomplete="new-password"
                     placeholder="Ulangi password">
             </div>

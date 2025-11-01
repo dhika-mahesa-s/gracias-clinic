@@ -100,8 +100,7 @@
                                         action="{{ route('admin.reservasi.batalkan', $r->id) }}" method="POST"
                                         class="inline">
                                         @csrf
-                                        <button type="button"
-                                            onclick="openModal('cancel', {{ $r->id }})"
+                                        <button type="button" onclick="openModal('cancel', {{ $r->id }})"
                                             class="flex items-center gap-1.5 px-3 py-1 text-xs font-medium text-red-800 bg-red-100 border border-red-200
                                                    hover:bg-red-200 hover:text-red-900 hover:shadow-md hover:border-red-400
                                                    active:scale-95 rounded-full transition-all duration-150">
@@ -112,7 +111,7 @@
                                             </svg>
                                             Batalkan
                                         </button>
-                                    </form>                                    
+                                    </form>
 
                                     {{-- Jika reservasi sudah dikonfirmasi --}}
                                 @elseif ($r->status === 'confirmed')
@@ -137,8 +136,7 @@
                                         action="{{ route('admin.reservasi.batalkan', $r->id) }}" method="POST"
                                         class="inline">
                                         @csrf
-                                        <button type="button"
-                                            onclick="openModal('cancel', {{ $r->id }})"
+                                        <button type="button" onclick="openModal('cancel', {{ $r->id }})"
                                             class="flex items-center gap-1.5 px-3 py-1 text-xs font-medium text-red-800 bg-red-100 border border-red-200
                                                    hover:bg-red-200 hover:text-red-900 hover:shadow-md hover:border-red-400
                                                    active:scale-95 rounded-full transition-all duration-150">
@@ -150,7 +148,7 @@
                                             Batalkan
                                         </button>
                                     </form>
-                                    
+
                                     {{-- Jika sudah selesai atau dibatalkan --}}
                                 @else
                                     <button disabled
@@ -175,9 +173,60 @@
         </div>
 
         {{-- Pagination --}}
-        <div class="mt-6">
-            {{ $reservations->links('vendor.pagination.tailwind') }}
-        </div>
+        @if ($reservations->hasPages())
+            <nav role="navigation" aria-label="Pagination" class="mt-6">
+                <ul class="flex items-center justify-center gap-2 text-sm font-medium">
+
+                    {{-- Previous --}}
+                    @if ($reservations->onFirstPage())
+                        <li class="px-3 py-2 rounded-xl text-(--color-muted-foreground) cursor-not-allowed">
+                            <span aria-hidden="true">‹</span>
+                        </li>
+                    @else
+                        <li>
+                            <a href="{{ $reservations->previousPageUrl() }}"
+                                class="px-3 py-2 rounded-xl text-(--color-foreground) hover:bg-(--color-primary) hover:text-(--color-primary-foreground) transition">
+                                ‹
+                            </a>
+                        </li>
+                    @endif
+
+                    {{-- Pages (simple loop sehingga tidak bergantung pada vendor view) --}}
+                    @for ($page = 1; $page <= $reservations->lastPage(); $page++)
+                        @if ($page == $reservations->currentPage())
+                            <li>
+                                <span
+                                    class="px-3 py-2 rounded-xl bg-(--color-primary) text-(--color-primary-foreground) font-semibold shadow-sm">
+                                    {{ $page }}
+                                </span>
+                            </li>
+                        @else
+                            <li>
+                                <a href="{{ $reservations->url($page) }}"
+                                    class="px-3 py-2 rounded-xl text-(--color-foreground) hover:bg-(--color-card) hover:text-(--color-primary) transition">
+                                    {{ $page }}
+                                </a>
+                            </li>
+                        @endif
+                    @endfor
+
+                    {{-- Next --}}
+                    @if ($reservations->hasMorePages())
+                        <li>
+                            <a href="{{ $reservations->nextPageUrl() }}"
+                                class="px-3 py-2 rounded-xl text-(--color-foreground) hover:bg-(--color-primary) hover:text-(--color-primary-foreground) transition">
+                                ›
+                            </a>
+                        </li>
+                    @else
+                        <li class="px-3 py-2 rounded-xl text-(--color-muted-foreground) cursor-not-allowed">
+                            <span aria-hidden="true">›</span>
+                        </li>
+                    @endif
+
+                </ul>
+            </nav>
+        @endif
 
         {{-- Modal Konfirmasi Aksi --}}
         <div id="confirmModal"
@@ -192,7 +241,7 @@
                         Batal
                     </button>
                     <button id="confirmBtn"
-                        class="px-6 py-2 rounded-lg bg-[#3B82F6] text-white font-medium hover:bg-[#2563EB] transition shadow-md">
+                        class="px-6 py-2 rounded-lg bg-[#3B82F6] text-white font-medium hover:bg-[#2563EB] ">
                         Ya, Lanjutkan
                     </button>
                 </div>
@@ -237,19 +286,19 @@
                         'Apakah Anda yakin ingin membatalkan reservasi ini? Tindakan ini tidak dapat dibatalkan.';
                     confirmBtn.textContent = 'Ya, Batalkan';
                     confirmBtn.className =
-                        'px-6 py-2 rounded-lg bg-[#E53E3E] text-white font-medium hover:bg-[#C53030] transition shadow-md';
+                        'px-6 py-2 rounded-lg bg-red-500 text-white font-medium hover:bg-[#C53030] shadow-md hover:shadow-xl hover:from-10% hover:to-50% active:scale-95 transition-all duration-300 focus:ring-2 focus:ring-offset-2 focus:ring-red-600';
                 } else if (type === 'confirm') {
                     title.textContent = 'Konfirmasi Reservasi';
                     message.textContent = 'Apakah Anda yakin ingin mengonfirmasi reservasi ini?';
                     confirmBtn.textContent = 'Ya, Konfirmasi';
                     confirmBtn.className =
-                        'px-6 py-2 rounded-lg bg-[#3B82F6] text-white font-medium hover:bg-[#2563EB] transition shadow-md';
+                        'px-6 py-2 rounded-lg bg-primary text-white font-medium hover:bg-[#2563EB] shadow-md hover:shadow-xl hover:from-10% hover:to-50% active:scale-95 transition-all duration-300 focus:ring-2 focus:ring-offset-2 focus:ring-primary';
                 } else if (type === 'done') {
                     title.textContent = 'Konfirmasi Penyelesaian';
                     message.textContent = 'Apakah Anda yakin reservasi ini telah selesai?';
                     confirmBtn.textContent = 'Ya, Tandai Selesai';
                     confirmBtn.className =
-                        'px-6 py-2 rounded-lg bg-[#16A34A] text-white font-medium hover:bg-[#15803D] transition shadow-md';
+                        'px-6 py-2 rounded-lg bg-gradient-to-r from-green-500 to-green-600 text-white font-medium hover:bg-[#15803D] shadow-md hover:shadow-xl hover:from-10% hover:to-50% active:scale-95 transition-all duration-300 focus:ring-2 focus:ring-offset-2 focus:ring-green-500';
                 }
 
                 modal.classList.remove('hidden');
