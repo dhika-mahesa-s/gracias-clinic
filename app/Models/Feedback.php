@@ -1,4 +1,5 @@
 <?php
+// app/Models/Feedback.php
 
 namespace App\Models;
 
@@ -9,12 +10,8 @@ class Feedback extends Model
 {
     use HasFactory;
 
-    // Pastikan nama tabel sama dengan di database
     protected $table = 'feedbacks';
 
-    /**
-     * Kolom yang bisa diisi secara mass-assignment
-     */
     protected $fillable = [
         'user_id',
         'name',
@@ -29,21 +26,19 @@ class Feedback extends Model
         'overall_rating',
         'is_approved',
         'is_hidden',
+        'is_visible', // TAMBAHKAN INI
     ];
 
-    /**
-     * Casting tipe data untuk kolom tertentu
-     */
     protected $casts = [
         'is_approved' => 'boolean',
         'is_hidden' => 'boolean',
+        'is_visible' => 'boolean', // TAMBAHKAN INI
         'staff_rating' => 'integer',
         'professional_rating' => 'integer',
         'result_rating' => 'integer',
         'return_rating' => 'integer',
         'overall_rating' => 'integer',
     ];
-
     /**
      * Relasi ke model User
      */

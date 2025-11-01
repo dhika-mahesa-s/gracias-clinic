@@ -1,9 +1,10 @@
 <aside class="w-64 bg-white shadow-md">
     <div class="pl-8 pt-6 mt-2">
-        <h6 class="text-lg font-bold text-gray-700">Menu Admin</h6>
+        <h6 class="text-2xl font-extrabold text-gray-700">Menu Admin</h6>
     </div>
     <nav class="p-4">
         <ul class="space-y-2">
+            {{-- Dashboard --}}
             <li>
                 <a href="{{ route('admin.dashboard') }}"
                    class="block px-4 py-2 rounded-lg 
@@ -12,6 +13,7 @@
                 </a>
             </li>
 
+            {{-- Kelola Reservasi --}}
             <li>
                 <a href="{{ route('reservasi.admin') }}"
                    class="block px-4 py-2 rounded-lg 
@@ -20,22 +22,34 @@
                 </a>
             </li>
 
+            {{-- Riwayat Reservasi --}}
             <li>
                 <a href="{{ route('admin.reservations.history') }}"
                    class="block px-4 py-2 rounded-lg 
-                   {{ Route::is('reservations.history') ? 'bg-blue-500 text-white font-semibold' : 'hover:bg-blue-50 text-gray-700 font-medium' }}">
+                   {{ Route::is('admin.reservations.*') ? 'bg-blue-500 text-white font-semibold' : 'hover:bg-blue-50 text-gray-700 font-medium' }}">
                     <i class="fa-solid fa-clock-rotate-left mr-2"></i> Riwayat Reservasi
                 </a>
             </li>
 
+            {{-- Kelola Treatment --}}
             <li>
                 <a href="{{ route('treatments.manage') }}"
                    class="block px-4 py-2 rounded-lg 
-                   {{ Route::is('treatments.manage') ? 'bg-blue-500 text-white font-semibold' : 'hover:bg-blue-50 text-gray-700 font-medium' }}">
+                   {{ Route::is('treatments.*') ? 'bg-blue-500 text-white font-semibold' : 'hover:bg-blue-50 text-gray-700 font-medium' }}">
                     <i class="fa-solid fa-spa mr-2"></i> Kelola Treatment
                 </a>
             </li>
 
+            {{-- ✅ Kelola Jadwal (Baru Ditambahkan) --}}
+            <li>
+                <a href="{{ route('schedules.index') }}"
+                   class="block px-4 py-2 rounded-lg 
+                   {{ Route::is('schedules.*') ? 'bg-blue-500 text-white font-semibold' : 'hover:bg-blue-50 text-gray-700 font-medium' }}">
+                    <i class="fa-regular fa-calendar-days mr-2"></i> Kelola Jadwal
+                </a>
+            </li>
+
+            {{-- Kelola FAQ --}}
             <li>
                 <a href="{{ route('admin.faq.index') }}"
                    class="block px-4 py-2 rounded-lg 
@@ -44,6 +58,7 @@
                 </a>
             </li>
 
+            {{-- Kelola Feedback --}}
             <li>
                 <a href="{{ route('admin.feedback.index') }}"
                    class="block px-4 py-2 rounded-lg 

@@ -1,14 +1,34 @@
 @extends('layouts.app')
 
-@section ('content')
-<div class="relative min-h-screen pt-8 pb-12 bg-gray-50">
-    <div class="max-w-6xl mx-auto space-y-16">
-        <h1 class="text-3xl font-bold text-[#526D82] mb-4 text-center">—  Kenali Kami Lebih Dekat  —</h1>
-        {{-- Section: Profil Klinik --}}
-        <div class="max-w-6xl mx-auto space-y-16">
-            <div class="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition duration-300 flex flex-col md:flex-row">
-                {{-- Video --}}
-                <div class="md:w-1/2 w-full h-[460px] overflow-hidden">
+@section('content')
+<div class="relative min-h-screen py-16 px-6 overflow-hidden">
+    {{-- Background image --}}
+    <div class="absolute inset-0 bg-cover bg-center bg-[url('{{ asset('images/about-us2.jpg') }}')] z-0"></div>
+
+
+    {{-- Overlay putih transparan --}}
+    <div class="absolute inset-0 bg-opacity-05 z-0"></div>
+
+    {{-- Konten utama --}}
+    <div class="relative z-10">
+        <div class="max-w-5xl mx-auto text-center mb-12">
+            <h1 class="text-4xl font-bold text-gray-800 mb-4">Tentang Kami</h1>
+        </div>
+
+        {{-- Section Profil --}}
+        <div class="max-w-5xl mx-auto bg-white rounded-2xl shadow-md p-8 mb-12 transform transition duration-700 hover:-translate-y-1 hover:shadow-lg">
+            <div class="grid md:grid-cols-2 gap-8 items-center">
+                {{-- Kolom teks --}}
+                <div>
+                    <h2 class="text-2xl font-semibold text-gray-800 mb-4">Profil Klinik</h2>
+                    <p class="text-gray-600 leading-relaxed">
+                        Gracias Aesthetic Clinic merupakan Klinik Pratama dengan pelayanan khusus di bidang Aesthetic Medicine dan Anti Aging di Pekanbaru. 
+                        Dilayani oleh dokter yang berpengalaman di bidang Aesthetic Medicine dengan sertifikasi Internasional (USA) serta menggunakan produk dari Korea hingga Eropa yang memiliki izin edar resmi — memastikan setiap perawatan aman dan profesional.
+                    </p>
+                </div>
+
+                {{-- Kolom video --}}
+                <div class="flex justify-center">
                     <video 
                         class="w-full h-full object-cover object-center" 
                         autoplay 
