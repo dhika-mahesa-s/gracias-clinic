@@ -1,30 +1,40 @@
 @extends('layouts.app')
 
 @section('content')
-    <!-- Hero Section -->
-<section class="relative bg-background text-foreground min-h-screen flex flex-col items-center justify-center text-center px-6">
-    <div class="absolute inset-0 bg-cover bg-center opacity-32" style="background-image: url('{{ asset('images/bg-clinic.jpg') }}')"></div>
+<!-- Hero Section -->
+<section class="relative bg-background text-foreground min-h-screen flex flex-col items-center justify-center text-center px-6 overflow-hidden">
+    <!-- Gambar background -->
+    <div class="absolute inset-0 bg-cover bg-center z-0"
+         style="background-image: url('{{ asset('images/hd-bg.jpg') }}');">
+    </div>
 
-    <div class="relative z-10">
-        <h1 class="text-4xl md:text-5xl font-bold mb-4 text-primary">Your Beauty, Our Priority</h1>
-        <p class="text-muted-foreground max-w-2xl mx-auto mb-8">
-            Wujudkan kecantikan impian Anda bersama kami.
+    <!-- Overlay abu-abu transparan -->
+    <div class="absolute inset-0 bg-gray-700/60 z-10"></div>
+
+    <!-- Konten -->
+    <div class="relative z-20">
+        <h1 class="text-4xl md:text-5xl font-bold mb-4 text-white">
+            Your Beauty, Our Priority
+        </h1>
+        <p class="text-gray-100 max-w-2xl mx-auto mb-8">
+            — Wujudkan kecantikan impian Anda bersama kami —
         </p>
-
+        
         {{-- Kondisi tombol berdasarkan status login --}}
         <div class="flex justify-center gap-4">
             @guest
                 {{-- Jika user belum login --}}
                 <a href="{{ route('register') }}"
-                    class="bg-primary text-primary-foreground px-6 py-3 rounded-lg shadow hover:bg-primary/90 transition">
+                    class="bg-gray-700 text-white px-6 py-3 rounded-lg font-medium shadow hover:bg-gray-400 transition">
                     Reservasi Sekarang
                 </a>
+
             @endguest
 
             @auth
                 {{-- Jika user sudah login --}}
                 <a href="{{ route('reservasi.index') }}"
-                    class="bg-primary text-primary-foreground px-6 py-3 rounded-lg shadow hover:bg-primary/90 transition">
+                    class="bg-gray-700 text-white px-6 py-3 rounded-lg font-medium shadow hover:bg-gray-400 transition">
                     Reservasi Sekarang
                 </a>
             @endauth
@@ -32,41 +42,6 @@
     </div>
 </section>
 
-    <!-- Mengapa Memilih Kami -->
-    <section class="py-20 bg-card text-card-foreground">
-        <div class="container mx-auto px-6 text-center">
-            <h2 class="text-3xl font-semibold text-primary mb-6">Mengapa Memilih Gracias Clinic?</h2>
-            <p class="text-muted-foreground max-w-2xl mx-auto mb-12">
-                Kami berkomitmen memberikan pelayanan terbaik dengan standar internasional untuk kepuasan dan keamanan Anda.
-            </p>
-
-            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-                <div class="bg-background rounded-xl shadow-md p-6 border border-border hover:-translate-y-2 transition-transform duration-300">
-                    <img src="https://cdn-icons-png.flaticon.com/512/3774/3774299.png" class="mx-auto w-16 h-16 mb-4" alt="">
-                    <h4 class="font-semibold text-primary mb-2">Dokter Berpengalaman</h4>
-                    <p class="text-muted-foreground text-sm">Tim dokter ahli dengan pengalaman lebih dari 10 tahun di bidang kecantikan.</p>
-                </div>
-
-                <div class="bg-background rounded-xl shadow-md p-6 border border-border hover:-translate-y-2 transition-transform duration-300">
-                    <img src="https://cdn-icons-png.flaticon.com/512/4403/4403497.png" class="mx-auto w-16 h-16 mb-4" alt="">
-                    <h4 class="font-semibold text-primary mb-2">Fasilitas Modern</h4>
-                    <p class="text-muted-foreground text-sm">Peralatan medis terkini dan teknologi canggih untuk hasil optimal.</p>
-                </div>
-
-                <div class="bg-background rounded-xl shadow-md p-6 border border-border hover:-translate-y-2 transition-transform duration-300">
-                    <img src="https://cdn-icons-png.flaticon.com/512/860/860916.png" class="mx-auto w-16 h-16 mb-4" alt="">
-                    <h4 class="font-semibold text-primary mb-2">Treatment Berkualitas</h4>
-                    <p class="text-muted-foreground text-sm">Prosedur aman, teruji klinis, dan mengikuti standar internasional.</p>
-                </div>
-
-                <div class="bg-background rounded-xl shadow-md p-6 border border-border hover:-translate-y-2 transition-transform duration-300">
-                    <img src="https://cdn-icons-png.flaticon.com/512/747/747310.png" class="mx-auto w-16 h-16 mb-4" alt="">
-                    <h4 class="font-semibold text-primary mb-2">Reservasi Mudah</h4>
-                    <p class="text-muted-foreground text-sm">Sistem booking online yang mudah dan fleksibel sesuai jadwal Anda.</p>
-                </div>
-            </div>
-        </div>
-    </section>
 
             {{-- 💆‍♀️ Layanan Unggulan Kami --}}
             <section class="py-20 bg-gray-50 text-center">

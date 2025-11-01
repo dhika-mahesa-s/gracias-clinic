@@ -52,7 +52,7 @@
             {{-- Tombol Login/Register --}}
             @guest
                 <a href="{{ route('login') }}"
-                   class="px-4 py-2 bg-gray-900 text-white rounded-lg font-medium hover:bg-black transition">
+                   class="px-4 py-2 bg-gray-700 text-white rounded-lg font-medium hover:bg-gray-400 transition">
                     Login
                 </a>
             @endguest
