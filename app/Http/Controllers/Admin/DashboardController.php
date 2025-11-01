@@ -24,7 +24,7 @@ class DashboardController extends Controller
             ->whereMonth('reservation_date', $currentMonth)
             ->sum('total_price');
 
-        // 3️⃣ Total pengunjung baru bulan ini
+        // 3️⃣ Total pengunjung bulan ini
         $newVisitorsThisMonth = Reservation::select('customer_email')
             ->whereMonth('reservation_date', $currentMonth)
             ->groupBy('customer_email')
