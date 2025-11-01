@@ -256,17 +256,40 @@
                 </p>
                 <div class="flex justify-center gap-3 mt-8">
                     <a :href="`/reservasi/${reservationCode}/cetak`" target="_blank"
-                        class="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-green-600 text-white font-medium hover:bg-green-700">
+                        class="flex items-center gap-2 px-6 py-2.5 rounded-xl text-base font-semibold text-white rounded-xl bg-gradient-to-r from-green-500 to-green-600 shadow-md hover:shadow-xl hover:from-green-600 hover:to-green-700 active:scale-95 transition-all duration-300 focus:ring-2 focus:ring-offset-2 focus:ring-green-400">
                         <i class="fa-solid fa-file-pdf"></i> Download Resi (PDF)
                     </a>
 
                     <a href="{{ route('landingpage') }}"
-                        class="flex items-center gap-2 px-6 py-2.5 rounded-xl border border-primary text-primary font-medium hover:bg-primary hover:text-white">
+                        class="flex items-center gap-2 px-6 py-2.5 rounded-xl border border-primary text-primary font-medium hover:bg-primary hover:text-white shadow-md hover:shadow-xl hover:from-10% hover:to-50% active:scale-95 transition-all duration-300 focus:ring-2 focus:ring-offset-2 focus:ring-primary">
                         <i class="fa-solid fa-house"></i> Kembali ke Beranda
                     </a>
                 </div>
             </div>
         </div>
+
+        {{-- Modal Konfirmasi --}}
+        <div x-show="showConfirmModal" x-cloak x-on:keydown.escape.window="showConfirmModal = false"
+            class="fixed inset-0 flex items-center justify-center bg-black/50 z-50" x-transition.opacity>
+            <div @click.away="showConfirmModal = false"
+                class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md text-center" role="dialog" aria-modal="true">
+                <h2 id="modal-title" class="text-xl font-semibold mb-3 text-gray-800">Konfirmasi Reservasi</h2>
+                <p class="text-gray-600 mb-6">Apakah Anda yakin ingin mengonfirmasi reservasi ini? Pastikan semua data
+                    sudah benar</p>
+
+                <div class="flex justify-center gap-4">
+                    <button type="button" @click="showConfirmModal = false"
+                        class="px-6 py-2 bg-gray-300 hover:bg-gray-400 text-gray-800 rounded-lg shadow-md hover:shadow-xl hover:from-10% hover:to-50% active:scale-95 transition-all duration-300 focus:ring-2 focus:ring-offset-2 focus:ring-gray-400 ">
+                        Batal
+                    </button>
+                    <button type="button" @click="submitForm(); showConfirmModal = false"
+                        class="px-6 py-2 text-base font-semibold text-white rounded-xl bg-gradient-to-r from-green-500 to-green-600 shadow-md hover:shadow-xl hover:from-green-600 hover:to-green-700 active:scale-95 transition-all duration-300 focus:ring-2 focus:ring-offset-2 focus:ring-green-400">
+                        Ya, Konfirmasi
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
         <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 
@@ -503,24 +526,4 @@
                 }
             }
         </script>
-        <!-- Modal Konfirmasi -->
-        <div x-show="showConfirmModal" x-cloak class="fixed inset-0 flex items-center justify-center bg-black/50 z-50"
-            x-transition.opacity>
-            <div @click.away="showConfirmModal = false"
-                class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md text-center">
-                <h2 class="text-xl font-semibold mb-3 text-gray-800">Konfirmasi Reservasi</h2>
-                <p class="text-gray-600 mb-6">Apakah Anda yakin ingin mengirim reservasi ini?</p>
-
-                <div class="flex justify-center gap-4">
-                    <button type="button" @click="showConfirmModal = false"
-                        class="px-6 py-2 bg-gray-300 hover:bg-gray-400 text-gray-800 rounded-lg transition">
-                        Batal
-                    </button>
-                    <button type="button" @click="submitForm(); showConfirmModal = false"
-                        class="px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition">
-                        Ya, Kirim
-                    </button>
-                </div>
-            </div>
-        </div>
-    @endsection
+@endsection
