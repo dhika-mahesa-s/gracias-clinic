@@ -54,23 +54,29 @@ Route::get('/auth/redirect', function () {
 })->name('auth.redirect');
 
 Route::get('/auth/callback', function () {
-    $googleUser = Socialite::driver('google')->user();
+    try {
+        $googleUser = Socialite::driver('google')->user();
 
-    $user = User::where('email', $googleUser->getEmail())->first();
+        $user = User::where('email', $googleUser->getEmail())->first();
 
-    if (! $user) {
-        $user = User::create([
-            'name' => $googleUser->getName(),
-            'email' => $googleUser->getEmail(),
-            'google_id' => $googleUser->getId(),
-            'password' => Hash::make(Str::random(16))
-        ]);
+        if (! $user) {
+            $user = User::create([
+                'name' => $googleUser->getName(),
+                'email' => $googleUser->getEmail(),
+                'google_id' => $googleUser->getId(),
+                'password' => Hash::make(Str::random(16)),
+            ]);
+        }
+
+        Auth::login($user);
+
+        return redirect('/')->with('success', 'Login berhasil! Selamat datang, ' . $user->name);
+    } catch (Exception $e) {
+        // Tangani error cancel atau gagal autentikasi
+        return redirect('/')
+            ->with('error', 'Login dengan Google dibatalkan atau gagal. Silakan coba lagi.');
     }
-
-    Auth::login($user);
-    return redirect('/');
 });
-
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 // Register Routes
 Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');

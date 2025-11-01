@@ -71,7 +71,7 @@
             {{-- Tombol Register --}}
             <div class="pt-2">
                 <button type="submit"
-                    class="w-full py-2.5 rounded-xl bg-primary text-white font-medium hover:bg-primary/90 transition">
+                    class="w-full py-2.5 rounded-xl bg-primary text-white font-medium hover:bg-primary/90 active:scale-95 transition-all duration-300 focus:ring-2 focus:ring-offset-2 focus:ring-gray-400">
                     {{ __('Register') }}
                 </button>
             </div>

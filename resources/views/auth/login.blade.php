@@ -55,7 +55,7 @@
             {{-- Tombol Login --}}
             <div class="pt-2">
                 <button type="submit"
-                    class="w-full py-2.5 rounded-xl bg-primary text-white font-medium hover:bg-primary/90 transition">
+                    class="w-full py-2.5 rounded-xl bg-primary text-white font-medium hover:bg-primary/90 active:scale-95 transition-all duration-300 focus:ring-2 focus:ring-offset-2 focus:ring-gray-400">
                     {{ __('Login') }}
                 </button>
             </div>
@@ -69,7 +69,7 @@
 
             {{-- 🌟 Tombol Login Google --}}
             <a href="{{ route('auth.redirect') }}"
-                class="w-full flex items-center justify-center gap-3 border border-gray-300 bg-white py-2.5 rounded-xl hover:bg-gray-50 transition">
+                class="w-full flex items-center justify-center gap-3 border border-gray-300 bg-white py-2.5 rounded-xl shadow-md hover:shadow-xl hover:from-10% hover:to-50% active:scale-95 transition-all duration-300 focus:ring-2 focus:ring-offset-2 focus:ring-gray-400">
                 <img src="https://www.svgrepo.com/show/355037/google.svg" alt="Google" class="w-5 h-5">
                 <span class="text-gray-700 font-medium">Login dengan Google</span>
             </a>
