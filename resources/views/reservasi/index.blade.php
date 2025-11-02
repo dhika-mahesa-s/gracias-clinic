@@ -183,7 +183,7 @@
                 <div>
                     <label class="block font-medium mb-1 text-foreground">Nama Lengkap</label>
                     <input type="text" x-model="form.name"
-                        class="w-full border-input bg-gray-100 text-gray-600 rounded-lg p-2.5" readonly>
+                        class="w-full border-input bg-gray-100 text-gray-600 rounded-lg p-2.5">
                 </div>
 
                 <div>
@@ -456,6 +456,14 @@
                         return option ? option.textContent : '-';
                     },
 
+                    // helper: check if slot is too close to current time (<= 1 hour)
+                    isSlotTooClose(slot) {
+                        const now = new Date();
+                        const slotDateTime = new Date(this.form.date + 'T' + slot + ':00');
+                        const oneHourFromNow = new Date(now.getTime() + 60 * 60 * 1000);
+                        return slotDateTime <= oneHourFromNow;
+                    },
+
                     // load available slots from server and set reactive array (no innerHTML injection)
                     async loadAvailableSlots() {
                         if (!this.form.doctor_id || !this.form.date) return;
@@ -474,7 +482,8 @@
 
                             // Expect data.available_slots = ['08:00','09:00',...]
                             if (Array.isArray(data.available_slots) && data.available_slots.length) {
-                                this.availableTimes = data.available_slots;
+                                // Filter out slots that are too close to current time and exclude 12:00 lunch break
+                                this.availableTimes = data.available_slots.filter(slot => !this.isSlotTooClose(slot) && slot !== '12:00');
                             } else {
                                 this.availableTimes = [];
                             }

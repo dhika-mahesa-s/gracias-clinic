@@ -144,19 +144,5 @@ class ReservationHistoryController extends Controller
         $reservation->load('doctor', 'treatment', 'user');
         return response()->json($reservation);
     }
-
-    public function cancel(Request $request, Reservation $reservation)
-    {
-        if (!Auth::check() || (Auth::user()->role !== 'admin' && $reservation->user_id !== Auth::id())) {
-            return redirect()->back()->with('error', 'Tidak berhak membatalkan reservasi ini.');
-        }
-        if (!in_array($reservation->status, ['pending', 'confirmed'])) {
-            return redirect()->back()->with('error', 'Reservasi tidak bisa dibatalkan.');
-        }
-
-        $reservation->status = 'dibatalkan';
-        $reservation->save();
-
-        return redirect()->back()->with('success', 'Reservasi berhasil dibatalkan.');
-    }
+    
 }
