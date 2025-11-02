@@ -10,23 +10,25 @@ use Symfony\Component\HttpFoundation\Response;
 
 class RedirectIfAuthenticated
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     */
     public function handle(Request $request, Closure $next, string ...$guards): Response
     {
         $guards = empty($guards) ? [null] : $guards;
 
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {
+                // 🔹 Jika ada URL yang dituju sebelumnya (url.intended), arahkan ke sana dulu
+                if (session()->has('url.intended')) {
+                    return redirect()->intended();
+                }
+
                 $user = Auth::guard($guard)->user();
+
+                // 🔹 Jika tidak ada intended, arahkan sesuai role
                 if ($user->role === 'admin') {
                     return redirect('/admin/dashboard');
-                } else {
-                    return redirect(RouteServiceProvider::HOME);
                 }
+
+                return redirect(RouteServiceProvider::HOME);
             }
         }
 

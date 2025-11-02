@@ -36,6 +36,12 @@ class LoginController extends Controller
             'email' => ['The provided credentials are incorrect.'],
         ]);
     }
+    protected function authenticated(Request $request, $user)
+    {
+        // Arahkan ke halaman yang sebenarnya ingin diakses sebelumnya
+        return redirect()->intended('/');
+    }
+
 
 
 }
