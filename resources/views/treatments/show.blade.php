@@ -58,7 +58,7 @@
 
             <!-- Tombol Reservasi -->
             <div class="mt-10 text-center">
-                <a href="{{ route('reservasi.index') }}" 
+                <a href="{{ route('reservasi.index', ['treatment_id' => $treatment->id] )}}" 
                    class="inline-flex items-center justify-center gap-2 px-8 py-3 bg-primary text-white font-semibold rounded-2xl shadow-md hover:bg-primary/90 hover:shadow-lg transform hover:scale-105 transition-all duration-300">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
