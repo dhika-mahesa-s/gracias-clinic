@@ -1,5 +1,4 @@
 <?php
-// app/Http/Controllers/Admin/FeedbackController.php
 
 namespace App\Http\Controllers\Admin;
 
@@ -12,25 +11,31 @@ class FeedbackController extends Controller
     public function index(Request $request)
     {
         $query = Feedback::query();
-        
-        // Filter pencarian nama
-        if ($request->has('search') && $request->search != '') {
+
+        // 🔍 Filter pencarian nama
+        if ($request->filled('search')) {
             $query->where('name', 'like', '%' . $request->search . '%');
         }
-        
-        // Filter rating berdasarkan rata-rata
-        if ($request->has('rating_filter') && $request->rating_filter != '') {
-            $minRating = (int)$request->rating_filter;
+
+        // ⭐ Filter berdasarkan rata-rata rating
+        if ($request->filled('rating_filter')) {
+            $minRating = (int) $request->rating_filter;
             $query->whereRaw('(staff_rating + professional_rating + result_rating + return_rating + overall_rating) / 5 >= ?', [$minRating]);
         }
-        
-        // Gunakan paginate() agar mendukung currentPage() & perPage()
+
+        // 👁️ Filter visibilitas (tampil di homepage / tidak)
+        if ($request->filled('visibility')) {
+            $isVisible = $request->visibility === '1';
+            $query->where('is_visible', $isVisible);
+        }
+
+        // 🔄 Urutkan dari terbaru dan paginate
         $feedbacks = $query->latest()->paginate(10);
-        
-        // Tetap menggunakan view tanpa admin prefix
+
         return view('feedback.index', compact('feedbacks'));
     }
 
+    // 🔘 Toggle tampil/sembunyi dari homepage
     public function toggleVisibility($id)
     {
         $feedback = Feedback::findOrFail($id);
@@ -40,14 +45,18 @@ class FeedbackController extends Controller
         return response()->json([
             'success' => true,
             'is_visible' => $feedback->is_visible,
-            'message' => $feedback->is_visible ? 'Feedback ditampilkan di homepage' : 'Feedback disembunyikan dari homepage'
+            'message' => $feedback->is_visible
+                ? 'Feedback berhasil ditampilkan di homepage.'
+                : 'Feedback disembunyikan dari homepage.'
         ]);
     }
 
-    public function show($id)
-    {
-        $feedback = Feedback::findOrFail($id);
-        // Tetap menggunakan view tanpa admin prefix
-        return view('feedback.show', compact('feedback'));
-    }
+    // 📄 Detail feedback
+   // 📄 Detail feedback
+public function show($id)
+{
+    $feedback = Feedback::findOrFail($id);
+    // ubah baris di bawah ini ⬇️
+    return view('feedback.show', compact('feedback'));
+}
 }

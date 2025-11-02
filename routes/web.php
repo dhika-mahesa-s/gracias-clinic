@@ -54,23 +54,29 @@ Route::get('/auth/redirect', function () {
 })->name('auth.redirect');
 
 Route::get('/auth/callback', function () {
-    $googleUser = Socialite::driver('google')->user();
+    try {
+        $googleUser = Socialite::driver('google')->user();
 
-    $user = User::where('email', $googleUser->getEmail())->first();
+        $user = User::where('email', $googleUser->getEmail())->first();
 
-    if (! $user) {
-        $user = User::create([
-            'name' => $googleUser->getName(),
-            'email' => $googleUser->getEmail(),
-            'google_id' => $googleUser->getId(),
-            'password' => Hash::make(Str::random(16))
-        ]);
+        if (! $user) {
+            $user = User::create([
+                'name' => $googleUser->getName(),
+                'email' => $googleUser->getEmail(),
+                'google_id' => $googleUser->getId(),
+                'password' => Hash::make(Str::random(16)),
+            ]);
+        }
+
+        Auth::login($user);
+
+        return redirect('/')->with('success', 'Login berhasil! Selamat datang, ' . $user->name);
+    } catch (Exception $e) {
+        // Tangani error cancel atau gagal autentikasi
+        return redirect('/')
+            ->with('error', 'Login dengan Google dibatalkan atau gagal. Silakan coba lagi.');
     }
-
-    Auth::login($user);
-    return redirect('/');
 });
-
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 // Register Routes
 Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
@@ -129,11 +135,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/feedback/thankyou', [FeedbackController::class, 'thankyou'])->name('feedback.thankyou');
 });
 // ==========================
-// FEEDBACK RESOURCE (CRUD)
-// ==========================
-Route::resource('feedback', FeedbackController::class);
-
-// ==========================
 // ADMIN FEEDBACK
 // ==========================
 Route::prefix('admin')->middleware(['auth', 'check.admin'])->group(function () {
@@ -169,7 +170,6 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware(['auth'])->group(function () {
 Route::get('/riwayat-reservasi', [ReservationHistoryController::class, 'index'])->name('reservations.history');
 Route::get('/reservations/{reservation}', [ReservationHistoryController::class, 'show'])->name('reservations.show');
-Route::post('/reservations/{reservation}/cancel', [ReservationHistoryController::class, 'cancel'])->name('reservations.cancel');
 Route::get('/riwayat-reservasi/cetak', [ReservationHistoryController::class, 'printReport'])->name('admin.reservations.print');
 });
 

@@ -31,9 +31,9 @@ class AuthenticatedSessionController extends Controller
 
         $user = Auth::user();
         if ($user->role === 'admin') {
-            return redirect('/admin/dashboard');
+            return redirect()->route('admin.dashboard')->with('success', 'Login berhasil! Selamat datang, ' . $user->name);
         } else {
-            return redirect()->route('landingpage');
+            return redirect()->route('landingpage')->with('success', 'Login berhasil! Selamat datang, ' . $user->name);
         }
     }
 

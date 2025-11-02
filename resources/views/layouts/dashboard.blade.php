@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,7 +10,8 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     {{-- ✅ Font Awesome --}}
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+        crossorigin="anonymous" referrerpolicy="no-referrer">
 
     {{-- ✅ Google Fonts --}}
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
@@ -32,5 +34,21 @@
 
     {{-- Chart.js atau Script Tambahan --}}
     @yield('scripts')
+
+    {{-- ✅ Flash Message (SweetAlert2) --}}
+    @if (session('success'))
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: '{{ session('success') }}',
+                    confirmButtonColor: '#2563eb', // Tailwind blue-600
+                });
+            });
+        </script>
+    @endif
+
 </body>
+
 </html>

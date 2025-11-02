@@ -65,7 +65,7 @@
 
             <!-- Tombol Reservasi -->
             <div class="mt-10 text-center">
-                <a href="{{ route('reservasi.index', ['treatment_id' => $treatment->id]) }}" 
+                <a href="{{ route('reservasi.index', ['treatment_id' => $treatment->id] )}}" 
                    class="inline-flex items-center justify-center gap-2 px-8 py-3 bg-primary text-white font-semibold rounded-2xl shadow-md hover:bg-primary/90 hover:shadow-lg transform hover:scale-105 transition-all duration-300">
                     <i class="fa-solid fa-calendar-check"></i> Reservasi Sekarang
                 </a>
