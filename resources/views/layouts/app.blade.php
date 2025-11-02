@@ -22,6 +22,11 @@
     {{-- ✅ Swiper.js (CSS) --}}
     <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
 
+    {{-- ✅ Alpine.js x-cloak fix --}}
+    <style>
+        [x-cloak] { display: none !important; }
+    </style>
+
 </head>
 
 <body x-data="{ dark: false }" :class="{ 'dark': dark }" 
@@ -46,5 +51,38 @@
             setTimeout(() => AOS.init({ duration: 600, once: true }), 100);
         });
     </script>
+
+@vite('resources/js/app.js')
+
+{{-- ✅ SweetAlert2 --}}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+{{-- ✅ Flash Message (SweetAlert2) --}}
+@if (session('success'))
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil!',
+            text: '{{ session('success') }}',
+            confirmButtonColor: '#2563eb', // Tailwind blue-600
+        });
+    });
+</script>
+@endif
+
+@if (session('error'))
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        Swal.fire({
+            icon: 'error',
+            title: 'Gagal!',
+            text: '{{ session('error') }}',
+            confirmButtonColor: '#dc2626', // Tailwind red-600
+        });
+    });
+</script>
+@endif
+
 </body>
 </html>

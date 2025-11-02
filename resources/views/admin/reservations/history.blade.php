@@ -16,11 +16,13 @@
             </a>
         </div>
 
-        {{-- SEARCH BAR ADMIN --}}
-        <form action="{{ route('admin.reservations.history') }}" method="GET" class="flex items-center bg-background rounded-lg p-3 border border-border">
-            <i class="fa-solid fa-search text-muted-foreground mr-3"></i>
-            <input type="text" name="search" class="flex-grow focus:outline-none focus:ring-0 border-none text-foreground bg-transparent text-sm" placeholder="Cari Pasien, Kode Booking, Treatment, atau Dokter..." value="{{ request('search') }}">
-            <button type="submit" class="text-sm font-medium text-primary hover:text-primary/80 px-3 border-l border-border ml-3">
+        {{-- SEARCH BAR --}}
+        <form action="{{ route('reservations.history') }}" method="GET" class="flex items-center bg-gray-50 rounded-lg p-3 border border-gray-200">
+            <svg class="w-5 h-5 text-gray-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            </svg>
+            <input type="text" name="search" class="grow focus:outline-none text-gray-700 bg-transparent text-sm" placeholder="Cari Kode Booking, Treatment, atau Dokter..." value="{{ request('search') }}">
+            <button type="submit" class="text-sm font-medium text-indigo-600 hover:text-indigo-800 px-3 border-l border-gray-300 ml-3">
                 Cari
             </button>
         </form>
@@ -76,9 +78,7 @@
 
         <div class="bg-card p-5 rounded-xl shadow-lg border border-border">
             <div class="flex flex-col md:flex-row md:justify-between md:items-start">
-
-                <div class="flex-grow">
-                    <div class="text-xs font-medium text-muted-foreground mb-1">Pasien: {{ optional($r->user)->name ?? 'User Dihapus' }}</div>
+                <div class="grow">
                     <div class="flex items-center mb-3">
                         <h5 class="text-xl font-bold mr-3 text-card-foreground">{{ optional($r->treatment)->name ?? '—' }}</h5>
                         @php
