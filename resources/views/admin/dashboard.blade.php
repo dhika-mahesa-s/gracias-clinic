@@ -1,9 +1,11 @@
- @extends('layouts.dashboard')
+@extends('layouts.dashboard')
 
 @section('title', 'Dashboard Admin - Gracias Aesthetic Clinic')
 
 @section('content')
-    <h1 class="text-3xl font-bold mb-6">Dashboard</h1>
+<section class="min-h-screen bg-[#EEF2F7] text-[#526D82] py-10 px-4">
+  <div class="container mx-auto max-w-6xl">
+    <h1 class="text-3xl font-bold mb-6 text-[#27374D]">Dashboard</h1>
 
     {{-- Cards --}}
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -54,6 +56,8 @@
     <div class="mt-10 text-right">
         <a href="{{ route('admin.dashboard.downloadReport') }}" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition">Unduh Laporan</a>
     </div>
+  </div>
+</section>
 @endsection
 
 @section('scripts')
