@@ -77,7 +77,9 @@ Route::get('/auth/callback', function () {
             ->with('error', 'Login dengan Google dibatalkan atau gagal. Silakan coba lagi.');
     }
 });
+
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
+
 // Register Routes
 Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
 Route::post('/register', [RegisterController::class, 'register']);

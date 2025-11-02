@@ -58,6 +58,7 @@
                     class="w-full py-2.5 rounded-xl bg-primary text-white font-medium hover:bg-primary/90 active:scale-95 transition-all duration-300 focus:ring-2 focus:ring-offset-2 focus:ring-gray-400">
                     {{ __('Login') }}
                 </button>
+                
             </div>
 
             {{-- 🌟 Divider --}}
@@ -84,3 +85,33 @@
     </div>
 </div>
 @endsection
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        // Cari form login berdasarkan tombol submit bertuliskan "Login"
+        const submitButtons = document.querySelectorAll('button, input[type="submit"]');
+        let form = null;
+
+        submitButtons.forEach(btn => {
+            if (btn.textContent.trim() === "{{ __('Login') }}" || btn.value ===
+                "{{ __('Login') }}") {
+                form = btn.closest('form');
+            }
+        });
+
+        // Jika form login ditemukan
+        if (form) {
+            const intended = sessionStorage.getItem('intended');
+            if (intended) {
+                // Tambahkan input hidden agar dikirim ke controller
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'redirect_to';
+                input.value = intended;
+                form.appendChild(input);
+
+                // Hapus setelah digunakan
+                sessionStorage.removeItem('intended');
+            }
+        }
+    });
+</script>

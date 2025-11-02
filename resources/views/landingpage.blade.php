@@ -234,11 +234,24 @@
             </div>
 
             <div class="mt-10">
-                <a href="{{ route('feedback.create') }}"
-                    class="inline-flex items-center px-6 py-3 border border-gray-800 text-gray-800 rounded-lg hover:bg-gray-600 hover:text-white transition duration-300">
-                    Berikan Feedback Anda
-                </a>
-            </div>
+    @auth
+        {{-- ✅ Jika user sudah login, langsung buka halaman feedback --}}
+        <a href="{{ route('feedback.create') }}"
+            class="inline-flex items-center px-6 py-3 border border-gray-800 text-gray-800 rounded-lg hover:bg-gray-600 hover:text-white transition duration-300">
+            Berikan Feedback Anda
+        </a>
+    @else
+        {{-- 🚪 Jika belum login, arahkan ke login dan simpan halaman tujuan --}}
+        <a href="{{ route('login') }}"
+            onclick="event.preventDefault(); 
+                     sessionStorage.setItem('intended', '{{ route('feedback.create') }}');
+                     window.location.href='{{ route('login') }}';"
+            class="inline-flex items-center px-6 py-3 border border-gray-800 text-gray-800 rounded-lg hover:bg-gray-600 hover:text-white transition duration-300">
+            Berikan Feedback Anda
+        </a>
+    @endauth
+</div>
+
         </div>
     </section>
 

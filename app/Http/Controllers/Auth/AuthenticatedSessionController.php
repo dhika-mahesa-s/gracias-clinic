@@ -15,8 +15,17 @@ class AuthenticatedSessionController extends Controller
     /**
      * Display the login view.
      */
-    public function create(): View
+    public function create(Request $request): View
     {
+        // Simpan halaman sebelumnya (hanya jika bukan login/logout)
+        if (
+            !$request->session()->has('url.intended') &&
+            $request->headers->get('referer') &&
+            !str_contains($request->headers->get('referer'), '/login')
+        ) {
+            $request->session()->put('url.intended', $request->headers->get('referer'));
+        }
+
         return view('auth.login');
     }
 
@@ -24,18 +33,28 @@ class AuthenticatedSessionController extends Controller
      * Handle an incoming authentication request.
      */
     public function store(LoginRequest $request): RedirectResponse
-    {
-        $request->authenticate();
+{
+    $request->authenticate();
+    $request->session()->regenerate();
 
-        $request->session()->regenerate();
+    $user = Auth::user();
 
-        $user = Auth::user();
-        if ($user->role === 'admin') {
-            return redirect()->route('admin.dashboard')->with('success', 'Login berhasil! Selamat datang, ' . $user->name);
-        } else {
-            return redirect()->route('landingpage')->with('success', 'Login berhasil! Selamat datang, ' . $user->name);
-        }
+    // Jika ada redirect_to dari form login (misal dari feedback.create)
+    if ($request->filled('redirect_to')) {
+        return redirect($request->input('redirect_to'))
+            ->with('success', 'Login berhasil! Selamat datang, ' . $user->name);
     }
+
+    // Jika user adalah admin
+    if ($user->role === 'admin') {
+        return redirect()->route('admin.dashboard')
+            ->with('success', 'Login berhasil! Selamat datang, ' . $user->name);
+    }
+
+    // Default: kembali ke landing page
+    return redirect()->route('landingpage')
+        ->with('success', 'Login berhasil! Selamat datang, ' . $user->name);
+}
 
     /**
      * Destroy an authenticated session.
@@ -45,9 +64,9 @@ class AuthenticatedSessionController extends Controller
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();
-
         $request->session()->regenerateToken();
 
-        return redirect('/')->with('logout_success','Anda telah keluar akun anda');
+        return redirect('/')
+            ->with('logout_success', 'Anda telah keluar dari akun Anda.');
     }
 }

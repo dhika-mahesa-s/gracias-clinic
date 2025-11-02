@@ -17,11 +17,7 @@
            class="flex items-center justify-center gap-2 flex-1 sm:flex-none px-5 py-2.5 rounded-lg bg-primary hover:bg-primary/90 transition-all duration-300 text-white shadow-md font-medium text-center">
            <i class="fa-solid fa-plus"></i> Tambah Treatment
         </a>
-        <a href="{{ route('treatments.index') }}"
-           class="flex items-center justify-center gap-2 flex-1 sm:flex-none px-5 py-2.5 rounded-lg border border-[#526D82] text-[#526D82] hover:bg-[#526D82] hover:text-white transition-all duration-300 shadow-sm font-medium text-center">
-           <i class="fa-solid fa-arrow-rotate-left"></i> Halaman Treatment
-        </a>
-      </div>
+        </div>
     </div>
 
     {{-- Alert sukses --}}
