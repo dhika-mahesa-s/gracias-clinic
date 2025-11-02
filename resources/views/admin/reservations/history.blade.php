@@ -8,7 +8,7 @@
     {{-- HEADER DAN FILTER ADMIN --}}
     <div class="bg-card p-6 rounded-xl shadow-lg mb-8 border border-border">
         <div class="flex items-center justify-between mb-4">
-            <h1 class="text-2xl md:text-3xl font-semibold text-foreground">Manajemen Reservasi</h1>
+            <h1 class="text-2xl md:text-3xl font-semibold text-foreground">Riwayat Reservasi Customer</h1>
 
             <a href="javascript:history.back()" class="text-muted-foreground hover:text-primary font-medium flex items-center space-x-1 p-2 rounded-lg bg-secondary hover:bg-accent text-sm">
                 <span class="text-lg leading-none">&larr;</span>
@@ -17,7 +17,7 @@
         </div>
 
         {{-- SEARCH BAR --}}
-        <form action="{{ route('reservations.history') }}" method="GET" class="flex items-center bg-gray-50 rounded-lg p-3 border border-gray-200">
+        <form action="{{ route('admin.reservations.history') }}" method="GET" class="flex items-center bg-gray-50 rounded-lg p-3 border border-gray-200">
             <svg class="w-5 h-5 text-gray-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
             </svg>
