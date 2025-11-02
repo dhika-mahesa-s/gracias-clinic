@@ -6,7 +6,7 @@
 <div class="px-4 py-8 max-w-7xl mx-auto">
 
     {{-- HEADER DAN FILTER --}}
-    <div class="bg-card p-6 rounded-xl shadow-lg mb-8 border border-border">
+    <div class="bg-white p-6 rounded-xl shadow-lg mb-8 border border-border">
         <div class="flex items-center justify-between mb-4">
             <h1 class="text-2xl md:text-3xl font-semibold text-foreground">Riwayat Reservasi</h1>
 
@@ -30,7 +30,7 @@
             <input type="hidden" name="search" value="{{ request('search') }}">
             <div class="flex flex-wrap items-center space-x-2 mt-4 text-sm">
                 <label for="status-filter" class="text-muted-foreground font-medium">Filter:</label>
-                <select name="status" id="status-filter" onchange="document.getElementById('filter-form').submit()" class="px-3 py-1.5 border border-border rounded-lg shadow-sm focus:ring-ring focus:border-primary bg-card text-foreground">
+                <select name="status" id="status-filter" onchange="document.getElementById('filter-form').submit()" class="px-3 py-1.5 border border-border rounded-lg shadow-sm focus:ring-ring focus:border-primary bg-white text-foreground">
                     <option value="">Semua Status</option>
                     <option value="pending" {{ request('status')=='pending'?'selected':'' }}>Pending</option>
                     <option value="confirmed" {{ request('status')=='confirmed'?'selected':'' }}>Mendatang (Confirmed)</option>
@@ -65,7 +65,7 @@
     <div class="space-y-4">
         @forelse($reservations as $r)
 
-        <div class="bg-card p-5 rounded-xl shadow-lg border border-border">
+        <div class="bg-white p-5 rounded-xl shadow-lg border border-border">
             <div class="flex flex-col md:flex-row md:justify-between md:items-start">
                 <div class="flex-grow">
                     <div class="flex items-center mb-3">
@@ -88,6 +88,14 @@
                     <div class="text-xs text-gray-400 mb-4">
                         Booking ID: {{ $r->booking_id ?? '-' }} • Dibuat: {{ $r->created_at ? $r->created_at->format('d M Y') : '-' }}
                     </div>
+
+                    {{-- TOMBOL CETAK RESI --}}
+                    <div class="flex justify-end space-x-3 mt-3"> <a href="{{ route('reservasi.cetak', $r->reservation_code) }}" target="_blank"
+                            class="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-green-500 to-green-600 shadow-md hover:shadow-lg hover:from-green-600 hover:to-green-700 active:scale-95 transition-all duration-300 focus:ring-2 focus:ring-offset-2 focus:ring-green-400">
+                            <i class="fa-solid fa-file-pdf"></i> Download Resi (PDF)
+                        </a>
+                    </div>
+
                 </div>
             </div>
         </div>
