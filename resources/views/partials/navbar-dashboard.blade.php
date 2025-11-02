@@ -9,17 +9,39 @@
         </div>
 
         {{-- Salam & Logout --}}
-        <div class="flex items-center space-x-4">
+        <div class="flex items-center space-x-4 relative z-50">
             <span class="text-sm md:text-base">Halo, <b>{{ Auth::user()->name ?? 'Admin' }}</b></span>
-            <a href="{{ route('logout') }}"
-               onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
-               class="flex items-center gap-2 bg-secondary text-secondary-foreground px-4 py-2 rounded-lg hover:bg-secondary/90 transition-all shadow-sm">
-               <i class="fa-solid fa-right-from-bracket"></i>
-               <span>Logout</span>
-            </a>
+
+            <button type="button" onclick="confirmLogout()"
+                class="flex items-center gap-2 bg-secondary text-secondary-foreground px-4 py-2 rounded-lg hover:bg-secondary/90 transition-all shadow-sm">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Logout</span>
+            </button>
+
             <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hidden">
                 @csrf
             </form>
         </div>
-    </div>
 </nav>
+{{-- Script SweetAlert --}}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    function confirmLogout() {
+        Swal.fire({
+            title: 'Apakah anda yakin untuk logout?',
+            text: "Anda akan keluar dari akun ini.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Ya, Logout',
+            cancelButtonText: 'Batal',
+            width: '400px',
+            padding: '1rem'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('logout-form').submit();
+            }
+        });
+    }
+</script>

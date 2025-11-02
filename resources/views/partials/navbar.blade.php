@@ -52,7 +52,7 @@
             {{-- Tombol Login/Register --}}
             @guest
                 <a href="{{ route('login') }}"
-                    class="w-fit px-8 py-2.5 rounded-xl bg-primary text-white font-medium hover:bg-primary/90 active:scale-95 transition-all duration-300 focus:ring-2 focus:ring-offset-2 focus:ring-gray-400">
+                    class="w-fit px-7 py-2.5 rounded-xl bg-primary text-white font-medium hover:bg-primary/90 active:scale-95 transition-all duration-300 focus:ring-2 focus:ring-offset-2 focus:ring-gray-400">
                     Login
                 </a>
 
@@ -60,13 +60,12 @@
 
             {{-- Tombol Logout --}}
             @auth
-                <form action="{{ route('logout') }}" method="POST" class="inline">
+                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="inline">
                     @csrf
-                    <button type="submit"
-                        class="w-fit px-6 py-2.5 rounded-xl bg-red-500 text-destructive-foreground font-medium hover:bg-destructive/90 active:scale-95 transition-all duration-300 focus:ring-2 focus:ring-offset-2 focus:ring-destructive/50">
+                    <button type="button" onclick="confirmLogout()"
+                        class="w-fit px-7 py-2.5 rounded-xl bg-red-500 text-destructive-foreground font-medium hover:bg-destructive/90 active:scale-95 transition-all duration-300 focus:ring-2 focus:ring-offset-2 focus:ring-destructive/50">
                         Logout
                     </button>
-
                 </form>
             @endauth
         </div>
@@ -79,7 +78,7 @@
 
     {{-- Mobile Menu --}}
     <div x-show="open" x-transition class="md:hidden bg-white/90 backdrop-blur-md border-t border-gray-200">
-        <div class="px-4 py-3 space-y-2">
+        <div class="px-4 py-3 space-y-2 text-center">
             <a href="{{ url('/') }}"
                 class="block px-3 py-2 rounded-md 
                {{ Request::is('/') ? 'bg-blue-500 text-white font-semibold' : 'text-gray-700 hover:bg-blue-50 hover:text-blue-600' }}">
@@ -132,9 +131,9 @@
             @endguest
 
             @auth
-                <form action="{{ route('logout') }}" method="POST" class="mt-2 text-center">
+                <form id="logout-form-mobile" action="{{ route('logout') }}" method="POST" class="mt-2 text-center">
                     @csrf
-                    <button type="submit"
+                    <button type="button" onclick="confirmLogout()"
                         class="w-full px-4 py-2 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 transition">
                         Logout
                     </button>
@@ -161,3 +160,26 @@
         });
     </script>
 @endif
+
+{{-- ✅ SweetAlert Logout Confirmation --}}
+<script>
+    function confirmLogout() {
+        Swal.fire({
+            title: 'Apakah anda yakin untuk logout?',
+            text: "Anda akan keluar dari akun ini.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Ya, Logout',
+            cancelButtonText: 'Batal',
+            width: '400px', // Ukuran lebih kecil
+            padding: '1rem'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Submit the logout form
+                document.getElementById('logout-form').submit();
+            }
+        });
+    }
+</script>
