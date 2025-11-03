@@ -14,11 +14,6 @@
         <i class="fa-solid fa-spa text-primary"></i>
         Treatment Kami
       </h2>
-      <a href="{{ route('treatments.manage') }}" 
-         class="flex items-center gap-2 px-5 py-2.5 rounded-lg border border-[#526D82] 
-                text-[#526D82] hover:bg-[#526D82] hover:text-white transition-all duration-300 shadow-sm font-medium">
-        <i class="fa-solid fa-arrow-left"></i> Kembali
-      </a>
     </div>
 
     {{-- Grid Treatment --}}

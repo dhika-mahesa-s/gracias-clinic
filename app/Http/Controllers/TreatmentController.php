@@ -22,6 +22,7 @@ class TreatmentController extends Controller
      */
     public function show(Treatment $treatment)
     {
+        
         return view('treatments.show', compact('treatment'));
     }
 
