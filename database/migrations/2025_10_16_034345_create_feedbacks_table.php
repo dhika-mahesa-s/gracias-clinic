@@ -27,7 +27,7 @@ return new class extends Migration
             $table->tinyInteger('rating')->unsigned()->nullable()->comment('skala 1-5 - untuk backward compatibility');
             $table->boolean('is_approved')->default(false);
             $table->boolean('is_hidden')->default(false);
-            $table->boolean('is_visible')->default(false);
+            $table->boolean('is_visible')->default(true);
             $table->timestamps();
         });
     }
