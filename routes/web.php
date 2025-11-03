@@ -4,8 +4,10 @@
 | Web Routes
 |--------------------------------------------------------------------------
 */
+
 use App\Models\User;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
 use Laravel\Socialite\Socialite;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -15,6 +17,7 @@ use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\TreatmentController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Admin\DashboardController;
@@ -24,7 +27,6 @@ use App\Http\Controllers\Admin\ReservationAdminController;
 use App\Http\Controllers\Admin\FaqController as AdminFaqController;
 use App\Http\Controllers\Customer\FaqController as CustomerFaqController;
 use App\Http\Controllers\Admin\FeedbackController as AdminFeedbackController;
-use App\Http\Controllers\LandingPageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -49,7 +51,12 @@ Route::get('/about', function () {
 // ==========================
 // AUTH ROUTES
 // ==========================
-Route::get('/auth/redirect', function () {
+Route::get('/auth/redirect', function (Request $request) {
+    // Jika ada ?redirect_to dari tombol reservasi, simpan di session
+    if ($request->has('redirect_to')) {
+        session(['redirect_to' => $request->get('redirect_to')]);
+    }
+
     return Socialite::driver('google')->redirect();
 })->name('auth.redirect');
 
@@ -69,6 +76,13 @@ Route::get('/auth/callback', function () {
         }
 
         Auth::login($user);
+        session()->regenerate();
+
+         // 🔹 Ambil redirect_to dari session (diset di /auth/redirect)
+         if (session()->has('redirect_to')) {
+            $redirectTo = session()->pull('redirect_to'); // hapus setelah digunakan
+            return redirect($redirectTo)->with('success', 'Login berhasil! Selamat datang, ' . $user->name);
+        }
 
         return redirect('/')->with('success', 'Login berhasil! Selamat datang, ' . $user->name);
     } catch (Exception $e) {
@@ -170,15 +184,14 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::middleware(['auth'])->group(function () {
-Route::get('/riwayat-reservasi', [ReservationHistoryController::class, 'index'])->name('reservations.history');
-Route::get('/reservations/{reservation}', [ReservationHistoryController::class, 'show'])->name('reservations.show');
-Route::get('/riwayat-reservasi/cetak', [ReservationHistoryController::class, 'printReport'])->name('admin.reservations.print');
+    Route::get('/riwayat-reservasi', [ReservationHistoryController::class, 'index'])->name('reservations.history');
+    Route::get('/reservations/{reservation}', [ReservationHistoryController::class, 'show'])->name('reservations.show');
+    Route::get('/riwayat-reservasi/cetak', [ReservationHistoryController::class, 'printReport'])->name('admin.reservations.print');
 });
 
 Route::prefix('admin')->middleware(['auth', 'check.admin'])->group(function () {
     Route::get('/riwayat-reservasi', [ReservationHistoryController::class, 'adminIndex'])->name('admin.reservations.history');
     Route::resource('schedules', ScheduleController::class)->middleware('auth');
-
 });
 
 // ==========================
@@ -188,8 +201,3 @@ Route::prefix('admin')->middleware(['auth', 'check.admin'])->name('admin.')->gro
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/dashboard/download-report', [DashboardController::class, 'downloadReport'])->name('dashboard.downloadReport');
 });
-
-
-
-
-

@@ -65,10 +65,23 @@
 
             <!-- Tombol Reservasi -->
             <div class="mt-10 text-center">
-                <a href="{{ route('reservasi.index', ['treatment_id' => $treatment->id] )}}" 
-                   class="inline-flex items-center justify-center gap-2 px-8 py-3 bg-primary text-white font-semibold rounded-2xl shadow-md hover:bg-primary/90 hover:shadow-lg transform hover:scale-105 transition-all duration-300">
-                    <i class="fa-solid fa-calendar-check"></i> Reservasi Sekarang
+                @auth
+                {{-- ✅ Jika user sudah login, langsung buka halaman feedback --}}
+                <a href="{{ route('reservasi.index',['treatment_id' => $treatment->id])}}"
+                    class="px-4 py-2 rounded-lg text-white bg-primary hover:bg-primary/90 transition-all duration-300 text-sm font-medium shadow-md">
+                    Reservasi
                 </a>
+            @else
+                {{-- 🚪 Jika belum login, arahkan ke login dan simpan halaman tujuan --}}
+                <a href="{{ route('login') }}"
+                    onclick="event.preventDefault(); 
+                             sessionStorage.setItem('intended', '{{ route('reservasi.index',['treatment_id' => $treatment->id])}}');
+                             window.location.href='{{ route('login') }}';"
+                    class="px-4 py-2 rounded-lg text-white bg-primary hover:bg-primary/90 transition-all duration-300 text-sm font-medium shadow-md">
+                    Reservasi
+                </a>
+            @endauth
+        
             </div>
         </div>
     </div>
