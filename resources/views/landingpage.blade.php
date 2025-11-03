@@ -23,10 +23,22 @@
             </p>
 
             <div class="flex justify-center gap-4">
-                <a href="{{ route('reservasi.index') }}"
+                @auth
+                {{-- ✅ Jika user sudah login, langsung buka halaman feedback --}}
+                <a href="{{ route('reservasi.index')}}"
                     class="border border-gray text-white px-6 py-3 rounded-lg hover:bg-primary/90 active:scale-95 transition-all duration-300 focus:ring-2 focus:ring-offset-2 focus:ring-gray-400">
                     Reservasi Sekarang
                 </a>
+            @else
+                {{-- 🚪 Jika belum login, arahkan ke login dan simpan halaman tujuan --}}
+                <a href="{{ route('login') }}"
+                    onclick="event.preventDefault(); 
+                             sessionStorage.setItem('intended', '{{ route('reservasi.index')}}');
+                             window.location.href='{{ route('login') }}';"
+                    class="border border-gray text-white px-6 py-3 rounded-lg hover:bg-primary/90 active:scale-95 transition-all duration-300 focus:ring-2 focus:ring-offset-2 focus:ring-gray-400">
+                    Reservasi Sekarang
+                </a>
+            @endauth
             </div>
         </div>
     </section>
@@ -234,11 +246,24 @@
             </div>
 
             <div class="mt-10">
-                <a href="{{ route('feedback.create') }}"
-                    class="inline-flex items-center px-6 py-3 border border-gray-800 text-gray-800 rounded-lg hover:bg-gray-600 hover:text-white transition duration-300">
-                    Berikan Feedback Anda
-                </a>
-            </div>
+    @auth
+        {{-- ✅ Jika user sudah login, langsung buka halaman feedback --}}
+        <a href="{{ route('feedback.create') }}"
+            class="inline-flex items-center px-6 py-3 border border-gray-800 text-gray-800 rounded-lg hover:bg-gray-600 hover:text-white transition duration-300">
+            Berikan Feedback Anda
+        </a>
+    @else
+        {{-- 🚪 Jika belum login, arahkan ke login dan simpan halaman tujuan --}}
+        <a href="{{ route('login') }}"
+            onclick="event.preventDefault(); 
+                     sessionStorage.setItem('intended', '{{ route('feedback.create') }}');
+                     window.location.href='{{ route('login') }}';"
+            class="inline-flex items-center px-6 py-3 border border-gray-800 text-gray-800 rounded-lg hover:bg-gray-600 hover:text-white transition duration-300">
+            Berikan Feedback Anda
+        </a>
+    @endauth
+</div>
+
         </div>
     </section>
 

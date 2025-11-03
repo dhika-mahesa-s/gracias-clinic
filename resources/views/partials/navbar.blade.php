@@ -21,11 +21,23 @@
                 Treatments
             </a>
 
-            <a href="{{ route('reservasi.index') }}"
-                class="relative px-3 py-1 rounded-md 
-               {{ Route::is('reservasi.index') ? 'text-blue-600 font-semibold bg-blue-100' : 'text-gray-700 font-medium hover:text-black hover:bg-blue-50' }}">
-                Reservasi
-            </a>
+              @auth
+                {{-- Jika user sudah login langsung ke halaman reservasi --}}
+                <a href="{{ route('reservasi.index') }}"
+                    class="relative px-3 py-1 rounded-md 
+       {{ Route::is('reservasi.index') ? 'text-blue-600 font-semibold bg-blue-100' : 'text-gray-700 font-medium hover:text-black hover:bg-blue-50' }}">
+                    Reservasi
+                </a>
+            @else
+                {{-- Jika belum login, simpan halaman tujuan dan arahkan ke login --}}
+                <a href="{{ route('login') }}"
+                    onclick="event.preventDefault(); 
+                 sessionStorage.setItem('intended', '{{ route('reservasi.index') }}');
+                 window.location.href='{{ route('login') }}';"
+                    class="relative px-3 py-1 rounded-md text-gray-700 font-medium hover:text-black hover:bg-blue-50">
+                    Reservasi
+                </a>
+            @endauth
 
             @auth
                 @if ($hasReservation)
@@ -91,11 +103,23 @@
                 Treatments
             </a>
 
-            <a href="{{ route('reservasi.index') }}"
-                class="block px-3 py-2 rounded-md 
-               {{ Route::is('reservasi.index') ? 'bg-blue-500 text-white font-semibold' : 'text-gray-700 hover:bg-blue-50 hover:text-blue-600' }}">
-                Reservasi
-            </a>
+            @auth
+                {{-- Jika user sudah login langsung ke halaman reservasi --}}
+                <a href="{{ route('reservasi.index') }}"
+                    class="relative px-3 py-1 rounded-md 
+       {{ Route::is('reservasi.index') ? 'text-blue-600 font-semibold bg-blue-100' : 'text-gray-700 font-medium hover:text-black hover:bg-blue-50' }}">
+                    Reservasi
+                </a>
+            @else
+                {{-- Jika belum login, simpan halaman tujuan dan arahkan ke login --}}
+                <a href="{{ route('login') }}"
+                    onclick="event.preventDefault(); 
+                 sessionStorage.setItem('intended', '{{ route('reservasi.index') }}');
+                 window.location.href='{{ route('login') }}';"
+                    class="relative px-3 py-1 rounded-md text-gray-700 font-medium hover:text-black hover:bg-blue-50">
+                    Reservasi
+                </a>
+            @endauth
 
             @auth
                 @if ($hasReservation)

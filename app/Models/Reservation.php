@@ -71,32 +71,37 @@ class Reservation extends Model
     protected function bookingId(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->reservation_code,
-            set: fn ($value) => ['reservation_code' => $value],
+            get: fn() => $this->reservation_code,
+            set: fn($value) => ['reservation_code' => $value],
         );
     }
 
     protected function tanggal(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->reservation_date,
-            set: fn ($value) => ['reservation_date' => $value],
+            get: fn() => $this->reservation_date,
+            set: fn($value) => ['reservation_date' => $value],
         );
     }
 
     protected function waktu(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->reservation_time,
-            set: fn ($value) => ['reservation_time' => $value],
+            get: fn() => $this->reservation_time,
+            set: fn($value) => ['reservation_time' => $value],
         );
     }
 
     protected function harga(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->total_price,
-            set: fn ($value) => ['total_price' => $value],
+            get: fn() => $this->total_price,
+            set: fn($value) => ['total_price' => $value],
         );
+    }
+
+    public function feedback()
+    {
+        return $this->hasOne(Feedback::class);
     }
 }
