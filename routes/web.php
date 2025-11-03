@@ -113,7 +113,7 @@ Route::prefix('admin/treatments')->middleware(['auth', 'check.admin'])->group(fu
 // ==========================
 // RESERVATION ROUTES
 // ==========================
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth','check.customer'])->group(function () {
     Route::get('/reservasi', [ReservationController::class, 'index'])->name('reservasi.index');
     Route::post('/reservasi', [ReservationController::class, 'store'])->name('reservasi.store');
     Route::get('/reservasi/jadwal/{doctor}/{date}', [ReservationController::class, 'getSchedule']);
@@ -131,7 +131,7 @@ require __DIR__ . '/auth.php';
 // ==========================
 // FEEDBACK (User Side)
 // ==========================
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth','check.customer'])->group(function () {
     Route::get('/feedback', [FeedbackController::class, 'create'])->name('feedback.create');
     Route::post('/feedback', [FeedbackController::class, 'store'])->name('feedback.store');
     Route::get('/feedback/thankyou', [FeedbackController::class, 'thankyou'])->name('feedback.thankyou');
@@ -162,14 +162,14 @@ Route::prefix('admin')->middleware(['auth', 'check.admin'])->group(function () {
 // ==========================
 Route::get('/faq', [CustomerFaqController::class, 'index'])->name('customer.faq.index');
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth','check.customer'])->group(function () {
     Route::get('/reservasi', [ReservationController::class, 'index'])->name('reservasi.index');
     Route::post('/reservasi', [ReservationController::class, 'store'])->name('reservasi.store');
     Route::get('/reservasi/jadwal/{doctor}/{date}', [ReservationController::class, 'getSchedule']);
     Route::get('/reservasi/{code}/cetak', [ReservationController::class, 'cetakResi'])->name('reservasi.cetak');
 });
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth','check.customer'])->group(function () {
 Route::get('/riwayat-reservasi', [ReservationHistoryController::class, 'index'])->name('reservations.history');
 Route::get('/reservations/{reservation}', [ReservationHistoryController::class, 'show'])->name('reservations.show');
 Route::get('/riwayat-reservasi/cetak', [ReservationHistoryController::class, 'printReport'])->name('admin.reservations.print');
