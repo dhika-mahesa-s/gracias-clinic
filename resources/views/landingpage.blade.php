@@ -1,46 +1,37 @@
-@php use Illuminate\Support\Facades\Storage; @endphp    
-@extends('layouts.app')
+@php
+    use Illuminate\Support\Facades\Storage;
+@endphp
 
+@extends('layouts.app')
 
 @section('content')
 
     <!-- Hero Section -->
     <section
         class="relative bg-background text-foreground min-h-screen flex flex-col items-center justify-center text-center px-6 overflow-hidden">
-        <!-- Gambar background -->
         <div class="absolute inset-0 bg-cover bg-center z-0"
-            style="background-image: url('{{ asset('images/hd-bg.jpg') }}');">
-        </div>
-
-        <!-- Overlay abu-abu transparan -->
+            style="background-image: url('{{ asset('images/hd-bg.jpg') }}');"></div>
         <div class="absolute inset-0 bg-gray-700/60 z-10"></div>
 
-        <!-- Konten -->
         <div class="relative z-20">
-            <h1 class="text-4xl md:text-5xl font-bold mb-4 text-white">
-                Your Beauty, Our Priority
-            </h1>
-            <p class="text-gray-100 max-w-2xl mx-auto mb-8">
-                — Wujudkan kecantikan impian Anda bersama kami —
-            </p>
+            <h1 class="text-4xl md:text-5xl font-bold mb-4 text-white">Your Beauty, Our Priority</h1>
+            <p class="text-gray-100 max-w-2xl mx-auto mb-8">— Wujudkan kecantikan impian Anda bersama kami —</p>
 
             <div class="flex justify-center gap-4">
                 @auth
-                {{-- ✅ Jika user sudah login, langsung buka halaman feedback --}}
-                <a href="{{ route('reservasi.index')}}"
-                    class="border border-gray text-white px-6 py-3 rounded-lg hover:bg-primary/90 active:scale-95 transition-all duration-300 focus:ring-2 focus:ring-offset-2 focus:ring-gray-400">
-                    Reservasi Sekarang
-                </a>
-            @else
-                {{-- 🚪 Jika belum login, arahkan ke login dan simpan halaman tujuan --}}
-                <a href="{{ route('login') }}"
-                    onclick="event.preventDefault(); 
-                             sessionStorage.setItem('intended', '{{ route('reservasi.index')}}');
-                             window.location.href='{{ route('login') }}';"
-                    class="border border-gray text-white px-6 py-3 rounded-lg hover:bg-primary/90 active:scale-95 transition-all duration-300 focus:ring-2 focus:ring-offset-2 focus:ring-gray-400">
-                    Reservasi Sekarang
-                </a>
-            @endauth
+                    <a href="{{ route('reservasi.index') }}"
+                        class="border border-gray text-white px-6 py-3 rounded-lg hover:bg-primary/90 active:scale-95 transition-all duration-300 focus:ring-2 focus:ring-offset-2 focus:ring-gray-400">
+                        Reservasi Sekarang
+                    </a>
+                @else
+                    <a href="{{ route('login') }}"
+                        onclick="event.preventDefault(); 
+                                 sessionStorage.setItem('intended', '{{ route('reservasi.index') }}');
+                                 window.location.href='{{ route('login') }}';"
+                        class="border border-gray text-white px-6 py-3 rounded-lg hover:bg-primary/90 active:scale-95 transition-all duration-300 focus:ring-2 focus:ring-offset-2 focus:ring-gray-400">
+                        Reservasi Sekarang
+                    </a>
+                @endauth
             </div>
         </div>
     </section>
@@ -93,116 +84,87 @@
         </div>
     </section>
 
-{{-- 💆‍♀️ Layanan Unggulan Kami --}}
+    {{-- 💆‍♀️ Layanan Unggulan Kami --}}
+    <section class="py-20 bg-[#EEF2F7] text-center">
+        <div class="max-w-6xl mx-auto px-4">
+            <h2 class="text-3xl font-bold mb-3 text-[#27374D]">Layanan Unggulan Kami</h2>
+            <p class="text-[#526D82] mb-12">Berbagai pilihan perawatan untuk kebutuhan kecantikan Anda</p>
 
-<section class="py-20 bg-[#EEF2F7] text-center">
-    <div class="max-w-6xl mx-auto px-4">
-        <h2 class="text-3xl font-bold mb-3 text-[#27374D]">Layanan Unggulan Kami</h2>
-        <p class="text-[#526D82] mb-12">Berbagai pilihan perawatan untuk kebutuhan kecantikan Anda</p>
+            @if (isset($treatments) && $treatments->isNotEmpty())
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                    @foreach ($treatments->take(4) as $t)
+                        @php
 
-        @if(isset($treatments) && $treatments->isNotEmpty())
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                @foreach($treatments->take(4) as $t)
-                    @php
-                        $img = $t->image
-                            ? (preg_match('#^https?://#', $t->image)
-                                ? $t->image
-                                : (Storage::disk('public')->exists($t->image)
-                                    ? Storage::url($t->image)
-                                    : 'https://via.placeholder.com/400x300?text=No+Image'))
-                            : 'https://via.placeholder.com/400x300?text=No+Image';
-                    @endphp
+                            if ($t->image) {
+                                if (preg_match('#^https?://#', $t->image)) {
+                                    $img = $t->image;
+                                } elseif (Storage::disk('public')->exists($t->image)) {
+                                    $img = asset('storage/' . $t->image);
+                                } elseif (file_exists(public_path($t->image))) {
+                                    $img = asset($t->image);
+                                } else {
+                                    $img = 'https://via.placeholder.com/400x300?text=No+Image';
+                                }
+                            } else {
+                                $img = 'https://via.placeholder.com/400x300?text=No+Image';
+                            }
+                        @endphp
 
-                    {{-- 🌸 Card Treatment --}}
-                    <div class="bg-white rounded-2xl shadow-md overflow-hidden border border-gray-200 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group">
-                        {{-- Gambar full atas --}}
-                        <div class="relative h-48 overflow-hidden">
-                            <img src="{{ $img }}" alt="{{ $t->name }}" 
-                                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                            <div class="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                        </div>
-
-                        {{-- Konten bawah --}}
-                        <div class="p-5 flex flex-col justify-between h-48">
-                            <div>
-                                <h3 class="text-lg font-semibold text-[#27374D] mb-2 line-clamp-1">{{ $t->name }}</h3>
-                                <p class="text-sm text-[#526D82] leading-relaxed mb-4 line-clamp-3">
-                                    {{ $t->description ?? 'Deskripsi belum tersedia.' }}
-                                </p>
+                        <div
+                            class="bg-white rounded-2xl shadow-md overflow-hidden border border-gray-200 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group">
+                            <div class="relative h-48 overflow-hidden">
+                                <img src="{{ $img }}" alt="{{ $t->name }}"
+                                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                                <div
+                                    class="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity">
+                                </div>
                             </div>
 
-                            {{-- Tombol Detail --}}
-                            <div class="flex justify-center">
-                                <a href="{{ route('treatments.show', $t) }}" 
-                                    class="inline-flex items-center gap-2 px-5 py-2 rounded-lg border border-[#526D82] 
-                                           text-[#526D82] font-medium hover:bg-[#526D82] hover:text-white 
-                                           transition-all duration-300 shadow-sm">
-                                    <i class="fa-solid fa-circle-info"></i> Detail
-                                </a>
+
+                            <div class="p-5 flex flex-col justify-between h-48">
+                                <div>
+                                    <h3 class="text-lg font-semibold text-[#27374D] mb-2 line-clamp-1">{{ $t->name }}
+                                    </h3>
+                                    <p class="text-sm text-[#526D82] leading-relaxed mb-4 line-clamp-3">
+                                        {{ $t->description ?? 'Deskripsi belum tersedia.' }}
+                                    </p>
+                                </div>
+
+                                <div class="flex justify-center">
+                                    <a href="{{ route('treatments.show', $t) }}"
+                                        class="inline-flex items-center gap-2 px-5 py-2 rounded-lg border border-[#526D82] 
+                        text-[#526D82] font-medium hover:bg-[#526D82] hover:text-white 
+                        transition-all duration-300 shadow-sm">
+                                        <i class="fa-solid fa-circle-info"></i> Detail
+                                    </a>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                @endforeach
-            </div>
-        @else
-            {{-- 🚫 Jika belum ada treatment, tampilkan fallback --}}
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                <div class="bg-card rounded-xl shadow-md p-6 border border-border hover:-translate-y-2 transition-transform duration-300">
-                    <img src="https://cdn-icons-png.flaticon.com/512/3774/3774299.png" class="mx-auto w-16 h-16 mb-4" alt="">
-                    <h4 class="font-semibold text-primary mb-2">Dokter Berpengalaman</h4>
-                    <p class="text-muted-foreground text-sm">Tim dokter ahli dengan pengalaman lebih dari 10 tahun di bidang kecantikan.</p>
-                </div>
-                <div class="bg-card rounded-xl shadow-md p-6 border border-border hover:-translate-y-2 transition-transform duration-300">
-                    <img src="https://cdn-icons-png.flaticon.com/512/4403/4403497.png" class="mx-auto w-16 h-16 mb-4" alt="">
-                    <h4 class="font-semibold text-primary mb-2">Fasilitas Modern</h4>
-                    <p class="text-muted-foreground text-sm">Peralatan medis terkini dan teknologi canggih untuk hasil optimal.</p>
-                </div>
-                <div class="bg-card rounded-xl shadow-md p-6 border border-border hover:-translate-y-2 transition-transform duration-300">
-                    <img src="https://cdn-icons-png.flaticon.com/512/860/860916.png" class="mx-auto w-16 h-16 mb-4" alt="">
-                    <h4 class="font-semibold text-primary mb-2">Treatment Berkualitas</h4>
-                    <p class="text-muted-foreground text-sm">Prosedur aman, teruji klinis, dan mengikuti standar internasional.</p>
-                </div>
-                <div class="bg-card rounded-xl shadow-md p-6 border border-border hover:-translate-y-2 transition-transform duration-300">
-                    <img src="https://cdn-icons-png.flaticon.com/512/747/747310.png" class="mx-auto w-16 h-16 mb-4" alt="">
-                    <h4 class="font-semibold text-primary mb-2">Reservasi Mudah</h4>
-                    <p class="text-muted-foreground text-sm">Sistem booking online yang mudah dan fleksibel sesuai jadwal Anda.</p>
-                </div>
-            </div>
-        @endif
+                    @endforeach
 
-        {{-- Tombol lihat semua --}}
-        <div class="mt-12">
-            <a href="{{ route('treatments.index') }}"
-                class="inline-flex items-center px-6 py-3 border border-[#526D82] text-[#526D82] rounded-lg 
-                       hover:bg-[#526D82] hover:text-white transition duration-300 font-medium shadow-sm">
-                Lihat Semua Treatment
-                <svg xmlns="http://www.w3.org/2000/svg" class="ml-2 w-5 h-5" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                </svg>
-            </a>
+                </div>
+            @else
+                <p class="text-[#526D82]">Belum ada layanan yang tersedia saat ini.</p>
+            @endif
+
+            <div class="mt-12">
+                <a href="{{ route('treatments.index') }}"
+                    class="inline-flex items-center px-6 py-3 border border-[#526D82] text-[#526D82] rounded-lg 
+                        hover:bg-[#526D82] hover:text-white transition duration-300 font-medium shadow-sm">
+                    Lihat Semua Treatment
+                    <svg xmlns="http://www.w3.org/2000/svg" class="ml-2 w-5 h-5" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </a>
+            </div>
         </div>
-    </div>
-</section>
-
-{{-- Tambahkan CSS agar teks terpotong rapi --}}
-<style>
-.line-clamp-1 {
-    display: -webkit-box;
-    -webkit-line-clamp: 1;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
-.line-clamp-3 {
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
-</style>
+    </section>
 
 
-    {{-- 💬 Testimoni Pelanggan --}}
+    {{-- ===========================================================
+    💬 TESTIMONI
+=========================================================== --}}
     <section class="py-20 bg-background text-center">
         <div class="max-w-6xl mx-auto px-4">
             <h2 class="text-3xl font-bold mb-3 text-foreground">Kata Mereka</h2>
@@ -212,7 +174,6 @@
                 @if ($featuredFeedbacks->isNotEmpty())
                     @foreach ($featuredFeedbacks as $feedback)
                         @php
-                            // Hitung rata-rata rating yang lebih akurat
                             $ratings = [
                                 $feedback->staff_rating,
                                 $feedback->professional_rating,
@@ -220,13 +181,10 @@
                                 $feedback->return_rating,
                                 $feedback->overall_rating,
                             ];
-                            $validRatings = array_filter($ratings, function ($rating) {
-                                return !is_null($rating) && $rating > 0;
-                            });
-                            $avg =
-                                count($validRatings) > 0
-                                    ? array_sum($validRatings) / count($validRatings)
-                                    : $feedback->overall_rating;
+                            $validRatings = array_filter($ratings, fn($r) => !is_null($r) && $r > 0);
+                            $avg = count($validRatings)
+                                ? array_sum($validRatings) / count($validRatings)
+                                : $feedback->overall_rating;
                         @endphp
 
                         <div
@@ -247,8 +205,7 @@
 
                             <p class="text-primary font-semibold">{{ $feedback->name ?: 'Pelanggan' }}</p>
                             <p class="text-sm text-muted-foreground mt-1">
-                                {{ $feedback->created_at->format('M Y') }} •
-                                Rating: {{ number_format($avg, 1) }}/5
+                                {{ $feedback->created_at->format('M Y') }} • Rating: {{ number_format($avg, 1) }}/5
                             </p>
                             @if ($feedback->service_type)
                                 <p class="text-xs text-muted-foreground mt-1">{{ $feedback->service_type }}</p>
@@ -256,63 +213,52 @@
                         </div>
                     @endforeach
                 @else
-                    {{-- Tampilan fallback ketika belum ada feedback yang dipilih admin --}}
-                    <div
-                        class="bg-card p-8 rounded-2xl shadow-sm hover:shadow-md hover:-translate-y-2 transition-all duration-300 border border-border">
-                        <div class="flex justify-center mb-3 text-yellow-400">
-                            <span>★★★★★</span>
+                    {{-- 🚫 Fallback ketika belum ada feedback --}}
+                    @foreach ([['name' => 'Rini Kusuma', 'text' => 'Pelayanan sangat profesional dan hasil treatment sangat memuaskan!', 'service' => 'Facial Treatment'], ['name' => 'Sari Dewi', 'text' => 'Tempat nyaman, dokter ramah, dan hasilnya langsung terlihat.', 'service' => 'Skin Rejuvenation'], ['name' => 'Maya Sari', 'text' => 'Gracias Clinic adalah tempat terbaik untuk perawatan kecantikan.', 'service' => 'Aesthetic Injection']] as $fb)
+                        <div
+                            class="bg-card p-8 rounded-2xl shadow-sm hover:shadow-md hover:-translate-y-2 transition-all duration-300 border border-border">
+                            <div class="flex justify-center mb-3 text-yellow-400"><span>★★★★★</span></div>
+                            <p class="text-card-foreground mb-3">"{{ $fb['text'] }}"</p>
+                            <p class="text-primary font-semibold">{{ $fb['name'] }}</p>
+                            <p class="text-sm text-muted-foreground mt-1">{{ $fb['service'] }}</p>
                         </div>
-                        <p class="text-card-foreground mb-3">"Pelayanan sangat profesional dan hasil treatment sangat
-                            memuaskan!"</p>
-                        <p class="text-primary font-semibold">Rini Kusuma</p>
-                        <p class="text-sm text-muted-foreground mt-1">Facial Treatment</p>
-                    </div>
-
-                    <div
-                        class="bg-card p-8 rounded-2xl shadow-sm hover:shadow-md hover:-translate-y-2 transition-all duration-300 border border-border">
-                        <div class="flex justify-center mb-3 text-yellow-400">
-                            <span>★★★★★</span>
-                        </div>
-                        <p class="text-card-foreground mb-3">"Tempat nyaman, dokter ramah, dan hasilnya langsung terlihat."
-                        </p>
-                        <p class="text-primary font-semibold">Sari Dewi</p>
-                        <p class="text-sm text-muted-foreground mt-1">Skin Rejuvenation</p>
-                    </div>
-
-                    <div
-                        class="bg-card p-8 rounded-2xl shadow-sm hover:shadow-md hover:-translate-y-2 transition-all duration-300 border border-border">
-                        <div class="flex justify-center mb-3 text-yellow-400">
-                            <span>★★★★★</span>
-                        </div>
-                        <p class="text-card-foreground mb-3">"Gracias Clinic adalah tempat terbaik untuk perawatan
-                            kecantikan."</p>
-                        <p class="text-primary font-semibold">Maya Sari</p>
-                        <p class="text-sm text-muted-foreground mt-1">Aesthetic Injection</p>
-                    </div>
+                    @endforeach
                 @endif
             </div>
 
+            {{-- 🔗 Tombol Feedback --}}
             <div class="mt-10">
-    @auth
-        {{-- ✅ Jika user sudah login, langsung buka halaman feedback --}}
-        <a href="{{ route('feedback.create') }}"
-            class="inline-flex items-center px-6 py-3 border border-gray-800 text-gray-800 rounded-lg hover:bg-gray-600 hover:text-white transition duration-300">
-            Berikan Feedback Anda
-        </a>
-    @else
-        {{-- 🚪 Jika belum login, arahkan ke login dan simpan halaman tujuan --}}
-        <a href="{{ route('login') }}"
-            onclick="event.preventDefault(); 
-                     sessionStorage.setItem('intended', '{{ route('feedback.create') }}');
-                     window.location.href='{{ route('login') }}';"
-            class="inline-flex items-center px-6 py-3 border border-gray-800 text-gray-800 rounded-lg hover:bg-gray-600 hover:text-white transition duration-300">
-            Berikan Feedback Anda
-        </a>
-    @endauth
-</div>
-
+                @auth
+                    <a href="{{ route('feedback.create') }}"
+                        class="inline-flex items-center px-6 py-3 border border-gray-800 text-gray-800 rounded-lg hover:bg-gray-600 hover:text-white transition duration-300">
+                        Berikan Feedback Anda
+                    </a>
+                @else
+                    <a href="{{ route('login') }}"
+                        onclick="event.preventDefault(); sessionStorage.setItem('intended', '{{ route('feedback.create') }}'); window.location.href='{{ route('login') }}';"
+                        class="inline-flex items-center px-6 py-3 border border-gray-800 text-gray-800 rounded-lg hover:bg-gray-600 hover:text-white transition duration-300">
+                        Berikan Feedback Anda
+                    </a>
+                @endauth
+            </div>
         </div>
     </section>
+
+    <style>
+        .line-clamp-1 {
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .line-clamp-3 {
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+    </style>
 
 @endsection
 

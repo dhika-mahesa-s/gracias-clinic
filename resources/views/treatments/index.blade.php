@@ -1,5 +1,5 @@
-@php 
-    use Illuminate\Support\Facades\Storage; 
+@php
+    use Illuminate\Support\Facades\Storage;
 @endphp
 
 @extends('layouts.app')
@@ -20,22 +20,30 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
       @foreach($treatments as $t)
         @php
-          $price = 'Rp ' . number_format($t->price, 0, ',', '.');
+            $price = 'Rp ' . number_format($t->price, 0, ',', '.');
 
-          if ($t->image) {
-              if (preg_match('#^https?://#', $t->image)) {
-                  $img = $t->image;
-              } elseif (Storage::disk('public')->exists($t->image)) {
-                  $img = Storage::url($t->image);
-              } else {
-                  $img = 'https://via.placeholder.com/300x200?text=No+Image';
-              }
-          } else {
-              $img = 'https://via.placeholder.com/300x200?text=No+Image';
-          }
+            if ($t->image) {
+                // Jika URL eksternal (https://...)
+                if (preg_match('#^https?://#', $t->image)) {
+                    $img = $t->image;
+                }
+                // Jika file ada di storage/app/public/
+                elseif (Storage::disk('public')->exists($t->image)) {
+                    $img = asset('storage/' . $t->image);
+                }
+                // Jika file ada di public/images/
+                elseif (file_exists(public_path($t->image))) {
+                    $img = asset($t->image);
+                }
+                else {
+                    $img = 'https://via.placeholder.com/300x200?text=No+Image';
+                }
+            } else {
+                $img = 'https://via.placeholder.com/300x200?text=No+Image';
+            }
         @endphp
 
-        {{-- Card Treatment --}}
+        {{-- Card --}}
         <div class="bg-[#F3F6FB] border border-[#D9E1EC] rounded-2xl shadow-md p-6 
                     hover:shadow-lg hover:-translate-y-1 transition-all duration-300 animate-fadeUp">
           <div class="overflow-hidden rounded-xl mb-4">
@@ -50,31 +58,23 @@
           <p class="text-sm text-[#526D82] mb-3 leading-relaxed">
             {{ \Illuminate\Support\Str::limit($t->description, 100) }}
           </p>
-          <p class="text-lg font-bold text-[#27374D] mb-5">
-           {{ $price }}
-          </p>
+          <p class="text-lg font-bold text-[#27374D] mb-5">{{ $price }}</p>
 
           <div class="flex justify-center gap-3">
-
-    @auth
-        {{-- ✅ Jika user sudah login, langsung buka halaman feedback --}}
-        <a href="{{ route('reservasi.index',['treatment_id' => $t->id])}}"
-            class="px-4 py-2 rounded-lg text-white bg-primary hover:bg-primary/90 transition-all duration-300 text-sm font-medium shadow-md">
-            Reservasi
-        </a>
-    @else
-        {{-- 🚪 Jika belum login, arahkan ke login dan simpan halaman tujuan --}}
-        <a href="{{ route('login') }}"
-            onclick="event.preventDefault(); 
-                     sessionStorage.setItem('intended', '{{ route('reservasi.index',['treatment_id' => $t->id])}}');
-                     window.location.href='{{ route('login') }}';"
-            class="px-4 py-2 rounded-lg text-white bg-primary hover:bg-primary/90 transition-all duration-300 text-sm font-medium shadow-md">
-            Reservasi
-        </a>
-    @endauth
-
-
-
+            @auth
+              <a href="{{ route('reservasi.index',['treatment_id' => $t->id])}}"
+                 class="px-4 py-2 rounded-lg text-white bg-primary hover:bg-primary/90 transition-all duration-300 text-sm font-medium shadow-md">
+                 Reservasi
+              </a>
+            @else
+              <a href="{{ route('login') }}"
+                 onclick="event.preventDefault(); 
+                          sessionStorage.setItem('intended', '{{ route('reservasi.index',['treatment_id' => $t->id])}}');
+                          window.location.href='{{ route('login') }}';"
+                 class="px-4 py-2 rounded-lg text-white bg-primary hover:bg-primary/90 transition-all duration-300 text-sm font-medium shadow-md">
+                 Reservasi
+              </a>
+            @endauth
 
             <a href="{{ route('treatments.show', $t) }}" 
                class="flex items-center gap-2 px-4 py-2 rounded-lg border border-[#526D82] 
@@ -88,7 +88,6 @@
   </div>
 </section>
 
-{{-- Efek Animasi Halus --}}
 <style>
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes fadeUp { from { opacity: 0; transform: translateY(25px); } to { opacity: 1; transform: translateY(0); } }
