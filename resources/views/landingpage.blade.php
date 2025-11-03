@@ -1,7 +1,9 @@
+@php use Illuminate\Support\Facades\Storage; @endphp    
 @extends('layouts.app')
 
 
 @section('content')
+
     <!-- Hero Section -->
     <section
         class="relative bg-background text-foreground min-h-screen flex flex-col items-center justify-center text-center px-6 overflow-hidden">
@@ -79,69 +81,114 @@
         </div>
     </section>
 
-    {{-- 💆‍♀️ Layanan Unggulan Kami --}}
-    <section class="py-20 bg-card text-center">
-        <div class="max-w-6xl mx-auto px-4">
-            <h2 class="text-3xl font-bold mb-3 text-foreground">Layanan Unggulan Kami</h2>
-            <p class="text-muted-foreground mb-12">Berbagai pilihan perawatan untuk kebutuhan kecantikan Anda</p>
+{{-- 💆‍♀️ Layanan Unggulan Kami --}}
 
+<section class="py-20 bg-[#EEF2F7] text-center">
+    <div class="max-w-6xl mx-auto px-4">
+        <h2 class="text-3xl font-bold mb-3 text-[#27374D]">Layanan Unggulan Kami</h2>
+        <p class="text-[#526D82] mb-12">Berbagai pilihan perawatan untuk kebutuhan kecantikan Anda</p>
+
+        @if(isset($treatments) && $treatments->isNotEmpty())
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                @foreach($treatments->take(4) as $t)
+                    @php
+                        $img = $t->image
+                            ? (preg_match('#^https?://#', $t->image)
+                                ? $t->image
+                                : (Storage::disk('public')->exists($t->image)
+                                    ? Storage::url($t->image)
+                                    : 'https://via.placeholder.com/400x300?text=No+Image'))
+                            : 'https://via.placeholder.com/400x300?text=No+Image';
+                    @endphp
+
+                    {{-- 🌸 Card Treatment --}}
+                    <div class="bg-white rounded-2xl shadow-md overflow-hidden border border-gray-200 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group">
+                        {{-- Gambar full atas --}}
+                        <div class="relative h-48 overflow-hidden">
+                            <img src="{{ $img }}" alt="{{ $t->name }}" 
+                                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            <div class="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        </div>
+
+                        {{-- Konten bawah --}}
+                        <div class="p-5 flex flex-col justify-between h-48">
+                            <div>
+                                <h3 class="text-lg font-semibold text-[#27374D] mb-2 line-clamp-1">{{ $t->name }}</h3>
+                                <p class="text-sm text-[#526D82] leading-relaxed mb-4 line-clamp-3">
+                                    {{ $t->description ?? 'Deskripsi belum tersedia.' }}
+                                </p>
+                            </div>
+
+                            {{-- Tombol Detail --}}
+                            <div class="flex justify-center">
+                                <a href="{{ route('treatments.show', $t) }}" 
+                                    class="inline-flex items-center gap-2 px-5 py-2 rounded-lg border border-[#526D82] 
+                                           text-[#526D82] font-medium hover:bg-[#526D82] hover:text-white 
+                                           transition-all duration-300 shadow-sm">
+                                    <i class="fa-solid fa-circle-info"></i> Detail
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        @else
+            {{-- 🚫 Jika belum ada treatment, tampilkan fallback --}}
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                {{-- Facial Treatment --}}
-                <div
-                    class="bg-background p-8 rounded-2xl shadow-sm hover:shadow-md hover:-translate-y-2 transition-all duration-300 border border-border">
-                    <div class="flex justify-center mb-4">
-                        <img src="https://cdn-icons-png.flaticon.com/512/4359/4359906.png" alt="Facial" class="w-16 h-16">
-                    </div>
-                    <h3 class="font-semibold text-lg text-card-foreground mb-2">Facial Treatment</h3>
-                    <p class="text-muted-foreground">Perawatan wajah profesional untuk kulit sehat bercahaya</p>
+                <div class="bg-card rounded-xl shadow-md p-6 border border-border hover:-translate-y-2 transition-transform duration-300">
+                    <img src="https://cdn-icons-png.flaticon.com/512/3774/3774299.png" class="mx-auto w-16 h-16 mb-4" alt="">
+                    <h4 class="font-semibold text-primary mb-2">Dokter Berpengalaman</h4>
+                    <p class="text-muted-foreground text-sm">Tim dokter ahli dengan pengalaman lebih dari 10 tahun di bidang kecantikan.</p>
                 </div>
-
-                {{-- Skin Rejuvenation --}}
-                <div
-                    class="bg-background p-8 rounded-2xl shadow-sm hover:shadow-md hover:-translate-y-2 transition-all duration-300 border border-border">
-                    <div class="flex justify-center mb-4">
-                        <img src="https://cdn-icons-png.flaticon.com/512/4207/4207254.png" alt="Rejuvenation"
-                            class="w-16 h-16">
-                    </div>
-                    <h3 class="font-semibold text-lg text-card-foreground mb-2">Skin Rejuvenation</h3>
-                    <p class="text-muted-foreground">Teknologi terkini untuk regenerasi kulit</p>
+                <div class="bg-card rounded-xl shadow-md p-6 border border-border hover:-translate-y-2 transition-transform duration-300">
+                    <img src="https://cdn-icons-png.flaticon.com/512/4403/4403497.png" class="mx-auto w-16 h-16 mb-4" alt="">
+                    <h4 class="font-semibold text-primary mb-2">Fasilitas Modern</h4>
+                    <p class="text-muted-foreground text-sm">Peralatan medis terkini dan teknologi canggih untuk hasil optimal.</p>
                 </div>
-
-                {{-- Aesthetic Injection --}}
-                <div
-                    class="bg-background p-8 rounded-2xl shadow-sm hover:shadow-md hover:-translate-y-2 transition-all duration-300 border border-border">
-                    <div class="flex justify-center mb-4">
-                        <img src="https://cdn-icons-png.flaticon.com/512/1116/1116453.png" alt="Injection"
-                            class="w-16 h-16">
-                    </div>
-                    <h3 class="font-semibold text-lg text-card-foreground mb-2">Aesthetic Injection</h3>
-                    <p class="text-muted-foreground">Perawatan anti-aging dengan hasil natural</p>
+                <div class="bg-card rounded-xl shadow-md p-6 border border-border hover:-translate-y-2 transition-transform duration-300">
+                    <img src="https://cdn-icons-png.flaticon.com/512/860/860916.png" class="mx-auto w-16 h-16 mb-4" alt="">
+                    <h4 class="font-semibold text-primary mb-2">Treatment Berkualitas</h4>
+                    <p class="text-muted-foreground text-sm">Prosedur aman, teruji klinis, dan mengikuti standar internasional.</p>
                 </div>
-
-                {{-- Body Treatment --}}
-                <div
-                    class="bg-background p-8 rounded-2xl shadow-sm hover:shadow-md hover:-translate-y-2 transition-all duration-300 border border-border">
-                    <div class="flex justify-center mb-4">
-                        <img src="https://cdn-icons-png.flaticon.com/512/747/747310.png" alt="Body Treatment"
-                            class="w-16 h-16">
-                    </div>
-                    <h3 class="font-semibold text-lg text-card-foreground mb-2">Body Treatment</h3>
-                    <p class="text-muted-foreground">Perawatan tubuh untuk tampil lebih percaya diri</p>
+                <div class="bg-card rounded-xl shadow-md p-6 border border-border hover:-translate-y-2 transition-transform duration-300">
+                    <img src="https://cdn-icons-png.flaticon.com/512/747/747310.png" class="mx-auto w-16 h-16 mb-4" alt="">
+                    <h4 class="font-semibold text-primary mb-2">Reservasi Mudah</h4>
+                    <p class="text-muted-foreground text-sm">Sistem booking online yang mudah dan fleksibel sesuai jadwal Anda.</p>
                 </div>
             </div>
+        @endif
 
-            <div class="mt-10">
-                <a href="{{ route('treatments.index') }}"
-                    class="inline-flex items-center px-6 py-3 border border-[#526D82] text-[#526D82] rounded-lg hover:bg-gray-400 hover:text-white transition duration-300">
-                    Lihat Semua Treatment
-                    <svg xmlns="http://www.w3.org/2000/svg" class="ml-2 w-5 h-5" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                    </svg>
-                </a>
-            </div>
+        {{-- Tombol lihat semua --}}
+        <div class="mt-12">
+            <a href="{{ route('treatments.index') }}"
+                class="inline-flex items-center px-6 py-3 border border-[#526D82] text-[#526D82] rounded-lg 
+                       hover:bg-[#526D82] hover:text-white transition duration-300 font-medium shadow-sm">
+                Lihat Semua Treatment
+                <svg xmlns="http://www.w3.org/2000/svg" class="ml-2 w-5 h-5" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+            </a>
         </div>
-    </section>
+    </div>
+</section>
+
+{{-- Tambahkan CSS agar teks terpotong rapi --}}
+<style>
+.line-clamp-1 {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+.line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+</style>
+
 
     {{-- 💬 Testimoni Pelanggan --}}
     <section class="py-20 bg-background text-center">

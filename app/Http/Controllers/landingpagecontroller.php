@@ -15,13 +15,14 @@ class LandingPageController extends Controller
      */
     public function index()
     {
+        $treatments = Treatment::latest()->take(4)->get();
         // Ambil feedback dari database
         $featuredFeedbacks = Feedback::query()
             ->where('is_visible', true)
             ->orderByDesc('created_at')
             ->take(5)
             ->get();
-        return view('landingpage', compact('featuredFeedbacks'));
+        return view('landingpage', compact('featuredFeedbacks', 'treatments'));
     }
 
     public function getFeaturedFeedbacks()
