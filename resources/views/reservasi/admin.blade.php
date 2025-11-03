@@ -21,9 +21,9 @@
     @endif
 
     {{-- Tabel --}}
-    <div class="overflow-x-auto rounded-2xl border border-border bg-white shadow-sm">
-        <table class="min-w-full text-sm text-left text-gray-800">
-            <thead class="bg-gray-100 text-gray-700 uppercase text-xs font-semibold">
+    <div class="bg-[#F3F6FB] border border-[#D9E1EC] rounded-2xl shadow-sm overflow-hidden animate-fadeIn">
+        <table class="min-w-full text-sm text-left text-gray-800 animate-fadeUp">
+            <thead class="bg-grabg-[#EEF6FB] text-[#27374D] uppercase text-xs font-semibold">
                 <tr>
                     <th class="px-4 py-3">Kode</th>
                     <th class="px-4 py-3">Nama Pelanggan</th>
@@ -35,7 +35,7 @@
                     <th class="px-4 py-3 text-center">Aksi</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody class="divide-y divide-[#E6EDF3] bg-white">
                 @forelse ($reservations as $r)
                     <tr class="border-t border-gray-200 hover:bg-gray-50 transition">
                         <td class="px-4 py-3 font-medium">{{ $r->reservation_code }}</td>
@@ -261,8 +261,40 @@
                 }
             }
 
+            @keyframes fadeInSlow {
+                from {
+                    opacity: 0;
+                    transform: translateY(-10px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            @keyframes fadeUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
             .animate-fadeIn {
-                animation: fadeIn 0.25s ease-out;
+                animation: fadeIn 0.3s ease-out;
+            }
+
+            .animate-fadeInSlow {
+                animation: fadeInSlow 0.6s ease-out;
+            }
+
+            .animate-fadeUp {
+                animation: fadeUp 0.5s ease-out;
             }
         </style>
 
