@@ -39,7 +39,7 @@ class LandingPageController extends Controller
                     'name' => $feedback->name ?: ($feedback->user->name ?? 'Anonymous'),
                     'message' => $feedback->message,
                     'rating' => $feedback->overall_rating,
-                    'service_type' => $feedback->service_type,
+                    'service_type' => $feedback->reservations->treatment->name ?? 'General',
                     'date' => $feedback->created_at->format('M Y'),
                     'avatar' => null // Bisa ditambahkan jika ada field avatar
                 ];

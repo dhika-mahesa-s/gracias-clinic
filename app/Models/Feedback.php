@@ -13,6 +13,7 @@ class Feedback extends Model
     protected $table = 'feedbacks';
 
     protected $fillable = [
+        'reservation_id',
         'user_id',
         'name',
         'email',
@@ -45,6 +46,14 @@ class Feedback extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Relasi ke model User
+     */
+    public function reservations()
+    {
+        return $this->belongsTo(Reservation::class);
     }
 
     /**

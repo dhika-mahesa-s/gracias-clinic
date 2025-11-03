@@ -1,9 +1,24 @@
 @extends('layouts.app')
 
 @section('content')
+<section class="min-h-screen bg-[#EEF2F7] text-[#526D82] py-10 px-4 animate-fadeIn">
+    <div class="container mx-auto max-w-7xl">
+
+        <div class="flex flex-col sm:flex-row justify-center sm:items-center mb-2 gap-4">
+            <h2 class="text-3xl font-bold text-[#27374D] text-center gap-2">
+                <i class="fa-solid fa-calendar-check text-[#27374D]"></i>
+              Buat Reservasi Anda
+            </h2> 
+        </div>
+        <div class="flex flex-col sm:flex-row justify-center sm:items-center mb-2 gap-4">
+            <h3 class="text-xl font-extralight text-[#27374D] text-center gap-2">
+                <i class="fa-solid fa-info-circle text-[#27374D]"></i>
+              Isi formulir di bawah untuk membuat reservasi di Gracias Aesthetic Clinic
+            </h3>
+        </div>
     <div x-data="reservationForm()" x-init="init()" data-store-url="{{ route('reservasi.store') }}"
         data-csrf="{{ csrf_token() }}" data-pre-selected-treatment="{{ $preSelectedTreatmentId ?? '' }}"
-        class="max-w-3xl mx-auto mt-16 mb-24 p-8 bg-card rounded-2xl shadow-lg border border-border text-foreground relative overflow-hidden">
+        class="max-w-3xl mx-auto mt-8 mb-24 p-8 bg-card rounded-2xl shadow-lg border border-border text-foreground relative overflow-hidden">
 
         {{-- Progress Bar --}}
         <div class="mb-10">
@@ -535,4 +550,5 @@
                 }
             }
         </script>
+    </div>
 @endsection
