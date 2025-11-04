@@ -1,4 +1,7 @@
-@php use Illuminate\Support\Facades\Storage; @endphp
+@php 
+    use Illuminate\Support\Facades\Storage; 
+    use Illuminate\Support\Str; 
+@endphp
 
 @extends('layouts.dashboard')
 
@@ -79,16 +82,28 @@
                     <i class="fa-solid fa-image text-[#27374D]"></i> Gambar
                 </label>
 
+                @php
+                    if ($treatment->image) {
+                        if (preg_match('#^https?://#', $treatment->image)) {
+                            $img = $treatment->image;
+                        } elseif (Storage::disk('public')->exists($treatment->image)) {
+                            $img = asset('storage/' . $treatment->image);
+                        } elseif (file_exists(public_path('images/' . $treatment->image))) {
+                            $img = asset('images/' . $treatment->image);
+                        } elseif (Str::startsWith($treatment->image, ['storage/', 'images/'])) {
+                            $img = asset($treatment->image);
+                        } else {
+                            $img = 'https://via.placeholder.com/150x150?text=No+Image';
+                        }
+                    } else {
+                        $img = 'https://via.placeholder.com/150x150?text=No+Image';
+                    }
+                @endphp
+
                 <div class="mb-4">
-                    @if ($treatment->image)
-                        <img src="{{ Storage::url($treatment->image) }}" 
-                             alt="{{ $treatment->name }}" 
-                             class="w-32 h-32 object-cover rounded-xl border border-[#D9E1EC] shadow-sm hover:scale-[1.05] transition-all duration-300">
-                    @else
-                        <div class="w-32 h-32 flex items-center justify-center border border-dashed border-gray-400 rounded-lg text-sm text-gray-500">
-                            Tidak ada gambar
-                        </div>
-                    @endif
+                    <img src="{{ $img }}" 
+                         alt="{{ $treatment->name }}" 
+                         class="w-32 h-32 object-cover rounded-xl border border-[#D9E1EC] shadow-sm hover:scale-[1.05] transition-all duration-300">
                 </div>
 
                 <input type="file" name="image" accept="image/*"
