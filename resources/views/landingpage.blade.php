@@ -15,7 +15,6 @@
         <!-- Overlay abu-abu transparan -->
         <div class="absolute inset-0 bg-gray-700/60 z-10"></div>
 
-        <!-- Konten -->
         <div class="relative z-20">
             <h1 class="text-4xl md:text-5xl font-bold mb-4 text-white"
                 data-aos="fade-up"
@@ -122,62 +121,61 @@
                 Berbagai pilihan perawatan untuk kebutuhan kecantikan Anda
             </p>
 
-            @if(isset($treatments) && $treatments->isNotEmpty())
+            @if (isset($treatments) && $treatments->isNotEmpty())
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                    @foreach($treatments->take(4) as $t)
-                        @php $img = $t->image ? (preg_match('#^https?://#', $t->image) ? $t->image : (Storage::disk('public')->exists($t->image) ? Storage::url($t->image) : 'https://via.placeholder.com/400x300?text=No+Image')) : 'https://via.placeholder.com/400x300?text=No+Image'; @endphp
-                        <div class="hover-card bg-white rounded-2xl shadow-md overflow-hidden border border-gray-200 transition-all duration-300 group"
-                             data-aos="fade-up"
-                             data-aos-delay="{{ 300 + ($loop->index * 100) }}">
+                    @foreach ($treatments->take(4) as $t)
+                        @php
+
+                            if ($t->image) {
+                                if (preg_match('#^https?://#', $t->image)) {
+                                    $img = $t->image;
+                                } elseif (Storage::disk('public')->exists($t->image)) {
+                                    $img = asset('storage/' . $t->image);
+                                } elseif (file_exists(public_path($t->image))) {
+                                    $img = asset($t->image);
+                                } else {
+                                    $img = 'https://via.placeholder.com/400x300?text=No+Image';
+                                }
+                            } else {
+                                $img = 'https://via.placeholder.com/400x300?text=No+Image';
+                            }
+                        @endphp
+
+                        <div
+                            class="bg-white rounded-2xl shadow-md overflow-hidden border border-gray-200 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group">
                             <div class="relative h-48 overflow-hidden">
-                                <img src="{{ $img }}" alt="{{ $t->name }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                                <div class="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                                <img src="{{ $img }}" alt="{{ $t->name }}"
+                                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                                <div
+                                    class="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity">
+                                </div>
                             </div>
+
+
                             <div class="p-5 flex flex-col justify-between h-48">
                                 <div>
-                                    <h3 class="text-lg font-semibold text-[#27374D] mb-2 line-clamp-1">{{ $t->name }}</h3>
-                                    <p class="text-sm text-[#526D82] leading-relaxed mb-4 line-clamp-3">{{ $t->description ?? 'Deskripsi belum tersedia.' }}</p>
+                                    <h3 class="text-lg font-semibold text-[#27374D] mb-2 line-clamp-1">{{ $t->name }}
+                                    </h3>
+                                    <p class="text-sm text-[#526D82] leading-relaxed mb-4 line-clamp-3">
+                                        {{ $t->description ?? 'Deskripsi belum tersedia.' }}
+                                    </p>
                                 </div>
+
                                 <div class="flex justify-center">
-                                    <a href="{{ route('treatments.show', $t) }}" class="inline-flex items-center gap-2 px-5 py-2 rounded-lg border border-[#526D82] text-[#526D82] font-medium hover:bg-[#526D82] hover:text-white transition-all duration-300 shadow-sm hover:shadow-md transform hover:-translate-y-0.5">
+                                    <a href="{{ route('treatments.show', $t) }}"
+                                        class="inline-flex items-center gap-2 px-5 py-2 rounded-lg border border-[#526D82] 
+                        text-[#526D82] font-medium hover:bg-[#526D82] hover:text-white 
+                        transition-all duration-300 shadow-sm">
                                         <i class="fa-solid fa-circle-info"></i> Detail
                                     </a>
                                 </div>
                             </div>
                         </div>
                     @endforeach
+
                 </div>
             @else
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                    <div class="hover-card bg-card rounded-xl shadow-md p-6 border border-border transition-all duration-300"
-                         data-aos="fade-up"
-                         data-aos-delay="300">
-                        <img src="https://cdn-icons-png.flaticon.com/512/3774/3774299.png" class="mx-auto w-16 h-16 mb-4" alt="">
-                        <h4 class="font-semibold text-primary mb-2">Dokter Berpengalaman</h4>
-                        <p class="text-muted-foreground text-sm">Tim dokter ahli dengan pengalaman lebih dari 10 tahun di bidang kecantikan.</p>
-                    </div>
-                    <div class="hover-card bg-card rounded-xl shadow-md p-6 border border-border transition-all duration-300"
-                         data-aos="fade-up"
-                         data-aos-delay="400">
-                        <img src="https://cdn-icons-png.flaticon.com/512/4403/4403497.png" class="mx-auto w-16 h-16 mb-4" alt="">
-                        <h4 class="font-semibold text-primary mb-2">Fasilitas Modern</h4>
-                        <p class="text-muted-foreground text-sm">Peralatan medis terkini dan teknologi canggih untuk hasil optimal.</p>
-                    </div>
-                    <div class="hover-card bg-card rounded-xl shadow-md p-6 border border-border transition-all duration-300"
-                         data-aos="fade-up"
-                         data-aos-delay="500">
-                        <img src="https://cdn-icons-png.flaticon.com/512/860/860916.png" class="mx-auto w-16 h-16 mb-4" alt="">
-                        <h4 class="font-semibold text-primary mb-2">Treatment Berkualitas</h4>
-                        <p class="text-muted-foreground text-sm">Prosedur aman, teruji klinis, dan mengikuti standar internasional.</p>
-                    </div>
-                    <div class="hover-card bg-card rounded-xl shadow-md p-6 border border-border transition-all duration-300"
-                         data-aos="fade-up"
-                         data-aos-delay="600">
-                        <img src="https://cdn-icons-png.flaticon.com/512/747/747310.png" class="mx-auto w-16 h-16 mb-4" alt="">
-                        <h4 class="font-semibold text-primary mb-2">Reservasi Mudah</h4>
-                        <p class="text-muted-foreground text-sm">Sistem booking online yang mudah dan fleksibel sesuai jadwal Anda.</p>
-                    </div>
-                </div>
+                <p class="text-[#526D82]">Belum ada layanan yang tersedia saat ini.</p>
             @endif
 
             <div class="mt-12" data-aos="fade-up" data-aos-delay="700">
@@ -233,8 +231,13 @@
                             </div>
                             <p class="text-card-foreground mb-3 italic line-clamp-4">"{{ $feedback->message ?: 'Pelayanan sangat memuaskan!' }}"</p>
                             <p class="text-primary font-semibold">{{ $feedback->name ?: 'Pelanggan' }}</p>
-                            <p class="text-sm text-muted-foreground mt-1">{{ $feedback->created_at->format('M Y') }} • Rating: {{ number_format($avg, 1) }}/5</p>
-                            @if ($feedback->service_type) <p class="text-xs text-muted-foreground mt-1">{{ $feedback->service_type }}</p> @endif
+                            <p class="text-sm text-muted-foreground mt-1">
+                                {{ $feedback->created_at->format('M Y') }} •
+                                Rating: {{ number_format($avg, 1) }}/5
+                            </p>
+                            @if ($feedback->service_type)
+                                <p class="text-xs text-muted-foreground mt-1">{{ $feedback->service_type }}</p>
+                            @endif
                         </div>
                     @endforeach
                 @else
@@ -274,6 +277,22 @@
             </div>
         </div>
     </section>
+
+    <style>
+        .line-clamp-1 {
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .line-clamp-3 {
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+    </style>
 
 @endsection
 

@@ -55,15 +55,34 @@
                             transition-all duration-300 shadow-sm hover:shadow-md hover:-translate-y-1"
                                         :class="form.treatment_id == '{{ $t->id }}' ?
                                             'ring-2 ring-primary scale-[1.02] bg-primary/5' : ''">
-                                        @if ($t->image)
-                                            <img src="{{ asset('storage/' . $t->image) }}" alt="{{ $t->name }}"
-                                                class="w-full h-36 object-cover">
-                                        @else
-                                            <div
-                                                class="w-full h-36 bg-muted flex items-center justify-center text-muted-foreground">
-                                                <i class="fa-solid fa-image text-3xl"></i>
-                                            </div>
-                                        @endif
+                                        @php
+                                            $imagePath = null;
+
+                                            if ($t->image) {
+                                                // Jika path sudah menyertakan 'storage/' atau 'images/', langsung pakai apa adanya
+                                                if (Str::startsWith($t->image, ['storage/', 'images/', 'http'])) {
+                                                    $imagePath = asset($t->image);
+                                                }
+                                                // Jika file ada di storage
+                                                elseif (file_exists(public_path('storage/' . $t->image))) {
+                                                    $imagePath = asset('storage/' . $t->image);
+                                                }
+                                                // Jika file ada di public/images
+                                                elseif (file_exists(public_path('images/' . $t->image))) {
+                                                    $imagePath = asset('images/' . $t->image);
+                                                }
+                                            }
+
+                                            // Default fallback
+                                            if (!$imagePath) {
+                                                $imagePath = asset('images/pic.jpg');
+                                            }
+                                        @endphp
+
+                                        <img src="{{ $imagePath }}" alt="{{ $t->name }}"
+                                            class="w-full h-36 object-cover">
+
+
 
                                         <div class="p-4 space-y-1">
                                             <h3 class="font-semibold text-lg text-foreground">{{ $t->name }}</h3>
