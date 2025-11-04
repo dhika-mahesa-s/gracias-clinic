@@ -162,7 +162,7 @@
                                             {{-- Jika sudah selesai atau dibatalkan --}}
                                         @else
                                             <button disabled
-                                                class="px-3 py-1.5 text-sm font-medium text-gray-400 bg-gray-100 rounded-lg cursor-not-allowed">
+                                                class="px-3 py-1 text-sm font-medium text-gray-400 bg-gray-100 rounded-lg cursor-not-allowed">
                                                 Tidak ada aksi
                                             </button>
                                         @endif
