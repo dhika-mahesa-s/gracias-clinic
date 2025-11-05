@@ -17,7 +17,7 @@ class DatabaseSeeder extends Seeder
         User::create([
             'name' => 'Admin Gracias',
             'email' => 'admin@gracias.com',
-            'password' => Hash::make('admin123'), // 🔐 default password
+            'password' => Hash::make('admin123'),
             'role' => 'admin',
         ]);
 
@@ -42,16 +42,7 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-        // ===== TREATMENTS =====
-        $treatments = [
-            ['name' => 'Facial Glow', 'description' => 'Perawatan wajah untuk mencerahkan kulit', 'price' => 250000, 'duration' => 60],
-            ['name' => 'Laser Acne', 'description' => 'Perawatan laser untuk kulit berjerawat', 'price' => 400000, 'duration' => 45],
-            ['name' => 'Hair Removal', 'description' => 'Perawatan laser untuk menghilangkan rambut halus', 'price' => 350000, 'duration' => 30],
-        ];
 
-        foreach ($treatments as $t) {
-            Treatment::create($t);
-        }
 
         // ===== SCHEDULES =====
         $days = ['Monday', 'Wednesday', 'Friday'];
@@ -67,6 +58,11 @@ class DatabaseSeeder extends Seeder
                 ]);
             }
         }
+        // Jalankan seeder lain
+        $this->call([
+            TreatmentSeeder::class
+            // tambahkan seeder lain kalau ada
+        ]);
 
         echo "✅ Seeder berhasil dijalankan. Akun admin: admin@gracias.com / admin123\n";
     }
