@@ -5,20 +5,26 @@
 @extends('layouts.app')
 
 @section('content')
-<section class="min-h-screen bg-[#EEF2F7] text-[#526D82] py-10 px-4 animate-fadeIn">
-  <div class="container mx-auto max-w-6xl">
+<section class="min-h-screen bg-background py-12 px-4 sm:px-6 lg:px-8">
+  <div class="container mx-auto max-w-7xl">
 
-    {{-- Header --}}
-    <div class="flex justify-between items-center mb-10">
-      <h2 class="text-3xl font-bold flex items-center gap-3 text-[#27374D]">
-        <i class="fa-solid fa-spa text-primary"></i>
+    {{-- Header Section --}}
+    <div class="mb-12 text-center animate-fade-in">
+      <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-primary to-primary/80 rounded-2xl shadow-lg mb-4 animate-bounce-in">
+        <i class="fa-solid fa-spa text-primary-foreground text-3xl"></i>
+      </div>
+      <h1 class="text-4xl sm:text-5xl font-bold text-foreground mb-3">
         Treatment Kami
-      </h2>
+      </h1>
+      <p class="text-lg text-muted-foreground max-w-2xl mx-auto">
+        Pilih treatment terbaik untuk perawatan kecantikan dan kesehatan kulit Anda
+      </p>
+      <div class="mt-4 h-1 w-24 bg-gradient-to-r from-primary/50 via-primary to-primary/50 rounded-full mx-auto"></div>
     </div>
 
     {{-- Grid Treatment --}}
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-      @foreach($treatments as $t)
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+      @foreach($treatments as $index => $t)
         @php
             $price = 'Rp ' . number_format($t->price, 0, ',', '.');
 
@@ -36,62 +42,87 @@
                     $img = asset($t->image);
                 }
                 else {
-                    $img = 'https://via.placeholder.com/300x200?text=No+Image';
+                    $img = 'https://via.placeholder.com/400x300?text=No+Image';
                 }
             } else {
-                $img = 'https://via.placeholder.com/300x200?text=No+Image';
+                $img = 'https://via.placeholder.com/400x300?text=No+Image';
             }
+            
+            // Stagger delay for animation
+            $delays = ['delay-75', 'delay-100', 'delay-150', 'delay-200', 'delay-250', 'delay-300'];
+            $delayClass = $delays[$index % 6] ?? '';
         @endphp
 
-        {{-- Card --}}
-        <div class="bg-[#F3F6FB] border border-[#D9E1EC] rounded-2xl shadow-md p-6 
-                    hover:shadow-lg hover:-translate-y-1 transition-all duration-300 animate-fadeUp">
-          <div class="overflow-hidden rounded-xl mb-4">
-            <img src="{{ $img }}" alt="{{ $t->name }}" 
-                 class="w-full h-48 object-cover rounded-xl border border-[#D9E1EC] shadow-sm hover:scale-105 transition-transform duration-500">
+        {{-- Treatment Card --}}
+        <div class="bg-card rounded-2xl shadow-lg border border-border overflow-hidden hover:shadow-xl transition-smooth hover-lift group animate-slide-up {{ $delayClass }}">
+          {{-- Image Container --}}
+          <div class="relative overflow-hidden bg-muted h-56 sm:h-64">
+            <img src="{{ $img }}" 
+                 alt="{{ $t->name }}" 
+                 class="w-full h-full object-cover group-hover:scale-110 transition-smooth">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-smooth"></div>
+            
+            {{-- Price Badge --}}
+            <div class="absolute top-4 right-4">
+              <div class="bg-primary text-primary-foreground px-4 py-2 rounded-xl shadow-lg font-bold text-lg backdrop-blur-sm">
+                {{ $price }}
+              </div>
+            </div>
           </div>
 
-          <h3 class="text-xl font-semibold text-[#27374D] mb-2 flex items-center gap-2">
-            <i class="fa-solid fa-wand-magic-sparkles text-primary"></i>
-            {{ $t->name }}
-          </h3>
-          <p class="text-sm text-[#526D82] mb-3 leading-relaxed">
-            {{ \Illuminate\Support\Str::limit($t->description, 100) }}
-          </p>
-          <p class="text-lg font-bold text-[#27374D] mb-5">{{ $price }}</p>
+          {{-- Card Content --}}
+          <div class="p-6">
+            {{-- Treatment Name --}}
+            <h3 class="text-xl font-bold text-card-foreground mb-3 flex items-center gap-2 group-hover:text-primary transition-smooth">
+              <i class="fa-solid fa-wand-magic-sparkles text-primary"></i>
+              {{ $t->name }}
+            </h3>
+            
+            {{-- Description --}}
+            <p class="text-sm text-muted-foreground mb-5 leading-relaxed line-clamp-3">
+              {{ \Illuminate\Support\Str::limit($t->description, 120) }}
+            </p>
 
-          <div class="flex justify-center gap-3">
-            @auth
-              <a href="{{ route('reservasi.index',['treatment_id' => $t->id])}}"
-                 class="px-4 py-2 rounded-lg text-white bg-primary hover:bg-primary/90 transition-all duration-300 text-sm font-medium shadow-md">
-                 Reservasi
-              </a>
-            @else
-              <a href="{{ route('login') }}"
-                 onclick="event.preventDefault(); 
-                          sessionStorage.setItem('intended', '{{ route('reservasi.index',['treatment_id' => $t->id])}}');
-                          window.location.href='{{ route('login') }}';"
-                 class="px-4 py-2 rounded-lg text-white bg-primary hover:bg-primary/90 transition-all duration-300 text-sm font-medium shadow-md">
-                 Reservasi
-              </a>
-            @endauth
+            {{-- Action Buttons --}}
+            <div class="flex flex-col sm:flex-row gap-3">
+              @auth
+                <a href="{{ route('reservasi.index',['treatment_id' => $t->id])}}"
+                   class="flex-1 inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-primary-foreground bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary font-semibold shadow-md hover:shadow-lg transition-smooth hover-scale-sm active-press">
+                   <i class="fa-solid fa-calendar-check"></i>
+                   <span>Reservasi</span>
+                </a>
+              @else
+                <a href="{{ route('login') }}"
+                   onclick="event.preventDefault(); 
+                            sessionStorage.setItem('intended', '{{ route('reservasi.index',['treatment_id' => $t->id])}}');
+                            window.location.href='{{ route('login') }}';"
+                   class="flex-1 inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-primary-foreground bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary font-semibold shadow-md hover:shadow-lg transition-smooth hover-scale-sm active-press">
+                   <i class="fa-solid fa-calendar-check"></i>
+                   <span>Reservasi</span>
+                </a>
+              @endauth
 
-            <a href="{{ route('treatments.show', $t) }}" 
-               class="flex items-center gap-2 px-4 py-2 rounded-lg border border-[#526D82] 
-                      text-[#526D82] text-sm font-medium hover:bg-[#526D82] hover:text-white transition-all duration-300 shadow-sm">
-               <i class="fa-solid fa-circle-info"></i> Selengkapnya
-            </a>
+              <a href="{{ route('treatments.show', $t) }}" 
+                 class="flex-1 inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl border-2 border-border text-card-foreground font-semibold hover:bg-primary hover:text-primary-foreground hover:border-primary shadow-sm hover:shadow-md transition-smooth hover-scale-sm active-press">
+                 <i class="fa-solid fa-circle-info"></i>
+                 <span>Detail</span>
+              </a>
+            </div>
           </div>
         </div>
       @endforeach
     </div>
+
+    {{-- Empty State --}}
+    @if($treatments->isEmpty())
+      <div class="text-center py-20 animate-fade-in">
+        <div class="w-24 h-24 bg-muted rounded-full flex items-center justify-center mx-auto mb-6">
+          <i class="fa-solid fa-spa text-6xl text-muted-foreground"></i>
+        </div>
+        <h3 class="text-2xl font-bold text-foreground mb-2">Belum Ada Treatment</h3>
+        <p class="text-muted-foreground text-lg">Treatment akan ditampilkan di sini</p>
+      </div>
+    @endif
   </div>
 </section>
-
-<style>
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-@keyframes fadeUp { from { opacity: 0; transform: translateY(25px); } to { opacity: 1; transform: translateY(0); } }
-.animate-fadeIn { animation: fadeIn 0.5s ease-out; }
-.animate-fadeUp { animation: fadeUp 0.6s ease-out; }
-</style>
 @endsection
