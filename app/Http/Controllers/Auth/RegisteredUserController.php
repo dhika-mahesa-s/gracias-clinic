@@ -32,8 +32,17 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'email' => [
+                'required', 
+                'string', 
+                'lowercase', 
+                'email:rfc,dns',  // Validasi RFC + DNS MX record check
+                'max:255', 
+                'unique:'.User::class
+            ],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+        ], [
+            'email.email' => 'Format email tidak valid atau domain email tidak ditemukan. Pastikan menggunakan email yang aktif.',
         ]);
 
         $user = User::create([

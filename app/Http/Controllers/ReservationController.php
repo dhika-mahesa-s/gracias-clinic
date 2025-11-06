@@ -34,8 +34,10 @@ class ReservationController extends Controller
             'date'         => 'required|date',
             'time'         => 'required',
             'name'         => 'required|string',
-            'email'        => 'required|email',
+            'email'        => 'required|email:rfc,dns', // Validasi format dan DNS MX record
             'phone'        => 'required|string',
+        ], [
+            'email.email' => 'Email tidak valid atau domain email tidak ditemukan.',
         ]);
 
         // Pastikan time ke HH:mm:ss (kolom TIME MySQL)

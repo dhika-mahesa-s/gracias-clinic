@@ -35,10 +35,18 @@
                 <input id="email" type="email"
                     class="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-foreground placeholder:text-muted-foreground/70 {{ $errors->has('email') ? 'border-red-500 ring-red-200' : 'border-input' }}"
                     name="email" value="{{ old('email') }}" required autocomplete="email"
-                    placeholder="Masukkan email Anda">
+                    placeholder="contoh@email.com">
+
+                <p class="text-xs text-muted-foreground mt-1.5 flex items-start gap-1.5">
+                    <i class="fa-solid fa-circle-info text-blue-500 mt-0.5"></i>
+                    <span>Gunakan email aktif yang valid. Sistem akan memverifikasi keberadaan domain email Anda.</span>
+                </p>
 
                 @error('email')
-                    <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                    <p class="text-sm text-red-600 mt-1.5 flex items-start gap-1.5">
+                        <i class="fa-solid fa-circle-exclamation mt-0.5"></i>
+                        <span>{{ $message }}</span>
+                    </p>
                 @enderror
             </div>
 

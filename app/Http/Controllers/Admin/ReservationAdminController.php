@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Reservation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\ReservationConfirmed;
 
 class ReservationAdminController extends Controller
 {
@@ -29,7 +31,16 @@ class ReservationAdminController extends Controller
 
         $reservation->update(['status' => 'confirmed']);
 
-        return back()->with('success', 'Reservasi berhasil dikonfirmasi.');
+        // 📧 Kirim email notifikasi ke customer
+        try {
+            Mail::to($reservation->customer_email)
+                ->send(new ReservationConfirmed($reservation));
+            
+            return back()->with('success', 'Reservasi berhasil dikonfirmasi dan email notifikasi telah dikirim ke customer.');
+        } catch (\Exception $e) {
+            // Jika email gagal, tetap konfirmasi berhasil tapi beri info
+            return back()->with('warning', 'Reservasi berhasil dikonfirmasi, namun email notifikasi gagal dikirim: ' . $e->getMessage());
+        }
     }
 
     // ✅ Menandai reservasi sebagai selesai

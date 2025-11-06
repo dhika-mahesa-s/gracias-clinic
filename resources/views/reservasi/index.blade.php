@@ -335,10 +335,16 @@
                             <input type="email" x-model="form.email"
                                 class="w-full border-2 border-blue-200 bg-white text-foreground rounded-xl p-4 font-medium focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-all shadow-sm"
                                 readonly>
-                            <p class="text-xs text-blue-600 mt-2 flex items-center gap-1.5">
-                                <i class="fa-solid fa-lock"></i>
-                                <span>Email terdaftar dan terverifikasi</span>
-                            </p>
+                            <div class="mt-3 space-y-1.5">
+                                <p class="text-xs text-blue-600 flex items-center gap-1.5">
+                                    <i class="fa-solid fa-shield-check"></i>
+                                    <span>Email terdaftar dan terverifikasi</span>
+                                </p>
+                                <p class="text-xs text-blue-600 flex items-center gap-1.5">
+                                    <i class="fa-solid fa-bell"></i>
+                                    <span>Notifikasi konfirmasi akan dikirim ke email ini</span>
+                                </p>
+                            </div>
                         </div>
 
                         <div class="bg-gradient-to-br from-purple-50 to-purple-100/30 rounded-2xl p-6 border-2 border-purple-200"
@@ -488,6 +494,17 @@
                         <div>
                             <p class="font-bold text-orange-900 mb-1">Perhatian!</p>
                             <p class="text-sm text-orange-700">Pastikan semua data sudah benar sebelum mengkonfirmasi. Data yang sudah dikonfirmasi tidak dapat diubah.</p>
+                        </div>
+                    </div>
+
+                    {{-- Email Notification Info --}}
+                    <div class="bg-gradient-to-r from-blue-50 to-blue-100/50 border-2 border-blue-300 rounded-xl p-5 flex items-start gap-4">
+                        <div class="flex-shrink-0 w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center">
+                            <i class="fa-solid fa-envelope-circle-check text-white"></i>
+                        </div>
+                        <div>
+                            <p class="font-bold text-blue-900 mb-1">📧 Notifikasi Email</p>
+                            <p class="text-sm text-blue-700">Setelah admin mengkonfirmasi reservasi Anda, kami akan mengirimkan email notifikasi ke <strong x-text="form.email"></strong> dengan detail lengkap reservasi.</p>
                         </div>
                     </div>
 

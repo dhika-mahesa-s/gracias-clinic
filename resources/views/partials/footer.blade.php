@@ -29,7 +29,7 @@
                     <i class="fa-brands fa-whatsapp text-accent text-xl mr-3"></i>
                     <p class="font-semibold text-lg">WhatsApp</p>
                 </div>
-                <a href="https://api.whatsapp.com/send/?phone=6282174973339&text&type=phone_number&app_absent=0" class="hover:text-accent transition-colors duration-300 text-sm sm:text-base wrap-break-word">
+                <a href="https://wa.me/6282174973339?text=Halo%20Gracias%20Aesthetic%20Clinic%2C%20saya%20ingin%20bertanya" target="_blank" class="hover:text-accent transition-colors duration-300 text-sm sm:text-base wrap-break-word">
                     +62-8217-4973-339
                 </a>
             </div>
