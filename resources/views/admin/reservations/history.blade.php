@@ -200,12 +200,52 @@
                     <p class="text-muted-foreground text-lg">Tidak ada reservasi yang cocok dengan filter Anda.</p>
                 </div>
             @endforelse
-
-            {{-- Pagination --}}
-            <div class="flex justify-center pt-6">
-                {{ $reservations->links('vendor.pagination.tailwind') }}
-            </div>
         </div>
+
+        {{-- Pagination --}}
+        @if ($reservations->hasPages())
+            <div class="mt-8 flex items-center justify-center animate-fade-in delay-200">
+                <nav class="inline-flex items-center gap-2 bg-card rounded-xl shadow-md border border-border p-2">
+                    {{-- Previous --}}
+                    @if ($reservations->onFirstPage())
+                        <span class="px-3 py-2 text-muted-foreground cursor-not-allowed">
+                            <i class="fa-solid fa-chevron-left"></i>
+                        </span>
+                    @else
+                        <a href="{{ $reservations->previousPageUrl() }}"
+                            class="px-3 py-2 text-foreground hover:bg-accent hover:text-accent-foreground rounded-lg transition-smooth">
+                            <i class="fa-solid fa-chevron-left"></i>
+                        </a>
+                    @endif
+
+                    {{-- Pages --}}
+                    @for ($page = 1; $page <= $reservations->lastPage(); $page++)
+                        @if ($page == $reservations->currentPage())
+                            <span class="px-4 py-2 bg-primary text-primary-foreground font-semibold rounded-lg shadow-sm">
+                                {{ $page }}
+                            </span>
+                        @else
+                            <a href="{{ $reservations->url($page) }}"
+                                class="px-4 py-2 text-foreground hover:bg-accent hover:text-accent-foreground rounded-lg transition-smooth">
+                                {{ $page }}
+                            </a>
+                        @endif
+                    @endfor
+
+                    {{-- Next --}}
+                    @if ($reservations->hasMorePages())
+                        <a href="{{ $reservations->nextPageUrl() }}"
+                            class="px-3 py-2 text-foreground hover:bg-accent hover:text-accent-foreground rounded-lg transition-smooth">
+                            <i class="fa-solid fa-chevron-right"></i>
+                        </a>
+                    @else
+                        <span class="px-3 py-2 text-muted-foreground cursor-not-allowed">
+                            <i class="fa-solid fa-chevron-right"></i>
+                        </span>
+                    @endif
+                </nav>
+            </div>
+        @endif
     </div>
 </div>
 @endsection
