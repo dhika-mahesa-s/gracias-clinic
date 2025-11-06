@@ -180,6 +180,7 @@ Route::get('/faq', [CustomerFaqController::class, 'index'])->name('customer.faq.
 Route::middleware(['auth','check.customer'])->group(function () {
 Route::get('/riwayat-reservasi', [ReservationHistoryController::class, 'index'])->name('reservations.history');
 Route::get('/reservations/{reservation}', [ReservationHistoryController::class, 'show'])->name('reservations.show');
+Route::post('/reservations/{reservation}/cancel', [ReservationHistoryController::class, 'cancelReservation'])->name('reservations.cancel');
 });
 
 Route::prefix('admin')->middleware(['auth', 'check.admin'])->group(function () {
