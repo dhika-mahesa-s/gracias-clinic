@@ -180,11 +180,11 @@ Route::get('/faq', [CustomerFaqController::class, 'index'])->name('customer.faq.
 Route::middleware(['auth','check.customer'])->group(function () {
 Route::get('/riwayat-reservasi', [ReservationHistoryController::class, 'index'])->name('reservations.history');
 Route::get('/reservations/{reservation}', [ReservationHistoryController::class, 'show'])->name('reservations.show');
-Route::get('/riwayat-reservasi/cetak', [ReservationHistoryController::class, 'printReport'])->name('admin.reservations.print');
 });
 
 Route::prefix('admin')->middleware(['auth', 'check.admin'])->group(function () {
     Route::get('/riwayat-reservasi', [ReservationHistoryController::class, 'adminIndex'])->name('admin.reservations.history');
+    Route::get('/riwayat-reservasi/cetak', [ReservationHistoryController::class, 'printReport'])->name('admin.reservations.print');
     Route::resource('schedules', ScheduleController::class)->middleware('auth');
 });
 

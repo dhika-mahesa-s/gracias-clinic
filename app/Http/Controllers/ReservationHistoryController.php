@@ -99,7 +99,7 @@ class ReservationHistoryController extends Controller
             'pending' => (int) $baseQuery->clone()->where('status', 'pending')->count(),
             'upcoming' => (int) $baseQuery->clone()->where('status', 'confirmed')->count(),
             'done' => (int) $baseQuery->clone()->where('status', 'completed')->count(),
-            'cancelled' => (int) $baseQuery->clone()->where('status', 'dibatalkan')->count(),
+            'cancelled' => (int) $baseQuery->clone()->where('status', 'cancelled')->count(),
         ];
 
         return view('admin.reservations.history', compact('reservations', 'stats'));

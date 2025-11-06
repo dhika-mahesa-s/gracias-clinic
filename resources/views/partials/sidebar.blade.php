@@ -1,69 +1,108 @@
-<aside class="w-64 bg-white shadow-md">
-    <div class="pl-8 pt-6 mt-2">
-        <h6 class="text-2xl font-extrabold text-gray-700">Menu Admin</h6>
+<aside class="w-64 bg-sidebar shadow-xl border-r border-sidebar-border hidden lg:block animate-slide-right">
+    {{-- Sidebar Header --}}
+    <div class="p-6 border-b border-sidebar-border bg-sidebar-accent mt-8">
+        <div class="flex items-center gap-3">
+            <div class="p-2 bg-primary rounded-xl shadow-lg">
+                <i class="fa-solid fa-hospital text-primary-foreground text-xl"></i>
+            </div>
+            <div>
+                <h2 class="text-lg font-bold text-sidebar-foreground">Admin Panel</h2>
+                <p class="text-xs text-sidebar-foreground/70">Gracias Clinic</p>
+            </div>
+        </div>
     </div>
+
+    {{-- Navigation Menu --}}
     <nav class="p-4">
         <ul class="space-y-2">
             {{-- Dashboard --}}
             <li>
                 <a href="{{ route('admin.dashboard') }}"
-                   class="block px-4 py-2 rounded-lg 
-                   {{ Route::is('admin.dashboard') ? 'bg-blue-500 text-white font-semibold' : 'hover:bg-blue-50 text-gray-700 font-medium' }}">
-                    <i class="fa-solid fa-chart-line mr-2"></i> Dashboard
+                   class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-smooth hover-scale-sm active-press
+                   {{ Route::is('admin.dashboard') ? 'bg-primary text-primary-foreground shadow-lg' : 'hover:bg-sidebar-accent text-sidebar-foreground' }}">
+                    <div class="flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center transition-smooth
+                        {{ Route::is('admin.dashboard') ? 'bg-primary-foreground/20' : 'bg-sidebar-accent group-hover:bg-primary/10' }}">
+                        <i class="fa-solid fa-chart-line {{ Route::is('admin.dashboard') ? 'text-primary-foreground' : 'text-sidebar-foreground/70 group-hover:text-primary' }}"></i>
+                    </div>
+                    <span class="font-semibold">Dashboard</span>
                 </a>
             </li>
 
             {{-- Kelola Reservasi --}}
             <li>
                 <a href="{{ route('reservasi.admin') }}"
-                   class="block px-4 py-2 rounded-lg 
-                   {{ Route::is('reservasi.admin') ? 'bg-blue-500 text-white font-semibold' : 'hover:bg-blue-50 text-gray-700 font-medium' }}">
-                    <i class="fa-solid fa-calendar-check mr-2"></i> Kelola Reservasi
+                   class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-smooth hover-scale-sm active-press
+                   {{ Route::is('reservasi.admin') ? 'bg-primary text-primary-foreground shadow-lg' : 'hover:bg-sidebar-accent text-sidebar-foreground' }}">
+                    <div class="flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center transition-smooth
+                        {{ Route::is('reservasi.admin') ? 'bg-primary-foreground/20' : 'bg-sidebar-accent group-hover:bg-primary/10' }}">
+                        <i class="fa-solid fa-calendar-check {{ Route::is('reservasi.admin') ? 'text-primary-foreground' : 'text-sidebar-foreground/70 group-hover:text-primary' }}"></i>
+                    </div>
+                    <span class="font-semibold">Kelola Reservasi</span>
                 </a>
             </li>
 
             {{-- Riwayat Reservasi --}}
             <li>
                 <a href="{{ route('admin.reservations.history') }}"
-                   class="block px-4 py-2 rounded-lg 
-                   {{ Route::is('admin.reservations.*') ? 'bg-blue-500 text-white font-semibold' : 'hover:bg-blue-50 text-gray-700 font-medium' }}">
-                    <i class="fa-solid fa-clock-rotate-left mr-2"></i> Riwayat Reservasi
+                   class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-smooth hover-scale-sm active-press
+                   {{ Route::is('admin.reservations.*') ? 'bg-primary text-primary-foreground shadow-lg' : 'hover:bg-sidebar-accent text-sidebar-foreground' }}">
+                    <div class="flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center transition-smooth
+                        {{ Route::is('admin.reservations.*') ? 'bg-primary-foreground/20' : 'bg-sidebar-accent group-hover:bg-primary/10' }}">
+                        <i class="fa-solid fa-clock-rotate-left {{ Route::is('admin.reservations.*') ? 'text-primary-foreground' : 'text-sidebar-foreground/70 group-hover:text-primary' }}"></i>
+                    </div>
+                    <span class="font-semibold">Riwayat Reservasi</span>
                 </a>
             </li>
 
             {{-- Kelola Treatment --}}
             <li>
                 <a href="{{ route('treatments.manage') }}"
-                   class="block px-4 py-2 rounded-lg 
-                   {{ Route::is('treatments.*') ? 'bg-blue-500 text-white font-semibold' : 'hover:bg-blue-50 text-gray-700 font-medium' }}">
-                    <i class="fa-solid fa-spa mr-2"></i> Kelola Treatment
+                   class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-smooth hover-scale-sm active-press
+                   {{ Route::is('treatments.*') ? 'bg-primary text-primary-foreground shadow-lg' : 'hover:bg-sidebar-accent text-sidebar-foreground' }}">
+                    <div class="flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center transition-smooth
+                        {{ Route::is('treatments.*') ? 'bg-primary-foreground/20' : 'bg-sidebar-accent group-hover:bg-primary/10' }}">
+                        <i class="fa-solid fa-spa {{ Route::is('treatments.*') ? 'text-primary-foreground' : 'text-sidebar-foreground/70 group-hover:text-primary' }}"></i>
+                    </div>
+                    <span class="font-semibold">Kelola Treatment</span>
                 </a>
             </li>
 
-            {{-- ✅ Kelola Jadwal (Baru Ditambahkan) --}}
+            {{-- Kelola Jadwal --}}
             <li>
                 <a href="{{ route('schedules.index') }}"
-                   class="block px-4 py-2 rounded-lg 
-                   {{ Route::is('schedules.*') ? 'bg-blue-500 text-white font-semibold' : 'hover:bg-blue-50 text-gray-700 font-medium' }}">
-                    <i class="fa-regular fa-calendar-days mr-2"></i> Kelola Jadwal
+                   class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-smooth hover-scale-sm active-press
+                   {{ Route::is('schedules.*') ? 'bg-primary text-primary-foreground shadow-lg' : 'hover:bg-sidebar-accent text-sidebar-foreground' }}">
+                    <div class="flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center transition-smooth
+                        {{ Route::is('schedules.*') ? 'bg-primary-foreground/20' : 'bg-sidebar-accent group-hover:bg-primary/10' }}">
+                        <i class="fa-regular fa-calendar-days {{ Route::is('schedules.*') ? 'text-primary-foreground' : 'text-sidebar-foreground/70 group-hover:text-primary' }}"></i>
+                    </div>
+                    <span class="font-semibold">Kelola Jadwal</span>
                 </a>
             </li>
 
             {{-- Kelola FAQ --}}
             <li>
                 <a href="{{ route('admin.faq.index') }}"
-                   class="block px-4 py-2 rounded-lg 
-                   {{ Route::is('admin.faq.*') ? 'bg-blue-500 text-white font-semibold' : 'hover:bg-blue-50 text-gray-700 font-medium' }}">
-                    <i class="fa-solid fa-circle-question mr-2"></i> Kelola FAQ
+                   class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-smooth hover-scale-sm active-press
+                   {{ Route::is('admin.faq.*') ? 'bg-primary text-primary-foreground shadow-lg' : 'hover:bg-sidebar-accent text-sidebar-foreground' }}">
+                    <div class="flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center transition-smooth
+                        {{ Route::is('admin.faq.*') ? 'bg-primary-foreground/20' : 'bg-sidebar-accent group-hover:bg-primary/10' }}">
+                        <i class="fa-solid fa-circle-question {{ Route::is('admin.faq.*') ? 'text-primary-foreground' : 'text-sidebar-foreground/70 group-hover:text-primary' }}"></i>
+                    </div>
+                    <span class="font-semibold">Kelola FAQ</span>
                 </a>
             </li>
 
             {{-- Kelola Feedback --}}
             <li>
                 <a href="{{ route('admin.feedback.index') }}"
-                   class="block px-4 py-2 rounded-lg 
-                   {{ Route::is('admin.feedback.*') ? 'bg-blue-500 text-white font-semibold' : 'hover:bg-blue-50 text-gray-700 font-medium' }}">
-                    <i class="fa-solid fa-comments mr-2"></i> Kelola Feedback
+                   class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-smooth hover-scale-sm active-press
+                   {{ Route::is('admin.feedback.*') ? 'bg-primary text-primary-foreground shadow-lg' : 'hover:bg-sidebar-accent text-sidebar-foreground' }}">
+                    <div class="flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center transition-smooth
+                        {{ Route::is('admin.feedback.*') ? 'bg-primary-foreground/20' : 'bg-sidebar-accent group-hover:bg-primary/10' }}">
+                        <i class="fa-solid fa-comments {{ Route::is('admin.feedback.*') ? 'text-primary-foreground' : 'text-sidebar-foreground/70 group-hover:text-primary' }}"></i>
+                    </div>
+                    <span class="font-semibold">Kelola Feedback</span>
                 </a>
             </li>
         </ul>

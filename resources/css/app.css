@@ -164,3 +164,98 @@
   --shadow-xl: var(--shadow-xl);
   --shadow-2xl: var(--shadow-2xl);
 }
+
+/* ==========================================
+   Custom Animations - Fast & Smooth
+   ========================================== */
+
+@layer utilities {
+  /* Keyframes */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes slideDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes slideLeft {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  @keyframes slideRight {
+    from { opacity: 0; transform: translateX(-20px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  @keyframes scaleIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  @keyframes bounceIn {
+    0% { opacity: 0; transform: scale(0.9); }
+    50% { transform: scale(1.02); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+
+  /* Animation Classes */
+  .animate-fade-in { animation: fadeIn 800ms ease-in-out forwards; }
+  .animate-slide-up { animation: slideUp 900ms cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+  .animate-slide-down { animation: slideDown 900ms cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+  .animate-slide-left { animation: slideLeft 900ms cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+  .animate-slide-right { animation: slideRight 900ms cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+  .animate-scale-in { animation: scaleIn 800ms cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+  .animate-bounce-in { animation: bounceIn 1000ms cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+
+  /* Delays */
+  .delay-75 { animation-delay: 120ms; }
+  .delay-100 { animation-delay: 180ms; }
+  .delay-150 { animation-delay: 240ms; }
+  .delay-200 { animation-delay: 300ms; }
+  .delay-250 { animation-delay: 360ms; }
+  .delay-300 { animation-delay: 420ms; }
+
+  /* Transitions */
+  .transition-smooth { transition: all 500ms cubic-bezier(0.22, 1, 0.36, 1); }
+  .transition-smooth-fast { transition: all 350ms cubic-bezier(0.22, 1, 0.36, 1); }
+
+  /* Hover Effects */
+  .hover-lift {
+    transition: transform 500ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 500ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .hover-lift:hover { transform: translateY(-4px); }
+
+  .hover-scale { transition: transform 500ms cubic-bezier(0.22, 1, 0.36, 1); }
+  .hover-scale:hover { transform: scale(1.05); }
+
+  .hover-scale-sm { transition: transform 400ms cubic-bezier(0.22, 1, 0.36, 1); }
+  .hover-scale-sm:hover { transform: scale(1.02); }
+
+  .hover-glow { transition: box-shadow 500ms ease-out; }
+  .hover-glow:hover { box-shadow: 0 0 20px rgba(59, 130, 246, 0.4); }
+
+  .hover-brightness { transition: filter 500ms ease-out; }
+  .hover-brightness:hover { filter: brightness(1.1); }
+
+  /* Active */
+  .active-press { transition: transform 100ms ease; }
+  .active-press:active { transform: scale(0.97); }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

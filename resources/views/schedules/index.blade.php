@@ -3,154 +3,253 @@
 @extends('layouts.dashboard')
 
 @section('content')
-<section class="min-h-screen bg-[#EEF2F7] text-[#526D82] py-10 px-4 animate-fadeIn">
-  <div class="container mx-auto max-w-6xl transition-all duration-500">
+<section class="min-h-screen bg-background py-8 px-4 sm:px-6 lg:px-8 mt-4">
+  <div class="max-w-7xl mx-auto">
 
-    {{-- Header --}}
-    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
-      <h2 class="text-3xl font-bold text-[#27374D] flex items-center gap-2">
-        <i class="fa-solid fa-calendar-days text-[#27374D]"></i>
-        Manajemen Jadwal Dokter
-      </h2>
-      <div class="flex flex-wrap gap-3 w-full sm:w-auto">
+    {{-- Header Section --}}
+    <div class="mb-8 animate-fade-in">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 class="text-3xl sm:text-4xl font-bold text-foreground mb-2 flex items-center gap-3">
+            <div class="p-2 bg-primary rounded-xl">
+              <i class="fa-solid fa-calendar-days text-primary-foreground text-2xl"></i>
+            </div>
+            Kelola Jadwal Dokter
+          </h1>
+          <p class="text-muted-foreground ml-14">Manajemen jadwal praktik dokter</p>
+        </div>
         <a href="{{ route('schedules.create') }}"
-           class="flex items-center justify-center gap-2 flex-1 sm:flex-none px-5 py-2.5 rounded-lg bg-primary hover:bg-primary/90 transition-all duration-300 text-white shadow-md font-medium text-center">
-           <i class="fa-solid fa-plus"></i> Tambah Jadwal
+           class="inline-flex items-center justify-center gap-2 px-6 py-3 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl transition-smooth shadow-lg hover:shadow-xl hover-lift active-press font-semibold">
+           <i class="fa-solid fa-plus"></i>
+           <span>Tambah Jadwal</span>
         </a>
       </div>
     </div>
 
-    {{-- Alert sukses --}}
+    {{-- Alert Success --}}
     @if(session('success'))
-      <div class="mb-6 p-4 bg-[#E6F6EA] border border-[#BEE7C6] text-[#166534] rounded-lg text-center font-medium animate-fadeInSlow">
-        <i class="fa-solid fa-circle-check mr-2"></i>{{ session('success') }}
+      <div class="mb-6 p-4 rounded-xl bg-green-50 border border-green-200 flex items-center gap-3 shadow-sm animate-slide-down">
+        <div class="flex-shrink-0">
+          <i class="fa-solid fa-circle-check text-green-600 text-xl"></i>
+        </div>
+        <div class="flex-1">
+          <p class="text-green-800 font-medium">{{ session('success') }}</p>
+        </div>
       </div>
     @endif
 
-    {{-- Wrapper tabel responsif --}}
-    <div class="bg-[#F3F6FB] border border-[#D9E1EC] rounded-2xl shadow-sm overflow-hidden animate-fadeUp">
-      <div class="overflow-x-auto">
-        <table class="min-w-full text-sm text-[#27374D]">
-          <thead class="bg-[#EEF6FB] text-[#27374D] uppercase text-xs font-semibold">
-            <tr>
-              <th class="py-3 px-4 whitespace-nowrap text-center">No</th>
-              <th class="py-3 px-4 whitespace-nowrap text-left">Dokter</th>
-              <th class="py-3 px-4 whitespace-nowrap text-center">Hari</th>
-              <th class="py-3 px-4 whitespace-nowrap text-center">Waktu</th>
-              <th class="py-3 px-4 whitespace-nowrap text-center">Kuota</th>
-              <th class="py-3 px-4 whitespace-nowrap text-center">Aksi</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-[#E6EDF3] bg-white">
-            @forelse($schedules as $index => $schedule)
-              <tr class="hover:bg-[#F8FBFF] transition duration-300">
-                <td class="py-3 px-4 text-center font-medium">{{ $index + 1 }}</td>
-                <td class="py-3 px-4 font-semibold">{{ $schedule->doctor->name ?? '-' }}</td>
-                <td class="py-3 px-4 text-center capitalize">{{ $schedule->day_of_week }}</td>
-                <td class="py-3 px-4 text-center">
-                  {{ \Carbon\Carbon::parse($schedule->start_time)->format('H:i') }} -
+    {{-- Schedule Cards Grid --}}
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      @forelse($schedules as $index => $schedule)
+        @php
+          $delays = ['', 'delay-75', 'delay-100', 'delay-150', 'delay-200', 'delay-250'];
+          $delayClass = $delays[$index % 6] ?? '';
+        @endphp
+        <div class="bg-card rounded-2xl shadow-md hover:shadow-xl transition-smooth overflow-hidden border border-border hover-lift animate-slide-up {{ $delayClass }}">
+          {{-- Card Header --}}
+          <div class="p-6 bg-muted border-b border-border">
+            <div class="flex items-start justify-between mb-3">
+              <div class="flex items-center gap-3">
+                <div class="flex-shrink-0 w-12 h-12 bg-primary rounded-xl flex items-center justify-center shadow-lg">
+                  <i class="fa-solid fa-user-doctor text-primary-foreground text-xl"></i>
+                </div>
+                <div>
+                  <h3 class="text-lg font-bold text-card-foreground">{{ $schedule->doctor->name ?? '—' }}</h3>
+                  <p class="text-xs text-muted-foreground">Dokter Praktik</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {{-- Card Body --}}
+          <div class="p-6 space-y-4">
+            {{-- Day --}}
+            <div class="flex items-center gap-3">
+              <div class="flex-shrink-0 w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                <i class="fa-solid fa-calendar-day text-purple-600"></i>
+              </div>
+              <div class="flex-1">
+                <p class="text-xs text-muted-foreground mb-0.5">Hari Praktik</p>
+                <p class="text-sm font-semibold text-card-foreground capitalize">{{ $schedule->day_of_week }}</p>
+              </div>
+            </div>
+
+            {{-- Time --}}
+            <div class="flex items-center gap-3">
+              <div class="flex-shrink-0 w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                <i class="fa-solid fa-clock text-blue-600"></i>
+              </div>
+              <div class="flex-1">
+                <p class="text-xs text-muted-foreground mb-0.5">Waktu Praktik</p>
+                <p class="text-sm font-semibold text-card-foreground">
+                  {{ \Carbon\Carbon::parse($schedule->start_time)->format('H:i') }} - 
                   {{ \Carbon\Carbon::parse($schedule->end_time)->format('H:i') }}
-                </td>
-                <td class="py-3 px-4 text-center">{{ $schedule->quota }}</td>
-                <td class="py-3 px-4">
-                  <div class="flex flex-wrap justify-center gap-2">
+                </p>
+              </div>
+            </div>
 
-                    {{-- Tombol Edit --}}
-                    <a href="{{ route('schedules.edit', $schedule->id) }}"
-                       class="flex items-center gap-2 px-3 py-1.5 bg-primary hover:bg-primary/90 transition-all duration-300 text-white rounded-lg text-sm shadow-sm w-full sm:w-auto text-center">
-                       <i class="fa-solid fa-pen-to-square"></i> Edit
-                    </a>
+            {{-- Quota --}}
+            <div class="flex items-center gap-3">
+              <div class="flex-shrink-0 w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                <i class="fa-solid fa-users text-green-600"></i>
+              </div>
+              <div class="flex-1">
+                <p class="text-xs text-muted-foreground mb-0.5">Kuota Pasien</p>
+                <p class="text-sm font-semibold text-card-foreground">{{ $schedule->quota }} Pasien</p>
+              </div>
+            </div>
+          </div>
 
-                    {{-- Tombol Hapus --}}
-                    <button 
-                      onclick="openModal({{ $schedule->id }})"
-                      class="flex items-center gap-2 px-3 py-1.5 bg-[#E53E3E] text-white rounded-lg text-sm hover:bg-[#C53030] transition-all duration-300 shadow-sm w-full sm:w-auto">
-                      <i class="fa-solid fa-trash"></i> Hapus
-                    </button>
+          {{-- Card Actions --}}
+          <div class="p-4 bg-muted border-t border-border flex gap-2">
+            <a href="{{ route('schedules.edit', $schedule->id) }}"
+               class="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-semibold transition-smooth shadow-sm hover:shadow hover-scale-sm active-press">
+               <i class="fa-solid fa-pen-to-square"></i>
+               <span>Edit</span>
+            </a>
 
-                    {{-- Hidden form for deletion --}}
-                    <form id="delete-form-{{ $schedule->id }}" 
-                          action="{{ route('schedules.destroy', $schedule->id) }}" 
-                          method="POST" class="hidden">
-                      @csrf
-                      @method('DELETE')
-                    </form>
-                  </div>
-                </td>
-              </tr>
-            @empty
-              <tr>
-                <td colspan="6" class="text-center py-6 text-gray-500">Belum ada jadwal yang ditambahkan.</td>
-              </tr>
-            @endforelse
-          </tbody>
-        </table>
-      </div>
+            <button 
+              onclick="openDeleteModal({{ $schedule->id }})"
+              class="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-sm font-semibold transition-smooth shadow-sm hover:shadow hover-scale-sm active-press">
+              <i class="fa-solid fa-trash"></i>
+              <span>Hapus</span>
+            </button>
+
+            <form id="delete-form-{{ $schedule->id }}" 
+                  action="{{ route('schedules.destroy', $schedule->id) }}" 
+                  method="POST" class="hidden">
+              @csrf
+              @method('DELETE')
+            </form>
+          </div>
+        </div>
+      @empty
+        <div class="col-span-full bg-card rounded-2xl shadow-md border border-border p-16 text-center animate-fade-in">
+          <i class="fa-solid fa-calendar-xmark text-6xl text-muted mb-4"></i>
+          <h3 class="text-xl font-semibold text-card-foreground mb-2">Belum Ada Jadwal</h3>
+          <p class="text-muted-foreground mb-6">Mulai tambahkan jadwal praktik dokter</p>
+          <a href="{{ route('schedules.create') }}"
+            class="inline-flex items-center gap-2 px-6 py-3 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl transition-smooth shadow-lg hover:shadow-xl hover-lift active-press font-semibold">
+            <i class="fa-solid fa-plus"></i>
+            <span>Tambah Jadwal Pertama</span>
+          </a>
+        </div>
+      @endforelse
     </div>
-
   </div>
+</section>
 
-  {{-- Modal Konfirmasi Hapus --}}
-  <div id="confirmModal" 
-       class="fixed inset-0 hidden items-center justify-center z-50 bg-[#EEF2F7]/80 transition-all duration-300 animate-fadeIn">
-    <div class="bg-white rounded-2xl shadow-2xl p-8 w-[90%] max-w-md text-center animate-fadeIn border border-[#D9E1EC]">
-      <i class="fa-solid fa-triangle-exclamation text-[#E53E3E] text-4xl mb-3"></i>
-      <h3 class="text-xl font-bold text-[#27374D] mb-3">Konfirmasi Penghapusan</h3>
-      <p class="text-[#526D82] mb-6">
-        Apakah Anda yakin ingin menghapus jadwal ini?<br>Tindakan ini tidak dapat dibatalkan.
-      </p>
-      <div class="flex justify-center gap-4">
-        <button 
-          id="cancelBtn"
-          class="px-6 py-2 rounded-lg border border-[#526D82] text-[#526D82] hover:bg-[#526D82] hover:text-white transition font-medium">
+{{-- Modern Delete Confirmation Modal --}}
+<div id="confirmModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black bg-opacity-50 backdrop-blur-sm transition-smooth">
+  <div class="bg-card rounded-2xl shadow-2xl max-w-md w-full transform transition-smooth scale-95 opacity-0" id="modalContent">
+    <div class="p-6">
+      {{-- Modal Icon --}}
+      <div class="flex items-center justify-center mb-4">
+        <div class="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center">
+          <i class="fa-solid fa-triangle-exclamation text-3xl text-red-600"></i>
+        </div>
+      </div>
+
+      {{-- Modal Title --}}
+      <h3 class="text-2xl font-bold text-card-foreground text-center mb-3">Hapus Jadwal?</h3>
+
+      {{-- Modal Message --}}
+      <p class="text-muted-foreground text-center mb-6">Apakah Anda yakin ingin menghapus jadwal ini? Tindakan ini tidak dapat dibatalkan.</p>
+
+      {{-- Modal Actions --}}
+      <div class="flex gap-3">
+        <button id="cancelBtn"
+          class="flex-1 px-6 py-3 rounded-xl border-2 border-border text-foreground font-semibold hover:bg-accent transition-smooth">
           Batal
         </button>
-        <button 
-          id="confirmBtn"
-          class="px-6 py-2 rounded-lg bg-[#E53E3E] text-white font-medium hover:bg-[#C53030] transition shadow-md">
+        <button id="confirmBtn"
+          class="flex-1 px-6 py-3 rounded-xl font-semibold text-white bg-red-600 hover:bg-red-700 transition-smooth shadow-lg hover:shadow-xl hover-scale-sm active-press">
           Ya, Hapus
         </button>
       </div>
     </div>
   </div>
+</div>
+
+{{-- Scripts --}}
+  <div id="confirmModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black bg-opacity-50 backdrop-blur-sm transition-all duration-300">
+    <div class="bg-card rounded-2xl shadow-2xl max-w-md w-full transform transition-all duration-300 scale-95 opacity-0" id="modalContent">
+      <div class="p-6">
+        {{-- Modal Icon --}}
+        <div class="flex items-center justify-center mb-4">
+          <div class="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center">
+            <i class="fa-solid fa-triangle-exclamation text-3xl text-red-600"></i>
+          </div>
+        </div>
+
+        {{-- Modal Title --}}
+        <h3 class="text-2xl font-bold text-card-foreground text-center mb-3">Hapus Jadwal?</h3>
+
+        {{-- Modal Message --}}
+        <p class="text-muted-foreground text-center mb-6">Apakah Anda yakin ingin menghapus jadwal ini? Tindakan ini tidak dapat dibatalkan.</p>
+
+        {{-- Modal Actions --}}
+        <div class="flex gap-3">
+          <button id="cancelBtn"
+            class="flex-1 px-6 py-3 rounded-xl border-2 border-border text-foreground font-semibold hover:bg-accent transition-all duration-150">
+            Batal
+          </button>
+          <button id="confirmBtn"
+            class="flex-1 px-6 py-3 rounded-xl font-semibold text-white bg-red-600 hover:bg-red-700 transition-all duration-150 shadow-lg hover:shadow-xl transform hover:scale-105">
+            Ya, Hapus
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
 
-{{-- Animasi modern --}}
-<style>
-@keyframes fadeIn {
-  from { opacity: 0; transform: scale(0.97); }
-  to { opacity: 1; transform: scale(1); }
-}
-@keyframes fadeInSlow {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-.animate-fadeIn { animation: fadeIn 0.3s ease-out; }
-.animate-fadeInSlow { animation: fadeInSlow 0.6s ease-out; }
-.animate-fadeUp { animation: fadeUp 0.5s ease-out; }
-</style>
-
-{{-- Script Modal --}}
+{{-- Scripts --}}
 <script>
 let deleteId = null;
 
-function openModal(id) {
+function openDeleteModal(id) {
   deleteId = id;
-  document.getElementById('confirmModal').classList.remove('hidden');
-  document.getElementById('confirmModal').classList.add('flex');
+  const modal = document.getElementById('confirmModal');
+  const modalContent = document.getElementById('modalContent');
+
+  modalContent.classList.remove('scale-100', 'opacity-100');
+  modalContent.classList.add('scale-95', 'opacity-0');
+
+  modal.classList.remove('hidden');
+  modal.classList.add('flex');
+
+  setTimeout(() => {
+    modalContent.classList.remove('scale-95', 'opacity-0');
+    modalContent.classList.add('scale-100', 'opacity-100');
+  }, 10);
 }
 
-document.getElementById('cancelBtn').addEventListener('click', () => {
-  document.getElementById('confirmModal').classList.add('hidden');
-});
+function closeModal() {
+  const modal = document.getElementById('confirmModal');
+  const modalContent = document.getElementById('modalContent');
+
+  modalContent.classList.remove('scale-100', 'opacity-100');
+  modalContent.classList.add('scale-95', 'opacity-0');
+
+  setTimeout(() => {
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+  }, 300);
+}
+
+document.getElementById('cancelBtn').addEventListener('click', closeModal);
 
 document.getElementById('confirmBtn').addEventListener('click', () => {
   if (deleteId) {
     document.getElementById(`delete-form-${deleteId}`).submit();
+  }
+  closeModal();
+});
+
+document.getElementById('confirmModal').addEventListener('click', (e) => {
+  if (e.target.id === 'confirmModal') {
+    closeModal();
   }
 });
 </script>

@@ -3,37 +3,41 @@
 @section('title', 'Edit FAQ - Gracias Clinic')
 
 @section('content')
-<div class="max-w-2xl mx-auto mt-24 bg-white rounded-2xl shadow-lg p-10">
-    <h1 class="text-2xl font-semibold text-center mb-8 text-gray-800">Edit FAQ</h1>
+<div class="min-h-screen bg-background py-8 px-4 sm:px-6 lg:px-8 mt-4">
+    <div class="max-w-2xl mx-auto">
+        <div class="bg-card rounded-2xl shadow-lg p-10 border border-border animate-fade-in">
+            <h1 class="text-2xl font-semibold text-center mb-8 text-card-foreground">Edit FAQ</h1>
 
-    <form id="editFaqForm" action="{{ url('admin/faq/'.$faq->id) }}" method="POST" class="space-y-6">
-        @csrf
-        @method('PUT')
+            <form id="editFaqForm" action="{{ url('admin/faq/'.$faq->id) }}" method="POST" class="space-y-6">
+                @csrf
+                @method('PUT')
 
-        <div>
-            <label for="question" class="block text-gray-700 font-medium mb-2">Pertanyaan:</label>
-            <input type="text" id="question" name="question"
-                   value="{{ $faq->question }}"
-                   class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:border-teal-700 focus:ring-2 focus:ring-teal-300 outline-none transition">
+                <div class="animate-slide-up delay-75">
+                    <label for="question" class="block text-foreground font-medium mb-2">Pertanyaan:</label>
+                    <input type="text" id="question" name="question"
+                           value="{{ $faq->question }}"
+                           class="w-full border border-input rounded-lg px-4 py-2 focus:border-ring focus:ring-2 focus:ring-ring outline-none transition-smooth bg-background text-foreground">
+                </div>
+
+                <div class="animate-slide-up delay-100">
+                    <label for="answer" class="block text-foreground font-medium mb-2">Jawaban:</label>
+                    <textarea id="answer" name="answer" rows="4"
+                              class="w-full border border-input rounded-lg px-4 py-2 focus:border-ring focus:ring-2 focus:ring-ring outline-none transition-smooth bg-background text-foreground">{{ $faq->answer }}</textarea>
+                </div>
+
+                <div class="flex justify-end gap-4 pt-2 animate-slide-up delay-150">
+                    <a href="{{ url('admin/faq') }}"
+                       class="inline-flex items-center bg-muted hover:bg-accent text-foreground text-sm px-5 py-2 rounded-lg transition-smooth hover-scale-sm active-press">
+                        <i class="fa-solid fa-xmark mr-2"></i> Batal
+                    </a>
+                    <button type="submit"
+                            class="inline-flex items-center bg-primary hover:bg-primary/90 text-primary-foreground text-sm px-5 py-2 rounded-lg transition-smooth hover-lift active-press">
+                        <i class="fa-solid fa-floppy-disk mr-2"></i> Simpan
+                    </button>
+                </div>
+            </form>
         </div>
-
-        <div>
-            <label for="answer" class="block text-gray-700 font-medium mb-2">Jawaban:</label>
-            <textarea id="answer" name="answer" rows="4"
-                      class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:border-teal-700 focus:ring-2 focus:ring-teal-300 outline-none transition">{{ $faq->answer }}</textarea>
-        </div>
-
-        <div class="flex justify-end gap-4 pt-2">
-            <a href="{{ url('admin/faq') }}"
-               class="inline-flex items-center bg-gray-300 hover:bg-gray-400 text-gray-800 text-sm px-5 py-2 rounded-lg transition">
-                <i class="fa-solid fa-xmark mr-2"></i> Batal
-            </a>
-            <button type="submit"
-                    class="inline-flex items-center bg-teal-700 hover:bg-teal-600 text-white text-sm px-5 py-2 rounded-lg transition">
-                <i class="fa-solid fa-floppy-disk mr-2"></i> Simpan
-            </button>
-        </div>
-    </form>
+    </div>
 </div>
 
 {{-- SweetAlert2 --}}
