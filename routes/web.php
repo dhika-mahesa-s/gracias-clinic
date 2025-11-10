@@ -16,17 +16,15 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\TreatmentController;
-use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\ReservationController;
-use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\Auth\PasswordResetController;
 use App\Http\Controllers\ReservationHistoryController;
 use App\Http\Controllers\Admin\ReservationAdminController;
 use App\Http\Controllers\Admin\FaqController as AdminFaqController;
 use App\Http\Controllers\Customer\FaqController as CustomerFaqController;
 use App\Http\Controllers\Admin\FeedbackController as AdminFeedbackController;
+use App\Http\Controllers\Admin\DiscountController;
 
 /*
 |--------------------------------------------------------------------------
@@ -52,11 +50,18 @@ Route::get('/about', function () {
 // AUTH ROUTES
 // ==========================
 Route::get('/auth/redirect', function (Request $request) {
-    // Jika ada ?redirect_to dari tombol reservasi, simpan di session
-    if ($request->has('redirect_to')) {
-        session(['redirect_to' => $request->get('redirect_to')]);
+    // Ambil redirect_to dari query parameter atau dari session url.intended
+    $redirectTo = $request->get('redirect_to') ?? session('url.intended');
+    
+    // Simpan ke session jika ada
+    if ($redirectTo) {
+        session(['redirect_to' => $redirectTo]);
     }
 
+    // Force regenerate session untuk Edge compatibility
+    session()->regenerate();
+    
+    // Redirect ke Google OAuth
     return Socialite::driver('google')->redirect();
 })->name('auth.redirect');
 
@@ -72,10 +77,19 @@ Route::get('/auth/callback', function () {
                 'email' => $googleUser->getEmail(),
                 'google_id' => $googleUser->getId(),
                 'password' => Hash::make(Str::random(16)),
+                'email_verified_at' => now(), // Auto-verify untuk Google OAuth
             ]);
+        } else {
+            // Jika user sudah ada tapi belum verified, auto-verify
+            if (is_null($user->email_verified_at)) {
+                $user->email_verified_at = now();
+                $user->save();
+            }
         }
 
         Auth::login($user);
+        
+        // Regenerate session setelah login untuk keamanan
         session()->regenerate();
 
          // 🔹 Ambil redirect_to dari session (diset di /auth/redirect)
@@ -85,21 +99,16 @@ Route::get('/auth/callback', function () {
         }
 
         return redirect('/')->with('success', 'Login berhasil! Selamat datang, ' . $user->name);
+    } catch (\Laravel\Socialite\Two\InvalidStateException $e) {
+        // Error spesifik untuk state mismatch (umum di Edge)
+        return redirect('/login')
+            ->with('error', 'Login gagal karena masalah session. Silakan coba lagi atau gunakan browser lain (Chrome/Firefox).');
     } catch (Exception $e) {
         // Tangani error cancel atau gagal autentikasi
-        return redirect('/')
+        return redirect('/login')
             ->with('error', 'Login dengan Google dibatalkan atau gagal. Silakan coba lagi.');
     }
 });
-
-Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
-
-// Register Routes
-Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
-Route::post('/register', [RegisterController::class, 'register']);
-// Password Reset Routes
-Route::get('/forgot-password', [PasswordResetController::class, 'showLinkRequestForm'])->name('password.request');
-Route::post('/forgot-password', [PasswordResetController::class, 'sendResetLinkEmail'])->name('password.email');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -127,7 +136,7 @@ Route::prefix('admin/treatments')->middleware(['auth', 'check.admin'])->group(fu
 // ==========================
 // RESERVATION ROUTES
 // ==========================
-Route::middleware(['auth','check.customer'])->group(function () {
+Route::middleware(['auth', 'verified', 'check.customer'])->group(function () {
     Route::get('/reservasi', [ReservationController::class, 'index'])->name('reservasi.index');
     Route::post('/reservasi', [ReservationController::class, 'store'])->name('reservasi.store');
     Route::get('/reservasi/jadwal/{doctor}/{date}', [ReservationController::class, 'getSchedule']);
@@ -146,7 +155,7 @@ require __DIR__ . '/auth.php';
 // ==========================
 // FEEDBACK (User Side)
 // ==========================
-Route::middleware(['auth','check.customer'])->group(function () {
+Route::middleware(['auth', 'verified', 'check.customer'])->group(function () {
     Route::get('/feedback', [FeedbackController::class, 'create'])->name('feedback.create');
     Route::post('/feedback', [FeedbackController::class, 'store'])->name('feedback.store');
     Route::get('/feedback/thankyou', [FeedbackController::class, 'thankyou'])->name('feedback.thankyou');
@@ -177,14 +186,15 @@ Route::prefix('admin')->middleware(['auth', 'check.admin'])->group(function () {
 // ==========================
 Route::get('/faq', [CustomerFaqController::class, 'index'])->name('customer.faq.index');
 
-Route::middleware(['auth','check.customer'])->group(function () {
+Route::middleware(['auth', 'verified', 'check.customer'])->group(function () {
 Route::get('/riwayat-reservasi', [ReservationHistoryController::class, 'index'])->name('reservations.history');
 Route::get('/reservations/{reservation}', [ReservationHistoryController::class, 'show'])->name('reservations.show');
-Route::get('/riwayat-reservasi/cetak', [ReservationHistoryController::class, 'printReport'])->name('admin.reservations.print');
+Route::post('/reservations/{reservation}/cancel', [ReservationHistoryController::class, 'cancelReservation'])->name('reservations.cancel');
 });
 
 Route::prefix('admin')->middleware(['auth', 'check.admin'])->group(function () {
     Route::get('/riwayat-reservasi', [ReservationHistoryController::class, 'adminIndex'])->name('admin.reservations.history');
+    Route::get('/riwayat-reservasi/cetak', [ReservationHistoryController::class, 'printReport'])->name('admin.reservations.print');
     Route::resource('schedules', ScheduleController::class)->middleware('auth');
 });
 
@@ -194,4 +204,12 @@ Route::prefix('admin')->middleware(['auth', 'check.admin'])->group(function () {
 Route::prefix('admin')->middleware(['auth', 'check.admin'])->name('admin.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/dashboard/download-report', [DashboardController::class, 'downloadReport'])->name('dashboard.downloadReport');
+});
+
+// ==========================
+// DISCOUNT MANAGEMENT ROUTES
+// ==========================
+Route::prefix('admin')->middleware(['auth', 'check.admin'])->name('admin.')->group(function () {
+    Route::resource('discounts', DiscountController::class);
+    Route::patch('discounts/{discount}/toggle-status', [DiscountController::class, 'toggleStatus'])->name('discounts.toggle-status');
 });

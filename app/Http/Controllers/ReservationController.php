@@ -17,7 +17,7 @@ class ReservationController extends Controller
 {
     public function index(Request $request)
     {
-        $treatments = Treatment::all();
+        $treatments = Treatment::with('discounts')->get();
         $doctors = Doctor::where('status', 'active')->get();
 
         // Get pre-selected treatment from query parameter
@@ -34,8 +34,10 @@ class ReservationController extends Controller
             'date'         => 'required|date',
             'time'         => 'required',
             'name'         => 'required|string',
-            'email'        => 'required|email',
+            'email'        => 'required|email:rfc,dns', // Validasi format dan DNS MX record
             'phone'        => 'required|string',
+        ], [
+            'email.email' => 'Email tidak valid atau domain email tidak ditemukan.',
         ]);
 
         // Pastikan time ke HH:mm:ss (kolom TIME MySQL)
@@ -73,8 +75,16 @@ class ReservationController extends Controller
             ]);
         }
 
-        // Ambil harga treatment tanpa load model penuh
-        $price = Treatment::whereKey($request->treatment_id)->value('price') ?? 0;
+        // Ambil treatment dengan diskon
+        $treatment = Treatment::with('discounts')->findOrFail($request->treatment_id);
+        
+        // Gunakan harga diskon jika ada
+        $price = $treatment->hasActiveDiscount() 
+                 ? $treatment->getDiscountedPrice() 
+                 : $treatment->price;
+        
+        // Pastikan harga adalah angka
+        $price = (float) $price;
 
         $code = 'GRS-' . now()->format('Ymd') . '-' . strtoupper(Str::random(5));
 
@@ -168,16 +178,19 @@ class ReservationController extends Controller
         ]);
     }
 
-    public function cetakResi($code){
-    $reservasi = Reservation::where('reservation_code', $code)->firstOrFail();
+    public function cetakResi($code)
+    {
+        $reservasi = Reservation::with(['doctor', 'treatment'])
+                                ->where('reservation_code', $code)
+                                ->firstOrFail();
 
-    $pdf = Pdf::loadView('reservasi.resi', compact('reservasi'))
-        ->setPaper('a5', 'portrait');
+        $pdf = Pdf::loadView('reservasi.resi', compact('reservasi'))
+            ->setPaper('a5', 'portrait');
 
-    $filename = 'resi-' . $reservasi->reservation_code . '.pdf'; 
+        $filename = 'resi-' . $reservasi->reservation_code . '.pdf'; 
 
-    return $pdf->download($filename);
-}
+        return $pdf->download($filename);
+    }
 }
 
 

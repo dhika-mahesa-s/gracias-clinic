@@ -118,8 +118,22 @@
         <div class="section-title">Detail Reservasi</div>
         <div class="info"><span class="label">Dokter</span> <span class="value">{{ $reservasi->doctor->name }}</span></div>
         <div class="info"><span class="label">Treatment</span> <span class="value">{{ $reservasi->treatment->name }}</span></div>
-        <div class="info"><span class="label">Total Harga</span> <span class="value">Rp. {{ number_format((float)$reservasi->treatment->price, 0, ',', '.') }}</span></div>
-        <div class="info"><span class="label">Tanggal</span> <span class="value">{{ \Carbon\Carbon::parse($reservasi->tanggal)->format('d F Y') }}</span></div>
+        
+        @php
+            $originalPrice = $reservasi->treatment->price;
+            $paidPrice = $reservasi->total_price;
+            $hasDiscount = $paidPrice < $originalPrice;
+        @endphp
+        
+        @if($hasDiscount)
+            <div class="info"><span class="label">Harga Normal</span> <span class="value" style="text-decoration: line-through; color: #94a3b8;">Rp. {{ number_format($originalPrice, 0, ',', '.') }}</span></div>
+            <div class="info"><span class="label">Diskon</span> <span class="value" style="color: #ef4444; font-weight: bold;">- Rp. {{ number_format($originalPrice - $paidPrice, 0, ',', '.') }}</span></div>
+            <div class="info"><span class="label">Total Harga</span> <span class="value" style="font-weight: bold; color: #16a34a;">Rp. {{ number_format($paidPrice, 0, ',', '.') }}</span></div>
+        @else
+            <div class="info"><span class="label">Total Harga</span> <span class="value">Rp. {{ number_format($paidPrice, 0, ',', '.') }}</span></div>
+        @endif
+        
+        <div class="info"><span class="label">Tanggal</span> <span class="value">{{ \Carbon\Carbon::parse($reservasi->reservation_date)->format('d F Y') }}</span></div>
         <div class="info"><span class="label">Waktu</span> <span class="value">{{ $reservasi->reservation_time }}</span></div>
 
         <div class="footer">

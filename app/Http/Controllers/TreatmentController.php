@@ -13,7 +13,7 @@ class TreatmentController extends Controller
      */
     public function index()
     {
-        $treatments = Treatment::all();
+        $treatments = Treatment::with('discounts')->get();
         return view('treatments.index', compact('treatments'));
     }
 
@@ -22,7 +22,7 @@ class TreatmentController extends Controller
      */
     public function show(Treatment $treatment)
     {
-        
+        $treatment->load('discounts');
         return view('treatments.show', compact('treatment'));
     }
 
@@ -31,7 +31,7 @@ class TreatmentController extends Controller
      */
     public function manage()
     {
-        $treatments = Treatment::all();
+        $treatments = Treatment::with('discounts')->get();
         return view('treatments.manage', compact('treatments'));
     }
 

@@ -5,108 +5,223 @@
 @extends('layouts.dashboard')
 
 @section('content')
-<section class="min-h-screen bg-[#EEF2F7] text-[#526D82] py-10 px-4 animate-fadeIn">
-    <div class="container mx-auto max-w-6xl">
+<section class="min-h-screen bg-background py-8 px-4 sm:px-6 lg:px-8 mt-4">
+    <div class="max-w-7xl mx-auto">
 
-        {{-- Header --}}
-        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
-            <h2 class="text-3xl font-bold text-[#27374D] flex items-center gap-2">
-                <i class="fa-solid fa-spa text-[#27374D]"></i>
-                Manajemen Treatment
-            </h2>
-            <div class="flex flex-wrap gap-3 w-full sm:w-auto">
+        {{-- Header Section --}}
+        <div class="mb-8 animate-fade-in">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div>
+                    <h1 class="text-3xl sm:text-4xl font-bold text-foreground mb-2 flex items-center gap-3">
+                        <div class="p-2 bg-primary rounded-xl">
+                            <i class="fa-solid fa-spa text-primary-foreground text-2xl"></i>
+                        </div>
+                        Kelola Treatment
+                    </h1>
+                    <p class="text-muted-foreground ml-14">Manajemen treatment dan layanan klinik</p>
+                </div>
                 <a href="{{ route('treatments.create') }}"
-                    class="flex items-center justify-center gap-2 flex-1 sm:flex-none px-5 py-2.5 rounded-lg bg-primary hover:bg-primary/90 transition-all duration-300 text-white shadow-md font-medium text-center">
-                    <i class="fa-solid fa-plus"></i> Tambah Treatment
+                    class="inline-flex items-center justify-center gap-2 px-6 py-3 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl transition-smooth shadow-lg hover:shadow-xl hover-lift active-press font-semibold">
+                    <i class="fa-solid fa-plus"></i>
+                    <span>Tambah Treatment</span>
                 </a>
             </div>
         </div>
 
-        {{-- Alert sukses --}}
+        {{-- Alert Success --}}
         @if (session('success'))
-            <div class="mb-6 p-4 bg-[#E6F6EA] border border-[#BEE7C6] text-[#166534] rounded-lg text-center font-medium animate-fadeInSlow">
-                <i class="fa-solid fa-circle-check mr-2"></i>{{ session('success') }}
+            <div class="mb-6 p-4 rounded-xl bg-green-50 border border-green-200 flex items-center gap-3 shadow-sm animate-slide-down">
+                <div class="flex-shrink-0">
+                    <i class="fa-solid fa-circle-check text-green-600 text-xl"></i>
+                </div>
+                <div class="flex-1">
+                    <p class="text-green-800 font-medium">{{ session('success') }}</p>
+                </div>
             </div>
         @endif
 
-        {{-- Wrapper tabel responsif --}}
-        <div class="bg-[#F3F6FB] border border-[#D9E1EC] rounded-2xl shadow-sm overflow-hidden animate-fadeUp">
-            <div class="overflow-x-auto">
-                <table class="min-w-full text-sm text-[#27374D]">
-                    <thead class="bg-[#EEF6FB] text-[#27374D] uppercase text-xs font-semibold">
-                        <tr>
-                            <th class="py-3 px-4 text-center">ID</th>
-                            <th class="py-3 px-4">Nama</th>
-                            <th class="py-3 px-4 text-center">Harga</th>
-                            <th class="py-3 px-4 text-center">Durasi</th>
-                            <th class="py-3 px-4">Deskripsi</th>
-                            <th class="py-3 px-4 text-center">Gambar</th>
-                            <th class="py-3 px-4 text-center">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-[#E6EDF3] bg-white">
-                        @foreach ($treatments as $t)
+        {{-- Treatment Grid --}}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            @foreach ($treatments as $index => $t)
+                @php
+                    if ($t->image) {
+                        if (preg_match('#^https?://#', $t->image)) {
+                            $imagePath = $t->image;
+                        } elseif (Storage::disk('public')->exists($t->image)) {
+                            $imagePath = asset('storage/' . $t->image);
+                        } elseif (file_exists(public_path('images/' . $t->image))) {
+                            $imagePath = asset('images/' . $t->image);
+                        } elseif (Str::startsWith($t->image, ['storage/', 'images/'])) {
+                            $imagePath = asset($t->image);
+                        } else {
+                            $imagePath = 'https://via.placeholder.com/400x300?text=No+Image';
+                        }
+                    } else {
+                        $imagePath = 'https://via.placeholder.com/400x300?text=No+Image';
+                    }
+                    
+                    $delayClass = match($index % 3) {
+                        0 => '',
+                        1 => 'delay-100',
+                        2 => 'delay-200',
+                    };
+                @endphp
+
+                <div class="group bg-card rounded-2xl shadow-md hover:shadow-2xl overflow-hidden border border-border hover-lift transition-smooth animate-slide-up {{ $delayClass }}">
+                    {{-- Image Section --}}
+                    <div class="relative h-48 overflow-hidden bg-muted">
+                        <img src="{{ $imagePath }}" 
+                             alt="{{ $t->name }}" 
+                             class="w-full h-full object-cover transition-smooth group-hover:scale-110">
+                        
+                        {{-- Overlay --}}
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-smooth"></div>
+                        
+                        {{-- ID Badge --}}
+                        <div class="absolute top-3 left-3">
+                            <span class="inline-flex items-center px-3 py-1 bg-card/90 backdrop-blur-sm rounded-full text-xs font-semibold text-card-foreground">
+                                #{{ $t->id }}
+                            </span>
+                        </div>
+
+                        {{-- Discount Badge (if active) --}}
+                        @if($t->hasActiveDiscount())
                             @php
-                                if ($t->image) {
-                                    if (preg_match('#^https?://#', $t->image)) {
-                                        $imagePath = $t->image;
-                                    } elseif (Storage::disk('public')->exists($t->image)) {
-                                        $imagePath = asset('storage/' . $t->image);
-                                    } elseif (file_exists(public_path('images/' . $t->image))) {
-                                        $imagePath = asset('images/' . $t->image);
-                                    } elseif (Str::startsWith($t->image, ['storage/', 'images/'])) {
-                                        $imagePath = asset($t->image);
-                                    } else {
-                                        $imagePath = 'https://via.placeholder.com/300x200?text=No+Image';
-                                    }
-                                } else {
-                                    $imagePath = 'https://via.placeholder.com/300x200?text=No+Image';
-                                }
+                                $discount = $t->getActiveDiscount();
                             @endphp
+                            <div class="absolute top-3 right-3">
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-full text-xs font-bold shadow-lg animate-pulse">
+                                    <i class="fa-solid fa-tags"></i>
+                                    {{ $discount->type === 'percentage' ? $discount->value . '%' : 'DISKON' }}
+                                </span>
+                            </div>
+                            <div class="absolute bottom-3 right-3">
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-primary/90 backdrop-blur-sm rounded-full text-xs font-semibold text-primary-foreground">
+                                    <i class="fa-solid fa-clock"></i> {{ $t->duration }} menit
+                                </span>
+                            </div>
+                        @else
+                            {{-- Duration Badge --}}
+                            <div class="absolute top-3 right-3">
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-primary/90 backdrop-blur-sm rounded-full text-xs font-semibold text-primary-foreground">
+                                    <i class="fa-solid fa-clock"></i> {{ $t->duration }} menit
+                                </span>
+                            </div>
+                        @endif
+                    </div>
 
-                            <tr class="hover:bg-[#F8FBFF] transition duration-300">
-                                <td class="py-3 px-4 text-center font-medium">{{ $t->id }}</td>
-                                <td class="py-3 px-4 font-semibold">{{ $t->name }}</td>
-                                <td class="py-3 px-4 text-center">Rp {{ number_format($t->price, 0, ',', '.') }}</td>
-                                <td class="py-3 px-4 text-center">{{ $t->duration }} menit</td>
-                                <td class="py-3 px-4 text-[#526D82]">{{ Str::limit($t->description, 60) }}</td>
-                                <td class="py-3 px-4 text-center">
-                                    <img src="{{ $imagePath }}" alt="{{ $t->name }}" 
-                                         class="w-20 h-14 object-cover rounded-lg border border-[#D9E1EC] shadow-sm mx-auto">
-                                </td>
-                                <td class="py-3 px-4">
-                                    <div class="flex flex-wrap justify-center gap-2">
-                                        <a href="{{ route('treatments.edit', $t) }}"
-                                            class="flex items-center gap-2 px-3 py-1.5 bg-primary hover:bg-primary/90 text-white rounded-lg text-sm shadow-sm w-full sm:w-auto text-center">
-                                            <i class="fa-solid fa-pen-to-square"></i> Edit
-                                        </a>
+                    {{-- Content Section --}}
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-card-foreground mb-2 group-hover:text-primary transition-smooth">
+                            {{ $t->name }}
+                        </h3>
 
-                                        <form action="{{ route('treatments.destroy', $t) }}" method="POST"
-                                            onsubmit="return confirm('Hapus treatment ini?')" class="inline w-full sm:w-auto">
-                                            @csrf @method('DELETE')
-                                            <button type="submit"
-                                                class="flex items-center gap-2 px-3 py-1.5 bg-[#E53E3E] text-white rounded-lg text-sm hover:bg-[#C53030] transition-all duration-300 shadow-sm w-full sm:w-auto">
-                                                <i class="fa-solid fa-trash"></i> Hapus
-                                            </button>
-                                        </form>
+                        <p class="text-muted-foreground text-sm mb-4 line-clamp-2">
+                            {{ $t->description }}
+                        </p>
+
+                        {{-- Price with Discount Info --}}
+                        <div class="mb-4 pb-4 border-b border-border">
+                            @if($t->hasActiveDiscount())
+                                @php
+                                    $discount = $t->getActiveDiscount();
+                                @endphp
+                                <div class="space-y-1">
+                                    {{-- Discount Badge --}}
+                                    <div class="flex items-center gap-2 mb-2">
+                                        <span class="text-xs bg-red-100 text-red-700 px-2 py-1 rounded-full font-semibold">
+                                            <i class="fa-solid fa-tag"></i> {{ $discount->name }}
+                                        </span>
                                     </div>
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
+                                    {{-- Discounted Price --}}
+                                    <div class="flex items-baseline gap-2">
+                                        <span class="text-2xl font-bold text-primary">
+                                            Rp {{ number_format($t->getDiscountedPrice(), 0, ',', '.') }}
+                                        </span>
+                                        <span class="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded font-semibold">
+                                            HEMAT
+                                        </span>
+                                    </div>
+                                    {{-- Original Price --}}
+                                    <div class="text-sm text-muted-foreground line-through">
+                                        Rp {{ number_format($t->price, 0, ',', '.') }}
+                                    </div>
+                                    {{-- Discount Period --}}
+                                    <div class="text-xs text-muted-foreground mt-1">
+                                        <i class="fa-solid fa-calendar-alt"></i>
+                                        s/d {{ $discount->end_date->format('d M Y') }}
+                                    </div>
+                                </div>
+                            @else
+                                <div class="flex items-baseline gap-2">
+                                    <span class="text-2xl font-bold text-primary">
+                                        Rp {{ number_format($t->price, 0, ',', '.') }}
+                                    </span>
+                                </div>
+                            @endif
+                        </div>
+
+                        {{-- Actions --}}
+                        <div class="flex gap-2">
+                            <a href="{{ route('treatments.edit', $t) }}"
+                                class="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-semibold transition-smooth shadow-sm hover:shadow hover-scale-sm active-press">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                                <span>Edit</span>
+                            </a>
+
+                            <form action="{{ route('treatments.destroy', $t) }}" method="POST" class="flex-1" 
+                                  onsubmit="return confirm('Hapus treatment {{ $t->name }}? Tindakan ini tidak dapat dibatalkan.')">
+                                @csrf @method('DELETE')
+                                <button type="submit"
+                                    class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-sm font-semibold transition-smooth shadow-sm hover:shadow hover-scale-sm active-press">
+                                    <i class="fa-solid fa-trash"></i>
+                                    <span>Hapus</span>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
         </div>
+
+        {{-- Empty State --}}
+        @if($treatments->isEmpty())
+            <div class="bg-card rounded-2xl shadow-md border border-border p-16 text-center animate-fade-in">
+                <i class="fa-solid fa-spa text-6xl text-muted mb-4"></i>
+                <h3 class="text-xl font-semibold text-card-foreground mb-2">Belum Ada Treatment</h3>
+                <p class="text-muted-foreground mb-6">Mulai tambahkan treatment dan layanan klinik Anda</p>
+                <a href="{{ route('treatments.create') }}"
+                    class="inline-flex items-center gap-2 px-6 py-3 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl transition-smooth shadow-lg hover:shadow-xl font-semibold hover-lift active-press">
+                    <i class="fa-solid fa-plus"></i>
+                    <span>Tambah Treatment Pertama</span>
+                </a>
+            </div>
+        @endif
     </div>
 </section>
 
-{{-- Animasi --}}
+{{-- Animations --}}
 <style>
-@keyframes fadeIn { from {opacity:0; transform:scale(0.97);} to {opacity:1; transform:scale(1);} }
-@keyframes fadeInSlow { from {opacity:0; transform:translateY(-10px);} to {opacity:1; transform:translateY(0);} }
-@keyframes fadeUp { from {opacity:0; transform:translateY(20px);} to {opacity:1; transform:translateY(0);} }
-.animate-fadeIn { animation:fadeIn 0.3s ease-out; }
-.animate-fadeInSlow { animation:fadeInSlow 0.6s ease-out; }
-.animate-fadeUp { animation:fadeUp 0.5s ease-out; }
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .animate-slideIn {
+        animation: slideIn 0.3s ease-out;
+    }
+
+    .line-clamp-2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
 </style>
 @endsection

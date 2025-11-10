@@ -20,4 +20,45 @@ class Treatment extends Model
     {
         return $this->hasMany(Reservation::class);
     }
+
+    /**
+     * Relationship dengan Discount
+     */
+    public function discounts()
+    {
+        return $this->belongsToMany(Discount::class, 'discount_treatment')
+                    ->withTimestamps();
+    }
+
+    /**
+     * Get active discount untuk treatment ini
+     */
+    public function getActiveDiscount()
+    {
+        return $this->discounts()
+                    ->active()
+                    ->first();
+    }
+
+    /**
+     * Get discounted price
+     */
+    public function getDiscountedPrice()
+    {
+        $discount = $this->getActiveDiscount();
+        
+        if ($discount) {
+            return $discount->calculateDiscountedPrice($this->price);
+        }
+        
+        return $this->price;
+    }
+
+    /**
+     * Check if treatment has active discount
+     */
+    public function hasActiveDiscount()
+    {
+        return $this->getActiveDiscount() !== null;
+    }
 }

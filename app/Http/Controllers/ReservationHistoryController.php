@@ -46,7 +46,13 @@ class ReservationHistoryController extends Controller
         }
         // --- Akhir Logika Filter ---
 
-        $reservations = $query->latest('reservation_date')->paginate(10)->appends($request->all());
+        // Urutkan berdasarkan jarak absolut dari hari ini (yang paling dekat dengan hari ini dulu)
+        $today = now()->format('Y-m-d');
+        $reservations = $query
+            ->orderByRaw("ABS(DATEDIFF(reservation_date, '{$today}'))")
+            ->orderBy('reservation_time', 'asc')
+            ->paginate(10)
+            ->appends($request->all());
 
         // Perhitungan Stats CUSTOMER (Mencari Status Huruf Kecil)
         $baseQuery = Reservation::where('user_id', $userId);
@@ -56,7 +62,7 @@ class ReservationHistoryController extends Controller
             'pending' => (int) $baseQuery->clone()->where('status', 'pending')->count(),
             'upcoming' => (int) $baseQuery->clone()->where('status', 'confirmed')->count(),
             'done' => (int) $baseQuery->clone()->where('status', 'completed')->count(),
-            'cancelled' => (int) $baseQuery->clone()->where('status', 'dibatalkan')->count(),
+            'cancelled' => (int) $baseQuery->clone()->where('status', 'cancelled')->count(),
         ];
 
         return view('reservations.history', compact('reservations', 'stats'));
@@ -90,7 +96,14 @@ class ReservationHistoryController extends Controller
         }
         // --- Akhir Logika Filter ---
 
-        $reservations = $query->latest('reservation_date')->paginate(10)->appends($request->all());
+        // Urutkan berdasarkan prioritas status, lalu tanggal & waktu reservasi
+        // Priority: pending > confirmed > completed > cancelled
+        $reservations = $query
+            ->orderByRaw("FIELD(status, 'pending', 'confirmed', 'completed', 'cancelled')")
+            ->orderBy('reservation_date', 'desc')
+            ->orderBy('reservation_time', 'desc')
+            ->paginate(10)
+            ->appends($request->all());
 
         // Perhitungan Stats ADMIN
         $baseQuery = Reservation::query();
@@ -99,7 +112,7 @@ class ReservationHistoryController extends Controller
             'pending' => (int) $baseQuery->clone()->where('status', 'pending')->count(),
             'upcoming' => (int) $baseQuery->clone()->where('status', 'confirmed')->count(),
             'done' => (int) $baseQuery->clone()->where('status', 'completed')->count(),
-            'cancelled' => (int) $baseQuery->clone()->where('status', 'dibatalkan')->count(),
+            'cancelled' => (int) $baseQuery->clone()->where('status', 'cancelled')->count(),
         ];
 
         return view('admin.reservations.history', compact('reservations', 'stats'));
@@ -130,7 +143,11 @@ class ReservationHistoryController extends Controller
         }
         // --- Akhir Logika Filter ---
 
-        $reservations = $query->latest('reservation_date')->get();
+        // Urutkan berdasarkan tanggal reservasi (terbaru dulu), lalu waktu reservasi
+        $reservations = $query
+            ->orderBy('reservation_date', 'desc')
+            ->orderBy('reservation_time', 'desc')
+            ->get();
 
         $pdf = Pdf::loadView('admin.reservations.historyreport', compact('reservations', 'request'))->setPaper('a4', 'landscape');
 
@@ -143,6 +160,32 @@ class ReservationHistoryController extends Controller
     {
         $reservation->load('doctor', 'treatment', 'user');
         return response()->json($reservation);
+    }
+
+    /**
+     * Cancel reservasi oleh customer (hanya jika status = pending)
+     */
+    public function cancelReservation(Reservation $reservation)
+    {
+        // Pastikan reservasi milik user yang login
+        if ($reservation->user_id !== Auth::id()) {
+            return redirect()->route('reservations.history')
+                ->with('error', 'Anda tidak memiliki akses untuk membatalkan reservasi ini.');
+        }
+
+        // Pastikan status masih pending
+        if ($reservation->status !== 'pending') {
+            return redirect()->route('reservations.history')
+                ->with('error', 'Reservasi hanya dapat dibatalkan jika masih dalam status Pending.');
+        }
+
+        // Update status menjadi cancelled
+        $reservation->update([
+            'status' => 'cancelled'
+        ]);
+
+        return redirect()->route('reservations.history')
+            ->with('success', 'Reservasi berhasil dibatalkan.');
     }
     
 }

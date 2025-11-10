@@ -32,8 +32,17 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'email' => [
+                'required', 
+                'string', 
+                'lowercase', 
+                'email:rfc,dns',  // Validasi RFC + DNS MX record check
+                'max:255', 
+                'unique:'.User::class
+            ],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+        ], [
+            'email.email' => 'Format email tidak valid atau domain email tidak ditemukan. Pastikan menggunakan email yang aktif.',
         ]);
 
         $user = User::create([
@@ -42,10 +51,14 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
+        // Trigger event untuk mengirim email verifikasi
         event(new Registered($user));
 
-        Auth::login($user);
+        // JANGAN login user dulu - biarkan mereka verify email dulu
+        // Auth::login($user);
 
-        return redirect(RouteServiceProvider::HOME);
+        // Redirect ke halaman login dengan pesan sukses
+        return redirect()->route('login')
+            ->with('success', 'Akun berhasil dibuat! Silakan cek email Anda untuk verifikasi, kemudian login.');
     }
 }
