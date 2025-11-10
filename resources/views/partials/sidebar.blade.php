@@ -67,6 +67,19 @@
                 </a>
             </li>
 
+            {{-- Kelola Diskon --}}
+            <li>
+                <a href="{{ route('admin.discounts.index') }}"
+                   class="group flex items-center gap-3 px-4 py-3 rounded-xl transition-smooth hover-scale-sm active-press
+                   {{ Route::is('admin.discounts.*') ? 'bg-primary text-primary-foreground shadow-lg' : 'hover:bg-sidebar-accent text-sidebar-foreground' }}">
+                    <div class="flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center transition-smooth
+                        {{ Route::is('admin.discounts.*') ? 'bg-primary-foreground/20' : 'bg-sidebar-accent group-hover:bg-primary/10' }}">
+                        <i class="fa-solid fa-tags {{ Route::is('admin.discounts.*') ? 'text-primary-foreground' : 'text-sidebar-foreground/70 group-hover:text-primary' }}"></i>
+                    </div>
+                    <span class="font-semibold">Kelola Diskon</span>
+                </a>
+            </li>
+
             {{-- Kelola Jadwal --}}
             <li>
                 <a href="{{ route('schedules.index') }}"

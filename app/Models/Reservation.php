@@ -33,8 +33,8 @@ class Reservation extends Model
         'reservation_date' => 'date',
         // TIME di MySQL → simpan string; kalau mau, buat custom cast
         'reservation_time' => 'string',
-        // Sesuaikan dengan tipe kolommu (integer/decimal)
-        'total_price'      => 'integer',
+        // Cast sebagai decimal untuk support harga dengan koma
+        'total_price'      => 'decimal:2',
     ];
 
     /* =======================

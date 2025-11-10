@@ -84,12 +84,30 @@
                             </span>
                         </div>
 
-                        {{-- Duration Badge --}}
-                        <div class="absolute top-3 right-3">
-                            <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-primary/90 backdrop-blur-sm rounded-full text-xs font-semibold text-primary-foreground">
-                                <i class="fa-solid fa-clock"></i> {{ $t->duration }} menit
-                            </span>
-                        </div>
+                        {{-- Discount Badge (if active) --}}
+                        @if($t->hasActiveDiscount())
+                            @php
+                                $discount = $t->getActiveDiscount();
+                            @endphp
+                            <div class="absolute top-3 right-3">
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-full text-xs font-bold shadow-lg animate-pulse">
+                                    <i class="fa-solid fa-tags"></i>
+                                    {{ $discount->type === 'percentage' ? $discount->value . '%' : 'DISKON' }}
+                                </span>
+                            </div>
+                            <div class="absolute bottom-3 right-3">
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-primary/90 backdrop-blur-sm rounded-full text-xs font-semibold text-primary-foreground">
+                                    <i class="fa-solid fa-clock"></i> {{ $t->duration }} menit
+                                </span>
+                            </div>
+                        @else
+                            {{-- Duration Badge --}}
+                            <div class="absolute top-3 right-3">
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-primary/90 backdrop-blur-sm rounded-full text-xs font-semibold text-primary-foreground">
+                                    <i class="fa-solid fa-clock"></i> {{ $t->duration }} menit
+                                </span>
+                            </div>
+                        @endif
                     </div>
 
                     {{-- Content Section --}}
@@ -102,13 +120,45 @@
                             {{ $t->description }}
                         </p>
 
-                        {{-- Price --}}
+                        {{-- Price with Discount Info --}}
                         <div class="mb-4 pb-4 border-b border-border">
-                            <div class="flex items-baseline gap-2">
-                                <span class="text-2xl font-bold text-primary">
-                                    Rp {{ number_format($t->price, 0, ',', '.') }}
-                                </span>
-                            </div>
+                            @if($t->hasActiveDiscount())
+                                @php
+                                    $discount = $t->getActiveDiscount();
+                                @endphp
+                                <div class="space-y-1">
+                                    {{-- Discount Badge --}}
+                                    <div class="flex items-center gap-2 mb-2">
+                                        <span class="text-xs bg-red-100 text-red-700 px-2 py-1 rounded-full font-semibold">
+                                            <i class="fa-solid fa-tag"></i> {{ $discount->name }}
+                                        </span>
+                                    </div>
+                                    {{-- Discounted Price --}}
+                                    <div class="flex items-baseline gap-2">
+                                        <span class="text-2xl font-bold text-primary">
+                                            Rp {{ number_format($t->getDiscountedPrice(), 0, ',', '.') }}
+                                        </span>
+                                        <span class="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded font-semibold">
+                                            HEMAT
+                                        </span>
+                                    </div>
+                                    {{-- Original Price --}}
+                                    <div class="text-sm text-muted-foreground line-through">
+                                        Rp {{ number_format($t->price, 0, ',', '.') }}
+                                    </div>
+                                    {{-- Discount Period --}}
+                                    <div class="text-xs text-muted-foreground mt-1">
+                                        <i class="fa-solid fa-calendar-alt"></i>
+                                        s/d {{ $discount->end_date->format('d M Y') }}
+                                    </div>
+                                </div>
+                            @else
+                                <div class="flex items-baseline gap-2">
+                                    <span class="text-2xl font-bold text-primary">
+                                        Rp {{ number_format($t->price, 0, ',', '.') }}
+                                    </span>
+                                </div>
+                            @endif
                         </div>
 
                         {{-- Actions --}}

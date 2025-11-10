@@ -26,7 +26,10 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
       @foreach($treatments as $index => $t)
         @php
-            $price = 'Rp ' . number_format($t->price, 0, ',', '.');
+            $hasDiscount = $t->hasActiveDiscount();
+            $originalPrice = $t->price;
+            $discountedPrice = $hasDiscount ? $t->getDiscountedPrice() : $originalPrice;
+            $price = 'Rp ' . number_format($discountedPrice, 0, ',', '.');
 
             if ($t->image) {
                 // Jika URL eksternal (https://...)
@@ -62,11 +65,34 @@
                  class="w-full h-full object-cover group-hover:scale-110 transition-smooth">
             <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-smooth"></div>
             
-            {{-- Price Badge --}}
+            {{-- Price Badge with Discount --}}
             <div class="absolute top-4 right-4">
-              <div class="bg-primary text-primary-foreground px-4 py-2 rounded-xl shadow-lg font-bold text-lg backdrop-blur-sm">
-                {{ $price }}
-              </div>
+              @if($hasDiscount)
+                {{-- Discount Badge --}}
+                @php
+                    $discount = $t->getActiveDiscount();
+                @endphp
+                <div class="mb-2">
+                  <div class="bg-gradient-to-r from-red-500 to-red-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg animate-pulse">
+                    <i class="fa-solid fa-tags mr-1"></i>
+                    {{ $discount->type === 'percentage' ? $discount->value . '% OFF' : 'DISKON' }}
+                  </div>
+                </div>
+                {{-- Price with Strikethrough --}}
+                <div class="bg-white/95 backdrop-blur-sm px-4 py-2 rounded-xl shadow-lg">
+                  <div class="text-xs text-gray-500 line-through">
+                    Rp {{ number_format($originalPrice, 0, ',', '.') }}
+                  </div>
+                  <div class="font-bold text-lg text-primary">
+                    {{ $price }}
+                  </div>
+                </div>
+              @else
+                {{-- Normal Price --}}
+                <div class="bg-primary text-primary-foreground px-4 py-2 rounded-xl shadow-lg font-bold text-lg backdrop-blur-sm">
+                  {{ $price }}
+                </div>
+              @endif
             </div>
           </div>
 
@@ -92,10 +118,7 @@
                    <span>Reservasi</span>
                 </a>
               @else
-                <a href="{{ route('login') }}"
-                   onclick="event.preventDefault(); 
-                            sessionStorage.setItem('intended', '{{ route('reservasi.index',['treatment_id' => $t->id])}}');
-                            window.location.href='{{ route('login') }}';"
+                <a href="{{ route('reservasi.index',['treatment_id' => $t->id]) }}"
                    class="flex-1 inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-primary-foreground bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary font-semibold shadow-md hover:shadow-lg transition-smooth hover-scale-sm active-press">
                    <i class="fa-solid fa-calendar-check"></i>
                    <span>Reservasi</span>

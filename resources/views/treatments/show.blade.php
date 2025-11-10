@@ -39,7 +39,11 @@
                     $src = 'https://via.placeholder.com/800x500?text=No+Image';
                 }
 
-                $formattedPrice = 'Rp ' . number_format($treatment->price, 0, ',', '.');
+                $hasDiscount = $treatment->hasActiveDiscount();
+                $originalPrice = $treatment->price;
+                $discountedPrice = $hasDiscount ? $treatment->getDiscountedPrice() : $originalPrice;
+                $formattedPrice = 'Rp ' . number_format($discountedPrice, 0, ',', '.');
+                $formattedOriginalPrice = 'Rp ' . number_format($originalPrice, 0, ',', '.');
             @endphp
 
             {{-- Hero Image Section --}}
@@ -48,6 +52,26 @@
                      alt="{{ $treatment->name }}"
                      class="w-full h-full object-cover hover-scale">
                 <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
+                
+                {{-- Discount Badge on Image --}}
+                @if($hasDiscount)
+                    @php
+                        $discount = $treatment->getActiveDiscount();
+                    @endphp
+                    <div class="absolute top-6 right-6 animate-bounce">
+                        <div class="bg-gradient-to-r from-red-500 to-red-600 text-white px-6 py-3 rounded-2xl shadow-2xl">
+                            <div class="flex items-center gap-2">
+                                <i class="fa-solid fa-tags text-xl"></i>
+                                <div>
+                                    <div class="text-xs font-medium">DISKON SPESIAL</div>
+                                    <div class="text-2xl font-bold">
+                                        {{ $discount->type === 'percentage' ? $discount->value . '%' : 'Rp ' . number_format($discount->value, 0, ',', '.') }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endif
                 
                 {{-- Title Overlay --}}
                 <div class="absolute bottom-0 left-0 right-0 p-6 sm:p-8 lg:p-10">
@@ -74,7 +98,15 @@
                             </div>
                             <div>
                                 <p class="text-sm font-semibold text-green-700 mb-1">Harga Treatment</p>
-                                <p class="text-2xl sm:text-3xl font-bold text-green-900">{{ $formattedPrice }}</p>
+                                @if($hasDiscount)
+                                    <div class="flex items-center gap-2">
+                                        <p class="text-2xl sm:text-3xl font-bold text-green-900">{{ $formattedPrice }}</p>
+                                        <span class="text-xs bg-red-500 text-white px-2 py-1 rounded-full font-bold">HEMAT!</span>
+                                    </div>
+                                    <p class="text-sm text-green-700 line-through mt-1">{{ $formattedOriginalPrice }}</p>
+                                @else
+                                    <p class="text-2xl sm:text-3xl font-bold text-green-900">{{ $formattedPrice }}</p>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -117,10 +149,8 @@
                             <span>Reservasi Sekarang</span>
                         </a>
                     @else
-                        <a href="{{ route('login') }}"
-                           onclick="event.preventDefault();
-                                    sessionStorage.setItem('intended', '{{ route('reservasi.index', ['treatment_id' => $treatment->id]) }}');
-                                    window.location.href='{{ route('login') }}';"
+                        {{-- Belum login - middleware auth akan handle redirect otomatis --}}
+                        <a href="{{ route('reservasi.index', ['treatment_id' => $treatment->id]) }}"
                            class="inline-flex items-center justify-center gap-3 px-8 py-4 rounded-xl text-primary-foreground bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary font-bold text-lg shadow-lg hover:shadow-xl transition-smooth hover-lift active-press">
                             <i class="fa-solid fa-calendar-check text-xl"></i>
                             <span>Reservasi Sekarang</span>

@@ -4,7 +4,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>@yield('title', 'Gracias Aesthetic Clinic')</title>
+
+    {{-- ✅ Meta tag untuk membuka di browser eksternal --}}
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    
+    {{-- ✅ Meta tag untuk Edge browser --}}
+    <meta name="msapplication-tap-highlight" content="no">
 
     {{-- ✅ Tailwind + Alpine (via Vite) --}}
     @vite('resources/css/app.css')

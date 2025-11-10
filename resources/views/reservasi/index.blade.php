@@ -135,9 +135,21 @@
                                         <div class="flex justify-between items-center pt-3 border-t border-border/50">
                                             <div>
                                                 <p class="text-xs text-muted-foreground">Harga</p>
-                                                <p class="font-bold text-lg text-primary">
-                                                    Rp{{ number_format($t->price, 0, ',', '.') }}
-                                                </p>
+                                                @if($t->hasActiveDiscount())
+                                                    <div class="flex items-center gap-2">
+                                                        <p class="font-bold text-lg text-primary">
+                                                            Rp{{ number_format($t->getDiscountedPrice(), 0, ',', '.') }}
+                                                        </p>
+                                                        <span class="text-[10px] bg-red-500 text-white px-1.5 py-0.5 rounded font-bold">DISKON</span>
+                                                    </div>
+                                                    <p class="text-xs text-muted-foreground line-through">
+                                                        Rp{{ number_format($t->price, 0, ',', '.') }}
+                                                    </p>
+                                                @else
+                                                    <p class="font-bold text-lg text-primary">
+                                                        Rp{{ number_format($t->price, 0, ',', '.') }}
+                                                    </p>
+                                                @endif
                                             </div>
                                             <div class="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center group-hover:bg-primary group-hover:scale-110 transition-all">
                                                 <i class="fa-solid fa-arrow-right text-primary group-hover:text-primary-foreground text-sm"></i>

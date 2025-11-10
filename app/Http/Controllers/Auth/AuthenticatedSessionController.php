@@ -15,17 +15,8 @@ class AuthenticatedSessionController extends Controller
     /**
      * Display the login view.
      */
-    public function create(Request $request): View
+    public function create(): View
     {
-        // Simpan halaman sebelumnya (hanya jika bukan login/logout)
-        if (
-            !$request->session()->has('url.intended') &&
-            $request->headers->get('referer') &&
-            !str_contains($request->headers->get('referer'), '/login')
-        ) {
-            $request->session()->put('url.intended', $request->headers->get('referer'));
-        }
-
         return view('auth.login');
     }
 
@@ -33,28 +24,32 @@ class AuthenticatedSessionController extends Controller
      * Handle an incoming authentication request.
      */
     public function store(LoginRequest $request): RedirectResponse
-{
-    $request->authenticate();
-    $request->session()->regenerate();
+    {
+        $request->authenticate();
+        
+        $user = Auth::user();
 
-    $user = Auth::user();
+        // Cek apakah email sudah diverifikasi (kecuali admin)
+        if ($user->role !== 'admin' && is_null($user->email_verified_at)) {
+            Auth::logout();
+            
+            return redirect()->route('login')
+                ->withErrors(['email' => 'Email Anda belum diverifikasi. Silakan cek email Anda dan klik link verifikasi.'])
+                ->withInput($request->only('email'));
+        }
 
-    // Jika ada redirect_to dari form login (misal dari feedback.create)
-    if ($request->filled('redirect_to')) {
-        return redirect($request->input('redirect_to'))
+        $request->session()->regenerate();
+
+        // Jika user adalah admin
+        if ($user->role === 'admin') {
+            return redirect()->intended(route('admin.dashboard'))
+                ->with('success', 'Login berhasil! Selamat datang, ' . $user->name);
+        }
+
+        // Default: redirect ke intended URL atau landing page
+        return redirect()->intended(route('landingpage'))
             ->with('success', 'Login berhasil! Selamat datang, ' . $user->name);
     }
-
-    // Jika user adalah admin
-    if ($user->role === 'admin') {
-        return redirect()->route('admin.dashboard')
-            ->with('success', 'Login berhasil! Selamat datang, ' . $user->name);
-    }
-
-    // Default: kembali ke landing page
-    return redirect()->route('landingpage')
-        ->with('success', 'Login berhasil! Selamat datang, ' . $user->name);
-}
 
     /**
      * Destroy an authenticated session.
