@@ -1,6 +1,58 @@
 @extends('layouts.dashboard')
 
 @section('content')
+<!-- Modal Konfirmasi Buat Diskon -->
+<div id="confirmCreateModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-lg w-full transform transition-all scale-95 opacity-0" id="createModalContent">
+        <div class="p-6">
+            <div class="flex items-center justify-center w-16 h-16 mx-auto bg-blue-100 rounded-full mb-4">
+                <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+            </div>
+            <h3 class="text-xl font-bold text-center text-gray-900 mb-2">Konfirmasi Buat Diskon</h3>
+            <p class="text-center text-gray-600 mb-4">
+                Pastikan semua data sudah benar sebelum menyimpan
+            </p>
+            
+            <!-- Summary Preview -->
+            <div class="bg-gray-50 rounded-xl p-4 mb-6 space-y-3 max-h-96 overflow-y-auto">
+                <div class="flex justify-between items-start pb-3 border-b border-gray-200">
+                    <span class="text-sm font-semibold text-gray-600">Nama Diskon:</span>
+                    <span class="text-sm font-bold text-gray-900 text-right max-w-xs" id="preview-name">-</span>
+                </div>
+                <div class="flex justify-between items-start pb-3 border-b border-gray-200">
+                    <span class="text-sm font-semibold text-gray-600">Tipe & Nilai:</span>
+                    <span class="text-sm font-bold text-primary text-right" id="preview-value">-</span>
+                </div>
+                <div class="flex justify-between items-start pb-3 border-b border-gray-200">
+                    <span class="text-sm font-semibold text-gray-600">Periode:</span>
+                    <span class="text-sm text-gray-900 text-right max-w-xs" id="preview-period">-</span>
+                </div>
+                <div class="flex justify-between items-start pb-3 border-b border-gray-200">
+                    <span class="text-sm font-semibold text-gray-600">Treatment:</span>
+                    <span class="text-sm text-gray-900 text-right max-w-xs" id="preview-treatments">-</span>
+                </div>
+                <div class="flex justify-between items-start">
+                    <span class="text-sm font-semibold text-gray-600">Status:</span>
+                    <span class="text-sm font-bold" id="preview-status">-</span>
+                </div>
+            </div>
+
+            <div class="flex gap-3">
+                <button type="button" onclick="closeCreateModal()" 
+                        class="flex-1 px-4 py-3 bg-gray-100 text-gray-700 font-semibold rounded-xl hover:bg-gray-200 transition-colors">
+                    <i class="fas fa-arrow-left mr-2"></i>Periksa Lagi
+                </button>
+                <button type="button" onclick="confirmCreate()" 
+                        class="flex-1 px-4 py-3 bg-gradient-to-r from-primary to-primary/90 text-white font-semibold rounded-xl hover:shadow-lg transition-all">
+                    <i class="fas fa-check mr-2"></i>Ya, Simpan
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="py-8">
     <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl">
         {{-- Header --}}
@@ -18,7 +70,7 @@
 
         {{-- Form --}}
         <div class="bg-white rounded-2xl shadow-lg overflow-hidden border border-border">
-            <form action="{{ route('admin.discounts.store') }}" method="POST" class="p-6 sm:p-8">
+            <form id="discountForm" action="{{ route('admin.discounts.store') }}" method="POST" class="p-6 sm:p-8">
                 @csrf
 
                 {{-- Error Alert --}}
@@ -194,7 +246,8 @@
                        class="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-6 py-3 bg-white border-2 border-border text-foreground font-semibold rounded-xl hover:bg-gray-50 transition-colors">
                         <span>Batal</span>
                     </a>
-                    <button type="submit" 
+                    <button type="button" 
+                            onclick="openCreateModal()"
                             class="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-primary to-primary/90 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl hover-lift active-press transition-smooth">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
@@ -208,6 +261,7 @@
 </div>
 
 <script>
+// Quick Date Range Setter
 function setDateRange(days) {
     const now = new Date();
     const startDate = new Date(now);
@@ -227,5 +281,112 @@ function setDateRange(days) {
     document.getElementById('start_date').value = formatDateTime(startDate);
     document.getElementById('end_date').value = formatDateTime(endDate);
 }
+
+// Modal Functions
+function openCreateModal() {
+    // Validate required fields first
+    const form = document.getElementById('discountForm');
+    const name = document.getElementById('name').value;
+    const value = document.getElementById('value').value;
+    const startDate = document.getElementById('start_date').value;
+    const endDate = document.getElementById('end_date').value;
+    const treatments = document.querySelectorAll('input[name="treatments[]"]:checked');
+    
+    // Basic validation
+    if (!name || !value || !startDate || !endDate || treatments.length === 0) {
+        alert('⚠️ Mohon lengkapi semua field yang wajib diisi (*)');
+        return;
+    }
+    
+    // Populate preview data
+    const type = document.getElementById('type').value;
+    const isActive = document.querySelector('input[name="is_active"]').checked;
+    
+    // Set preview values
+    document.getElementById('preview-name').textContent = name;
+    
+    // Format value
+    const valueDisplay = type === 'percentage' 
+        ? `${value}%` 
+        : `Rp ${parseInt(value).toLocaleString('id-ID')}`;
+    const typeDisplay = type === 'percentage' ? 'Persentase' : 'Nominal';
+    document.getElementById('preview-value').textContent = `${typeDisplay}: ${valueDisplay}`;
+    
+    // Format dates
+    const formatDate = (dateStr) => {
+        const date = new Date(dateStr);
+        return date.toLocaleDateString('id-ID', { 
+            day: 'numeric', 
+            month: 'short', 
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    };
+    document.getElementById('preview-period').innerHTML = `
+        <strong>Mulai:</strong> ${formatDate(startDate)}<br>
+        <strong>Sampai:</strong> ${formatDate(endDate)}
+    `;
+    
+    // Treatment list
+    const treatmentNames = Array.from(treatments).map(cb => {
+        const label = cb.closest('label');
+        return label.querySelector('p.font-medium').textContent;
+    });
+    document.getElementById('preview-treatments').innerHTML = 
+        `<strong>${treatments.length} treatment:</strong><br>` + 
+        treatmentNames.map(name => `• ${name}`).join('<br>');
+    
+    // Status
+    const statusEl = document.getElementById('preview-status');
+    if (isActive) {
+        statusEl.className = 'text-sm font-bold text-green-600';
+        statusEl.innerHTML = '<i class="fas fa-check-circle mr-1"></i>Aktif';
+    } else {
+        statusEl.className = 'text-sm font-bold text-gray-500';
+        statusEl.innerHTML = '<i class="fas fa-times-circle mr-1"></i>Nonaktif';
+    }
+    
+    // Show modal
+    const modal = document.getElementById('confirmCreateModal');
+    const modalContent = document.getElementById('createModalContent');
+    
+    modal.classList.remove('hidden');
+    setTimeout(() => {
+        modalContent.classList.remove('scale-95', 'opacity-0');
+        modalContent.classList.add('scale-100', 'opacity-100');
+    }, 10);
+}
+
+function closeCreateModal() {
+    const modal = document.getElementById('confirmCreateModal');
+    const modalContent = document.getElementById('createModalContent');
+    
+    modalContent.classList.remove('scale-100', 'opacity-100');
+    modalContent.classList.add('scale-95', 'opacity-0');
+    
+    setTimeout(() => {
+        modal.classList.add('hidden');
+    }, 300);
+}
+
+function confirmCreate() {
+    // Submit the form
+    document.getElementById('discountForm').submit();
+}
+
+// Close modal when clicking outside
+document.getElementById('confirmCreateModal')?.addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeCreateModal();
+    }
+});
+
+// Close modal with ESC key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeCreateModal();
+    }
+});
 </script>
 @endsection

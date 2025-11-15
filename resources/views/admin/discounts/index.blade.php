@@ -1,6 +1,63 @@
 @extends('layouts.dashboard')
 
 @section('content')
+<!-- Modal Konfirmasi Toggle Status -->
+<div id="toggleModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full transform transition-all scale-95 opacity-0" id="toggleModalContent">
+        <div class="p-6">
+            <div class="flex items-center justify-center w-16 h-16 mx-auto bg-yellow-100 rounded-full mb-4">
+                <svg class="w-8 h-8 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                </svg>
+            </div>
+            <h3 class="text-xl font-bold text-center text-gray-900 mb-2">Ubah Status Diskon?</h3>
+            <p class="text-center text-gray-600 mb-6" id="toggleMessage">
+                Apakah Anda yakin ingin mengubah status diskon ini?
+            </p>
+            <div class="flex gap-3">
+                <button type="button" onclick="closeToggleModal()" 
+                        class="flex-1 px-4 py-3 bg-gray-100 text-gray-700 font-semibold rounded-xl hover:bg-gray-200 transition-colors">
+                    Batal
+                </button>
+                <button type="button" onclick="confirmToggle()" 
+                        class="flex-1 px-4 py-3 bg-gradient-to-r from-yellow-500 to-yellow-600 text-white font-semibold rounded-xl hover:shadow-lg transition-all">
+                    Ya, Ubah Status
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Konfirmasi Delete -->
+<div id="deleteModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full transform transition-all scale-95 opacity-0" id="deleteModalContent">
+        <div class="p-6">
+            <div class="flex items-center justify-center w-16 h-16 mx-auto bg-red-100 rounded-full mb-4">
+                <svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                </svg>
+            </div>
+            <h3 class="text-xl font-bold text-center text-gray-900 mb-2">Hapus Diskon?</h3>
+            <p class="text-center text-gray-600 mb-2">
+                Apakah Anda yakin ingin menghapus diskon <span class="font-bold text-gray-900" id="deleteDiscountName"></span>?
+            </p>
+            <p class="text-center text-sm text-red-600 mb-6">
+                ⚠️ Tindakan ini tidak dapat dibatalkan!
+            </p>
+            <div class="flex gap-3">
+                <button type="button" onclick="closeDeleteModal()" 
+                        class="flex-1 px-4 py-3 bg-gray-100 text-gray-700 font-semibold rounded-xl hover:bg-gray-200 transition-colors">
+                    Batal
+                </button>
+                <button type="button" onclick="confirmDelete()" 
+                        class="flex-1 px-4 py-3 bg-gradient-to-r from-red-500 to-red-600 text-white font-semibold rounded-xl hover:shadow-lg transition-all">
+                    Ya, Hapus
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="py-8">
     <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
         {{-- Header --}}
@@ -99,10 +156,12 @@
                                         </div>
                                     </td>
                                     <td class="px-6 py-4">
-                                        <form action="{{ route('admin.discounts.toggle-status', $discount) }}" method="POST" class="inline">
+                                        <form id="toggleForm{{ $discount->id }}" action="{{ route('admin.discounts.toggle-status', $discount) }}" method="POST" class="inline">
                                             @csrf
                                             @method('PATCH')
-                                            <button type="submit" class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors {{ $discount->is_active ? 'bg-primary' : 'bg-gray-300' }}">
+                                            <button type="button" 
+                                                    onclick="openToggleModal({{ $discount->id }}, '{{ $discount->name }}', {{ $discount->is_active ? 'true' : 'false' }})"
+                                                    class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors {{ $discount->is_active ? 'bg-primary' : 'bg-gray-300' }}">
                                                 <span class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform {{ $discount->is_active ? 'translate-x-6' : 'translate-x-1' }}"></span>
                                             </button>
                                         </form>
@@ -116,11 +175,11 @@
                                                 </svg>
                                                 <span class="text-sm">Edit</span>
                                             </a>
-                                            <form action="{{ route('admin.discounts.destroy', $discount) }}" method="POST" 
-                                                  onsubmit="return confirm('Yakin ingin menghapus diskon ini?')">
+                                            <form id="deleteForm{{ $discount->id }}" action="{{ route('admin.discounts.destroy', $discount) }}" method="POST">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" 
+                                                <button type="button" 
+                                                        onclick="openDeleteModal({{ $discount->id }}, '{{ addslashes($discount->name) }}')"
                                                         class="inline-flex items-center gap-1 px-3 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors">
                                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
@@ -162,4 +221,105 @@
         </div>
     </div>
 </div>
+
+<script>
+    let currentToggleFormId = null;
+    let currentDeleteFormId = null;
+
+    // Toggle Status Modal Functions
+    function openToggleModal(discountId, discountName, isActive) {
+        currentToggleFormId = discountId;
+        const modal = document.getElementById('toggleModal');
+        const modalContent = document.getElementById('toggleModalContent');
+        const message = document.getElementById('toggleMessage');
+        
+        // Update message based on current status
+        if (isActive) {
+            message.innerHTML = `Anda akan <strong class="text-red-600">menonaktifkan</strong> diskon <strong>"${discountName}"</strong>. Diskon tidak akan ditampilkan di frontend.`;
+        } else {
+            message.innerHTML = `Anda akan <strong class="text-green-600">mengaktifkan</strong> diskon <strong>"${discountName}"</strong>. Diskon akan ditampilkan di frontend.`;
+        }
+        
+        modal.classList.remove('hidden');
+        setTimeout(() => {
+            modalContent.classList.remove('scale-95', 'opacity-0');
+            modalContent.classList.add('scale-100', 'opacity-100');
+        }, 10);
+    }
+
+    function closeToggleModal() {
+        const modal = document.getElementById('toggleModal');
+        const modalContent = document.getElementById('toggleModalContent');
+        
+        modalContent.classList.remove('scale-100', 'opacity-100');
+        modalContent.classList.add('scale-95', 'opacity-0');
+        
+        setTimeout(() => {
+            modal.classList.add('hidden');
+            currentToggleFormId = null;
+        }, 300);
+    }
+
+    function confirmToggle() {
+        if (currentToggleFormId) {
+            document.getElementById('toggleForm' + currentToggleFormId).submit();
+        }
+    }
+
+    // Delete Modal Functions
+    function openDeleteModal(discountId, discountName) {
+        currentDeleteFormId = discountId;
+        const modal = document.getElementById('deleteModal');
+        const modalContent = document.getElementById('deleteModalContent');
+        const nameElement = document.getElementById('deleteDiscountName');
+        
+        nameElement.textContent = discountName;
+        
+        modal.classList.remove('hidden');
+        setTimeout(() => {
+            modalContent.classList.remove('scale-95', 'opacity-0');
+            modalContent.classList.add('scale-100', 'opacity-100');
+        }, 10);
+    }
+
+    function closeDeleteModal() {
+        const modal = document.getElementById('deleteModal');
+        const modalContent = document.getElementById('deleteModalContent');
+        
+        modalContent.classList.remove('scale-100', 'opacity-100');
+        modalContent.classList.add('scale-95', 'opacity-0');
+        
+        setTimeout(() => {
+            modal.classList.add('hidden');
+            currentDeleteFormId = null;
+        }, 300);
+    }
+
+    function confirmDelete() {
+        if (currentDeleteFormId) {
+            document.getElementById('deleteForm' + currentDeleteFormId).submit();
+        }
+    }
+
+    // Close modal when clicking outside
+    document.getElementById('toggleModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeToggleModal();
+        }
+    });
+
+    document.getElementById('deleteModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeDeleteModal();
+        }
+    });
+
+    // Close modal with ESC key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeToggleModal();
+            closeDeleteModal();
+        }
+    });
+</script>
 @endsection

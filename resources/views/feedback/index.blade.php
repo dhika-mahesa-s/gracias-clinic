@@ -3,6 +3,35 @@
 @section('content')
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
+<!-- Modal Konfirmasi Toggle Visibility -->
+<div id="toggleVisibilityModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full transform transition-all scale-95 opacity-0" id="toggleModalContent">
+        <div class="p-6">
+            <div class="flex items-center justify-center w-16 h-16 mx-auto rounded-full mb-4" id="modalIconContainer">
+                <svg class="w-8 h-8" id="modalIcon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                </svg>
+            </div>
+            <h3 class="text-xl font-bold text-center text-gray-900 mb-2" id="modalTitle">Ubah Visibilitas?</h3>
+            <p class="text-center text-gray-600 mb-2" id="modalMessage">
+                Apakah Anda yakin ingin mengubah visibilitas feedback ini?
+            </p>
+            <p class="text-center text-sm font-semibold mb-6" id="modalCustomerName"></p>
+            <div class="flex gap-3">
+                <button type="button" onclick="closeToggleModal()" 
+                        class="flex-1 px-4 py-3 bg-gray-100 text-gray-700 font-semibold rounded-xl hover:bg-gray-200 transition-colors">
+                    Batal
+                </button>
+                <button type="button" onclick="confirmToggle()" 
+                        class="flex-1 px-4 py-3 bg-gradient-to-r text-white font-semibold rounded-xl hover:shadow-lg transition-all" id="confirmButton">
+                    Ya, Ubah
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="min-h-screen bg-background py-8 px-4 sm:px-6 lg:px-8 mt-4">
     <div class="max-w-7xl mx-auto">
         
@@ -136,7 +165,7 @@
                             <span>Detail</span>
                         </a>
 
-                        <button onclick="toggleVisibility({{ $feedback->id }})"
+                        <button onclick="openToggleModal({{ $feedback->id }}, '{{ addslashes($feedback->name) }}', {{ $feedback->is_visible ? 'true' : 'false' }})"
                             class="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-150 shadow-sm hover:shadow
                                 {{ $feedback->is_visible ? 'bg-red-600 hover:bg-red-700 text-white' : 'bg-green-600 hover:bg-green-700 text-white' }}">
                             <i class="fas {{ $feedback->is_visible ? 'fa-eye-slash' : 'fa-eye' }}"></i>
@@ -160,11 +189,76 @@
     </div>
 </div>
 
-{{-- ⚡ AJAX Toggle --}}
+{{-- ⚡ Modal & AJAX Toggle Script --}}
 <script>
-async function toggleVisibility(id) {
+let currentFeedbackId = null;
+let currentIsVisible = null;
+
+// Open Toggle Modal
+function openToggleModal(feedbackId, customerName, isVisible) {
+    currentFeedbackId = feedbackId;
+    currentIsVisible = isVisible;
+    
+    const modal = document.getElementById('toggleVisibilityModal');
+    const modalContent = document.getElementById('toggleModalContent');
+    const iconContainer = document.getElementById('modalIconContainer');
+    const modalIcon = document.getElementById('modalIcon');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalMessage = document.getElementById('modalMessage');
+    const modalCustomerName = document.getElementById('modalCustomerName');
+    const confirmButton = document.getElementById('confirmButton');
+    
+    // Update modal content based on current visibility
+    if (isVisible) {
+        // Currently visible, will hide
+        iconContainer.className = 'flex items-center justify-center w-16 h-16 mx-auto bg-red-100 rounded-full mb-4';
+        modalIcon.className = 'w-8 h-8 text-red-600';
+        modalIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/>';
+        modalTitle.textContent = 'Sembunyikan Feedback?';
+        modalMessage.innerHTML = 'Feedback dari <strong class="text-red-600">' + customerName + '</strong> akan <strong class="text-red-600">disembunyikan</strong> dari homepage.';
+        confirmButton.className = 'flex-1 px-4 py-3 bg-gradient-to-r from-red-500 to-red-600 text-white font-semibold rounded-xl hover:shadow-lg transition-all';
+        confirmButton.innerHTML = '<i class="fas fa-eye-slash mr-2"></i>Ya, Sembunyikan';
+    } else {
+        // Currently hidden, will show
+        iconContainer.className = 'flex items-center justify-center w-16 h-16 mx-auto bg-green-100 rounded-full mb-4';
+        modalIcon.className = 'w-8 h-8 text-green-600';
+        modalIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>';
+        modalTitle.textContent = 'Tampilkan Feedback?';
+        modalMessage.innerHTML = 'Feedback dari <strong class="text-green-600">' + customerName + '</strong> akan <strong class="text-green-600">ditampilkan</strong> di homepage.';
+        confirmButton.className = 'flex-1 px-4 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white font-semibold rounded-xl hover:shadow-lg transition-all';
+        confirmButton.innerHTML = '<i class="fas fa-eye mr-2"></i>Ya, Tampilkan';
+    }
+    
+    modalCustomerName.textContent = '';
+    
+    modal.classList.remove('hidden');
+    setTimeout(() => {
+        modalContent.classList.remove('scale-95', 'opacity-0');
+        modalContent.classList.add('scale-100', 'opacity-100');
+    }, 10);
+}
+
+// Close Modal
+function closeToggleModal() {
+    const modal = document.getElementById('toggleVisibilityModal');
+    const modalContent = document.getElementById('toggleModalContent');
+    
+    modalContent.classList.remove('scale-100', 'opacity-100');
+    modalContent.classList.add('scale-95', 'opacity-0');
+    
+    setTimeout(() => {
+        modal.classList.add('hidden');
+        currentFeedbackId = null;
+        currentIsVisible = null;
+    }, 300);
+}
+
+// Confirm Toggle
+async function confirmToggle() {
+    if (!currentFeedbackId) return;
+    
     try {
-        const response = await fetch(`/admin/feedback/${id}/toggle-visibility`, {
+        const response = await fetch(`/admin/feedback/${currentFeedbackId}/toggle-visibility`, {
             method: 'POST',
             headers: {
                 'X-CSRF-TOKEN': '{{ csrf_token() }}',
@@ -174,8 +268,24 @@ async function toggleVisibility(id) {
 
         const data = await response.json();
         if (data.success) {
-            alert(data.message);
-            location.reload();
+            closeToggleModal();
+            
+            // Show success notification
+            const notification = document.createElement('div');
+            notification.className = 'fixed top-4 right-4 z-50 bg-green-500 text-white px-6 py-4 rounded-xl shadow-2xl animate-slide-down flex items-center gap-3';
+            notification.innerHTML = `
+                <i class="fas fa-check-circle text-2xl"></i>
+                <div>
+                    <p class="font-bold">Berhasil!</p>
+                    <p class="text-sm">${data.message}</p>
+                </div>
+            `;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+                location.reload();
+            }, 2000);
         } else {
             alert('Gagal mengubah visibilitas.');
         }
@@ -184,5 +294,19 @@ async function toggleVisibility(id) {
         alert('Terjadi kesalahan.');
     }
 }
+
+// Close modal when clicking outside
+document.getElementById('toggleVisibilityModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeToggleModal();
+    }
+});
+
+// Close modal with ESC key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeToggleModal();
+    }
+});
 </script>
 @endsection
