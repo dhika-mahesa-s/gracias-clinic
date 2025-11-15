@@ -27,16 +27,14 @@
                     </div>
 
                     {{-- Main Heading --}}
-                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6 leading-tight animate-slide-up delay-100">
+                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-primary mb-6 leading-tight animate-slide-up delay-100">
                         Your Beauty,<br/>
                         <span class="text-primary">Our Priority</span>
                     </h1>
 
                     {{-- Description --}}
-                    <p class="text-lg text-muted-foreground mb-8 leading-relaxed animate-slide-up delay-200">
-                        Wujudkan kecantikan impian Anda bersama dokter profesional dan berpengalaman. 
-                        Kami berkomitmen memberikan pelayanan terbaik dengan teknologi modern dan standar internasional.
-                    </p>
+                    <p class="text-lg text-foreground mb-8 leading-relaxed animate-slide-up delay-200">
+                        Rasakan pengalaman beauty treatment premium dengan teknologi terdepan dan layanan dokter berpengalaman.
 
                     {{-- CTA Buttons --}}
                     <div class="flex flex-wrap gap-4 animate-slide-up delay-300">
@@ -115,11 +113,11 @@
                                                 @endfor
                                             </div>
                                             {{-- Rating Number --}}
-                                            <span class="text-base sm:text-lg lg:text-xl font-bold text-foreground">5.0</span>
+                                            <span class="text-base sm:text-lg lg:text-xl font-bold text-foreground">4.5</span>
                                         </div>
                                         {{-- Rating Text --}}
                                         <p class="text-xs sm:text-sm text-blue-600 font-semibold">
-                                            Rating dari 1000+ pasien
+                                            Rating dari sebagian besar customer
                                         </p>
                                     </div>
                                 </div>

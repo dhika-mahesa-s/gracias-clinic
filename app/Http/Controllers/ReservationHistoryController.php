@@ -16,57 +16,52 @@ class ReservationHistoryController extends Controller
      * Menampilkan riwayat HANYA untuk customer yang sedang login.
      */
     public function index(Request $request)
-    {
-        if (!Auth::check()) {
-            return redirect()->route('login');
-        }
-
-        $userId = Auth::id();
-
-        // FIX LINTER: Inisialisasi awal $query
-        $query = Reservation::query();
-
-        // Terapkan filter user_id secara langsung (untuk menghindari masalah 'where' di awal)
-        $query->where('user_id', $userId)->with(['doctor', 'treatment']);
-
-        // --- Logika Filter ---
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
-        }
-        if ($request->filled('date')) {
-            $query->whereDate('reservation_date', $request->input('date'));
-        }
-        if ($request->filled('search')) {
-            $search = $request->input('search');
-            $query->where(function ($q) use ($search) {
-                $q->where('reservation_code', 'like', "%{$search}%")
-                    ->orWhereHas('doctor', fn($q2) => $q2->where('name', 'like', "%{$search}%"))
-                    ->orWhereHas('treatment', fn($q2) => $q2->where('name', 'like', "%{$search}%"));
-            });
-        }
-        // --- Akhir Logika Filter ---
-
-        // Urutkan berdasarkan jarak absolut dari hari ini (yang paling dekat dengan hari ini dulu)
-        $today = now()->format('Y-m-d');
-        $reservations = $query
-            ->orderByRaw("ABS(DATEDIFF(reservation_date, '{$today}'))")
-            ->orderBy('reservation_time', 'asc')
-            ->paginate(10)
-            ->appends($request->all());
-
-        // Perhitungan Stats CUSTOMER (Mencari Status Huruf Kecil)
-        $baseQuery = Reservation::where('user_id', $userId);
-
-        $stats = [
-            'total' => (int) $baseQuery->count(),
-            'pending' => (int) $baseQuery->clone()->where('status', 'pending')->count(),
-            'upcoming' => (int) $baseQuery->clone()->where('status', 'confirmed')->count(),
-            'done' => (int) $baseQuery->clone()->where('status', 'completed')->count(),
-            'cancelled' => (int) $baseQuery->clone()->where('status', 'cancelled')->count(),
-        ];
-
-        return view('reservations.history', compact('reservations', 'stats'));
+{
+    if (!Auth::check()) {
+        return redirect()->route('login');
     }
+
+    $userId = Auth::id();
+
+    $query = Reservation::query();
+    $query->where('user_id', $userId)->with(['doctor', 'treatment']);
+
+    // --- Logika Filter ---
+    if ($request->filled('status')) {
+        $query->where('status', $request->status);
+    }
+    if ($request->filled('date')) {
+        $query->whereDate('reservation_date', $request->input('date'));
+    }
+    if ($request->filled('search')) {
+        $search = $request->input('search');
+        $query->where(function ($q) use ($search) {
+            $q->where('reservation_code', 'like', "%{$search}%")
+                ->orWhereHas('doctor', fn($q2) => $q2->where('name', 'like', "%{$search}%"))
+                ->orWhereHas('treatment', fn($q2) => $q2->where('name', 'like', "%{$search}%"));
+        });
+    }
+    // --- Akhir Logika Filter ---
+
+    // Urutkan berdasarkan reservasi terbaru
+    $reservations = $query
+        ->orderBy('created_at', 'desc')
+        ->paginate(10)
+        ->appends($request->all());
+
+    // Stats
+    $baseQuery = Reservation::where('user_id', $userId);
+    $stats = [
+        'total' => (int) $baseQuery->count(),
+        'pending' => (int) $baseQuery->clone()->where('status', 'pending')->count(),
+        'upcoming' => (int) $baseQuery->clone()->where('status', 'confirmed')->count(),
+        'done' => (int) $baseQuery->clone()->where('status', 'completed')->count(),
+        'cancelled' => (int) $baseQuery->clone()->where('status', 'cancelled')->count(),
+    ];
+
+    return view('reservations.history', compact('reservations', 'stats'));
+}
+
 
     /**
      * Menampilkan SEMUA riwayat untuk Admin.
