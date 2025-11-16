@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Reservation;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Barryvdh\DomPDF\Facade\Pdf;
 
@@ -28,18 +29,28 @@ class ReservationHistoryController extends Controller
 
     // --- Logika Filter ---
     if ($request->filled('status')) {
-        $query->where('status', $request->status);
+        // Validasi status hanya dari enum yang valid
+        $validStatuses = ['pending', 'confirmed', 'completed', 'cancelled'];
+        if (in_array($request->status, $validStatuses)) {
+            $query->where('status', $request->status);
+        }
     }
     if ($request->filled('date')) {
         $query->whereDate('reservation_date', $request->input('date'));
     }
     if ($request->filled('search')) {
-        $search = $request->input('search');
-        $query->where(function ($q) use ($search) {
-            $q->where('reservation_code', 'like', "%{$search}%")
-                ->orWhereHas('doctor', fn($q2) => $q2->where('name', 'like', "%{$search}%"))
-                ->orWhereHas('treatment', fn($q2) => $q2->where('name', 'like', "%{$search}%"));
-        });
+        // Sanitasi input search untuk prevent SQL injection & XSS
+        $search = strip_tags($request->input('search'));
+        $search = htmlspecialchars($search, ENT_QUOTES, 'UTF-8');
+        $search = trim($search);
+        
+        if (!empty($search)) {
+            $query->where(function ($q) use ($search) {
+                $q->where('reservation_code', 'like', "%{$search}%")
+                    ->orWhereHas('doctor', fn($q2) => $q2->where('name', 'like', "%{$search}%"))
+                    ->orWhereHas('treatment', fn($q2) => $q2->where('name', 'like', "%{$search}%"));
+            });
+        }
     }
     // --- Akhir Logika Filter ---
 
@@ -49,14 +60,21 @@ class ReservationHistoryController extends Controller
         ->paginate(10)
         ->appends($request->all());
 
-    // Stats
+    // Stats - OPTIMIZED: Single query dengan groupBy instead of 4 separate queries
     $baseQuery = Reservation::where('user_id', $userId);
+    
+    $statusCounts = $baseQuery->clone()
+        ->select('status', DB::raw('COUNT(*) as count'))
+        ->groupBy('status')
+        ->pluck('count', 'status')
+        ->toArray();
+    
     $stats = [
         'total' => (int) $baseQuery->count(),
-        'pending' => (int) $baseQuery->clone()->where('status', 'pending')->count(),
-        'upcoming' => (int) $baseQuery->clone()->where('status', 'confirmed')->count(),
-        'done' => (int) $baseQuery->clone()->where('status', 'completed')->count(),
-        'cancelled' => (int) $baseQuery->clone()->where('status', 'cancelled')->count(),
+        'pending' => (int) ($statusCounts['pending'] ?? 0),
+        'upcoming' => (int) ($statusCounts['confirmed'] ?? 0),
+        'done' => (int) ($statusCounts['completed'] ?? 0),
+        'cancelled' => (int) ($statusCounts['cancelled'] ?? 0),
     ];
 
     return view('reservations.history', compact('reservations', 'stats'));
@@ -75,19 +93,28 @@ class ReservationHistoryController extends Controller
 
         // --- Logika Filter Admin ---
         if ($request->filled('status')) {
-            $query->where('status', $request->status);
+            $validStatuses = ['pending', 'confirmed', 'completed', 'cancelled'];
+            if (in_array($request->status, $validStatuses)) {
+                $query->where('status', $request->status);
+            }
         }
         if ($request->filled('date')) {
             $query->whereDate('reservation_date', $request->input('date'));
         }
         if ($request->filled('search')) {
-            $search = $request->input('search');
-            $query->where(function ($q) use ($search) {
-                $q->where('reservation_code', 'like', "%{$search}%")
-                    ->orWhereHas('user', fn($q2) => $q2->where('name', 'like', "%{$search}%"))
-                    ->orWhereHas('doctor', fn($q2) => $q2->where('name', 'like', "%{$search}%"))
-                    ->orWhereHas('treatment', fn($q2) => $q2->where('name', 'like', "%{$search}%"));
-            });
+            // Sanitasi input search
+            $search = strip_tags($request->input('search'));
+            $search = htmlspecialchars($search, ENT_QUOTES, 'UTF-8');
+            $search = trim($search);
+            
+            if (!empty($search)) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('reservation_code', 'like', "%{$search}%")
+                        ->orWhereHas('user', fn($q2) => $q2->where('name', 'like', "%{$search}%"))
+                        ->orWhereHas('doctor', fn($q2) => $q2->where('name', 'like', "%{$search}%"))
+                        ->orWhereHas('treatment', fn($q2) => $q2->where('name', 'like', "%{$search}%"));
+                });
+            }
         }
         // --- Akhir Logika Filter ---
 
@@ -100,14 +127,21 @@ class ReservationHistoryController extends Controller
             ->paginate(10)
             ->appends($request->all());
 
-        // Perhitungan Stats ADMIN
+        // Perhitungan Stats ADMIN - OPTIMIZED
         $baseQuery = Reservation::query();
+        
+        $statusCounts = $baseQuery->clone()
+            ->select('status', DB::raw('COUNT(*) as count'))
+            ->groupBy('status')
+            ->pluck('count', 'status')
+            ->toArray();
+        
         $stats = [
             'total' => (int) $baseQuery->count(),
-            'pending' => (int) $baseQuery->clone()->where('status', 'pending')->count(),
-            'upcoming' => (int) $baseQuery->clone()->where('status', 'confirmed')->count(),
-            'done' => (int) $baseQuery->clone()->where('status', 'completed')->count(),
-            'cancelled' => (int) $baseQuery->clone()->where('status', 'cancelled')->count(),
+            'pending' => (int) ($statusCounts['pending'] ?? 0),
+            'upcoming' => (int) ($statusCounts['confirmed'] ?? 0),
+            'done' => (int) ($statusCounts['completed'] ?? 0),
+            'cancelled' => (int) ($statusCounts['cancelled'] ?? 0),
         ];
 
         return view('admin.reservations.history', compact('reservations', 'stats'));
@@ -122,19 +156,28 @@ class ReservationHistoryController extends Controller
 
         // --- Logika Filter (Sama dengan Admin Index) ---
         if ($request->filled('status')) {
-            $query->where('status', $request->status);
+            $validStatuses = ['pending', 'confirmed', 'completed', 'cancelled'];
+            if (in_array($request->status, $validStatuses)) {
+                $query->where('status', $request->status);
+            }
         }
         if ($request->filled('date')) {
             $query->whereDate('reservation_date', $request->input('date'));
         }
         if ($request->filled('search')) {
-            $search = $request->input('search');
-            $query->where(function ($q) use ($search) {
-                $q->where('reservation_code', 'like', "%{$search}%")
-                    ->orWhereHas('user', fn($q2) => $q2->where('name', 'like', "%{$search}%"))
-                    ->orWhereHas('doctor', fn($q2) => $q2->where('name', 'like', "%{$search}%"))
-                    ->orWhereHas('treatment', fn($q2) => $q2->where('name', 'like', "%{$search}%"));
-            });
+            // Sanitasi input search
+            $search = strip_tags($request->input('search'));
+            $search = htmlspecialchars($search, ENT_QUOTES, 'UTF-8');
+            $search = trim($search);
+            
+            if (!empty($search)) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('reservation_code', 'like', "%{$search}%")
+                        ->orWhereHas('user', fn($q2) => $q2->where('name', 'like', "%{$search}%"))
+                        ->orWhereHas('doctor', fn($q2) => $q2->where('name', 'like', "%{$search}%"))
+                        ->orWhereHas('treatment', fn($q2) => $q2->where('name', 'like', "%{$search}%"));
+                });
+            }
         }
         // --- Akhir Logika Filter ---
 

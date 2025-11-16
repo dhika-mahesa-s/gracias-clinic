@@ -7,33 +7,33 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>@yield('title', 'Gracias Aesthetic Clinic')</title>
 
-    {{-- ✅ Meta tag untuk membuka di browser eksternal --}}
+    {{-- ✅ Meta tags untuk PWA --}}
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    
-    {{-- ✅ Meta tag untuk Edge browser --}}
     <meta name="msapplication-tap-highlight" content="no">
 
-    {{-- ✅ Tailwind + Alpine (via Vite) --}}
+    {{-- ✅ Preconnect untuk external resources --}}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="preconnect" href="https://unpkg.com">
+
+    {{-- ✅ Critical CSS - Vite (load first) --}}
     @vite('resources/css/app.css')
-    @vite('resources/js/app.js')
 
-    {{-- ✅ Fonts --}}
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    {{-- ✅ Fonts - async with font-display swap --}}
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 
-    {{-- ✅ Font Awesome --}}
+    {{-- ✅ Font Awesome - defer loading --}}
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
           crossorigin="anonymous"
-          referrerpolicy="no-referrer">
-
-    {{-- ✅ Swiper.js (CSS) --}}
-    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+          referrerpolicy="no-referrer"
+          media="print"
+          onload="this.media='all'">
 
     {{-- ✅ Alpine.js x-cloak fix --}}
-    <style>
-        [x-cloak] { display: none !important; }
-    </style>
+    <style>[x-cloak] { display: none !important; }</style>
 
 </head>
 
@@ -51,33 +51,41 @@
     {{-- 🌙 Footer --}}
     @include('partials.footer')
 
-    <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
-    <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+    {{-- ✅ Vite JS (Alpine already included) --}}
+    @vite('resources/js/app.js')
 
+    {{-- ✅ Defer non-critical scripts --}}
+    <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet" media="print" onload="this.media='all'">
+    <script src="https://unpkg.com/aos@2.3.4/dist/aos.js" defer></script>
+
+    {{-- ✅ SweetAlert2 - defer --}}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11" defer></script>
+
+    {{-- ✅ Initialize AOS after DOM ready --}}
     <script>
-        document.addEventListener('alpine:init', () => {
-            setTimeout(() => AOS.init({ duration: 600, once: true }), 100);
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize AOS
+            if (typeof AOS !== 'undefined') {
+                AOS.init({ duration: 600, once: true });
+            }
         });
     </script>
 
-@vite('resources/js/app.js')
-
-{{-- ✅ SweetAlert2 --}}
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-{{-- ✅ Flash Message (SweetAlert2) --}}
-@if (session('success'))
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        Swal.fire({
-            icon: 'success',
-            title: 'Berhasil!',
-            text: '{{ session('success') }}',
-            confirmButtonColor: '#2563eb', // Tailwind blue-600
+    {{-- ✅ Flash Messages with SweetAlert2 --}}
+    @if (session('success'))
+    <script defer>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof Swal !== 'undefined') {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: '{{ session('success') }}',
+                    confirmButtonColor: '#2563eb',
+                });
+            }
         });
-    });
-</script>
-@endif
+    </script>
+    @endif
 
 @if (session('error'))
 <script>

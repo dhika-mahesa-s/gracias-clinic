@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Reservation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
 use App\Mail\ReservationConfirmed;
 
 class ReservationAdminController extends Controller
@@ -31,15 +32,31 @@ class ReservationAdminController extends Controller
 
         $reservation->update(['status' => 'confirmed']);
 
-        // 📧 Kirim email notifikasi ke customer
+        // 📧 Kirim email notifikasi ke customer dengan error handling
         try {
             Mail::to($reservation->customer_email)
                 ->send(new ReservationConfirmed($reservation));
             
+            // Log successful email
+            Log::info('Reservation confirmation email sent', [
+                'reservation_id' => $reservation->id,
+                'reservation_code' => $reservation->reservation_code,
+                'customer_email' => $reservation->customer_email,
+            ]);
+            
             return back()->with('success', 'Reservasi berhasil dikonfirmasi dan email notifikasi telah dikirim ke customer.');
         } catch (\Exception $e) {
+            // Log error untuk monitoring
+            Log::error('Failed to send reservation confirmation email', [
+                'reservation_id' => $reservation->id,
+                'reservation_code' => $reservation->reservation_code,
+                'customer_email' => $reservation->customer_email,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+            
             // Jika email gagal, tetap konfirmasi berhasil tapi beri info
-            return back()->with('warning', 'Reservasi berhasil dikonfirmasi, namun email notifikasi gagal dikirim: ' . $e->getMessage());
+            return back()->with('warning', 'Reservasi berhasil dikonfirmasi, namun email notifikasi gagal dikirim. Tim teknis telah diberitahu.');
         }
     }
 

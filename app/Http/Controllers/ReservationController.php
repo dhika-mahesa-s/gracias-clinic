@@ -15,12 +15,22 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 class ReservationController extends Controller
 {
+    /**
+     * ✅ Optimized: Select only needed columns, eager load active discounts
+     */
     public function index(Request $request)
     {
-        $treatments = Treatment::with('discounts')->get();
-        $doctors = Doctor::where('status', 'active')->get();
+        $treatments = Treatment::select('treatments.id', 'name', 'price', 'duration', 'image')
+                               ->with(['discounts' => function($query) {
+                                   $query->select('discounts.id', 'name', 'type', 'value', 'start_date', 'end_date', 'is_active')
+                                         ->active();
+                               }])
+                               ->get();
+                               
+        $doctors = Doctor::select('id', 'name', 'photo')
+                        ->where('status', 'active')
+                        ->get();
 
-        // Get pre-selected treatment from query parameter
         $preSelectedTreatmentId = $request->query('treatment_id');
 
         return view('reservasi.index', compact('treatments', 'doctors', 'preSelectedTreatmentId'));
@@ -31,12 +41,30 @@ class ReservationController extends Controller
         $request->validate([
             'doctor_id'    => 'required|exists:doctors,id',
             'treatment_id' => 'required|exists:treatments,id',
-            'date'         => 'required|date',
-            'time'         => 'required',
-            'name'         => 'required|string',
-            'email'        => 'required|email:rfc,dns', // Validasi format dan DNS MX record
-            'phone'        => 'required|string',
+            'date'         => 'required|date|after_or_equal:today',
+            'time'         => 'required|date_format:H:i',
+            'name'         => [
+                'required',
+                'string',
+                'min:3',
+                'max:255',
+                'regex:/^[a-zA-Z\s.]+$/', // Hanya huruf, spasi, dan titik
+            ],
+            'email'        => [
+                'required',
+                'email:rfc,dns',
+                'max:255',
+            ],
+            'phone'        => [
+                'required',
+                'string',
+                'regex:/^(\+62|62|0)[0-9]{9,13}$/', // Format Indonesia: 08xxx atau +628xxx atau 628xxx
+            ],
         ], [
+            'name.regex' => 'Nama hanya boleh berisi huruf, spasi, dan titik.',
+            'phone.regex' => 'Format nomor telepon tidak valid. Gunakan format: 08xxxxxxxxxx atau +628xxxxxxxxxx',
+            'date.after_or_equal' => 'Tanggal reservasi tidak boleh di masa lalu.',
+            'time.date_format' => 'Format waktu tidak valid.',
             'email.email' => 'Email tidak valid atau domain email tidak ditemukan.',
         ]);
 
@@ -93,6 +121,12 @@ class ReservationController extends Controller
             $user->phone = $request->phone;
             $user->save();
         }
+        
+        // Sanitize user inputs before storing
+        $sanitizedName = strip_tags($request->name);
+        $sanitizedEmail = filter_var($request->email, FILTER_SANITIZE_EMAIL);
+        $sanitizedPhone = preg_replace('/[^0-9+]/', '', $request->phone);
+        
         Reservation::create([
             'reservation_code'  => $code,
             'user_id'           => Auth::id(),
@@ -102,9 +136,9 @@ class ReservationController extends Controller
             'reservation_date'  => $request->date,
             'reservation_time'  => $time,
             'total_price'       => $price,
-            'customer_name'     => $request->name,
-            'customer_email'     => $request->email,
-            'customer_phone'     => $request->phone,
+            'customer_name'     => $sanitizedName,
+            'customer_email'    => $sanitizedEmail,
+            'customer_phone'    => $sanitizedPhone,
             'status'            => 'pending',
         ]);
 
@@ -156,28 +190,6 @@ class ReservationController extends Controller
         }
     }
 
-    // Kalau tetap ingin endpoint alternatif ini, sinkronkan dengan skema kolom
-    public function getAvailableSlots($doctorId, $date)
-    {
-        $tanggal = Carbon::parse($date)->toDateString();
-
-        // Contoh slot statik
-        $allSlots = ['09:00:00','10:00:00','11:00:00','13:00:00','14:00:00','15:00:00','16:00:00'];
-
-        $booked = Reservation::where('doctor_id', $doctorId)
-            ->whereDate('reservation_date', $tanggal)
-            ->pluck('reservation_time')
-            ->map(fn($t) => Carbon::parse($t)->format('H:i:s'))
-            ->toArray();
-
-        $available = array_values(array_diff($allSlots, $booked));
-
-        // kirim sebagai "HH:mm" ke UI
-        return response()->json([
-            'available_slots' => array_map(fn($t) => substr($t, 0, 5), $available)
-        ]);
-    }
-
     public function cetakResi($code)
     {
         $reservasi = Reservation::with(['doctor', 'treatment'])
@@ -192,5 +204,3 @@ class ReservationController extends Controller
         return $pdf->download($filename);
     }
 }
-
-

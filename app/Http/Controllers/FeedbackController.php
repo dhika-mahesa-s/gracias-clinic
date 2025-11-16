@@ -53,12 +53,34 @@ class FeedbackController extends Controller
             'result_rating' => 'required|integer|min:1|max:5',
             'return_rating' => 'required|integer|min:1|max:5',
             'overall_rating' => 'required|integer|min:1|max:5',
-            'message' => 'nullable|string|max:1000',
+            'message' => [
+                'nullable',
+                'string',
+                'max:1000',
+                'regex:/^[a-zA-Z0-9\s\.\,\!\?\-\(\)]+$/', // Alphanumeric + basic punctuation
+            ],
             'service_type' => 'nullable|string|max:255',
-            // tambahkan validasi untuk user info
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'phone' => 'nullable|string|max:20',
+            'name' => [
+                'required',
+                'string',
+                'min:3',
+                'max:255',
+                'regex:/^[a-zA-Z\s.]+$/',
+            ],
+            'email' => [
+                'required',
+                'email',
+                'max:255',
+            ],
+            'phone' => [
+                'nullable',
+                'string',
+                'regex:/^(\+62|62|0)[0-9]{9,13}$/',
+            ],
+        ], [
+            'message.regex' => 'Pesan mengandung karakter tidak valid.',
+            'name.regex' => 'Nama hanya boleh berisi huruf, spasi, dan titik.',
+            'phone.regex' => 'Format nomor telepon tidak valid.',
         ]);
 
         $reservation = Reservation::where('id', $request->reservation_id)
@@ -76,6 +98,11 @@ class FeedbackController extends Controller
         $validated['reservation_id'] = $request->reservation_id;
         $validated['service_type'] = $request->reservation_id ? $reservation->treatment->name : null;
 
+        // Sanitize message input
+        if (isset($validated['message'])) {
+            $validated['message'] = strip_tags($validated['message']);
+            $validated['message'] = htmlspecialchars($validated['message'], ENT_QUOTES, 'UTF-8');
+        }
 
         // Hitung rata-rata rating
         $validated['rating'] = round((
