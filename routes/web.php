@@ -134,39 +134,59 @@ Route::prefix('admin/treatments')->middleware(['auth', 'check.admin'])->group(fu
 });
 
 // ==========================
-// RESERVATION ROUTES
+// RESERVATION ROUTES (dengan Rate Limiting)
 // ==========================
 Route::middleware(['auth', 'verified', 'check.customer'])->group(function () {
     Route::get('/reservasi', [ReservationController::class, 'index'])->name('reservasi.index');
-    Route::post('/reservasi', [ReservationController::class, 'store'])->name('reservasi.store');
+    
+    // Rate limit: 5 reservations per minute per user (prevent spam)
+    Route::middleware(['throttle:5,1'])->group(function () {
+        Route::post('/reservasi', [ReservationController::class, 'store'])->name('reservasi.store');
+    });
+    
     Route::get('/reservasi/jadwal/{doctor}/{date}', [ReservationController::class, 'getSchedule']);
     Route::get('/reservasi/{code}/cetak', [ReservationController::class, 'cetakResi'])->name('reservasi.cetak');
 });
-// Admin Reservation Management
+
+// Admin Reservation Management (dengan Rate Limiting untuk aksi)
 Route::prefix('admin')->middleware(['auth', 'check.admin'])->group(function () {
     Route::get('/reservasi', [ReservationAdminController::class, 'index'])->name('reservasi.admin');
-    Route::post('/reservasi/{id}/konfirmasi', [ReservationAdminController::class, 'konfirmasi'])->name('admin.reservasi.konfirmasi');
-    Route::post('/reservasi/{id}/selesai', [ReservationAdminController::class, 'selesai'])->name('admin.reservasi.selesai');
-    Route::post('/reservasi/{id}/batalkan', [ReservationAdminController::class, 'batalkan'])->name('admin.reservasi.batalkan');
+    
+    // Rate limit admin actions: 30 per minute (prevent accidental spam)
+    Route::middleware(['throttle:30,1'])->group(function () {
+        Route::post('/reservasi/{id}/konfirmasi', [ReservationAdminController::class, 'konfirmasi'])->name('admin.reservasi.konfirmasi');
+        Route::post('/reservasi/{id}/selesai', [ReservationAdminController::class, 'selesai'])->name('admin.reservasi.selesai');
+        Route::post('/reservasi/{id}/batalkan', [ReservationAdminController::class, 'batalkan'])->name('admin.reservasi.batalkan');
+    });
 });
 
 require __DIR__ . '/auth.php';
 
 // ==========================
-// FEEDBACK (User Side)
+// FEEDBACK (User Side - dengan Rate Limiting)
 // ==========================
 Route::middleware(['auth', 'verified', 'check.customer'])->group(function () {
     Route::get('/feedback', [FeedbackController::class, 'create'])->name('feedback.create');
-    Route::post('/feedback', [FeedbackController::class, 'store'])->name('feedback.store');
+    
+    // Rate limit: 3 feedback submissions per hour (prevent spam)
+    Route::middleware(['throttle:3,60'])->group(function () {
+        Route::post('/feedback', [FeedbackController::class, 'store'])->name('feedback.store');
+    });
+    
     Route::get('/feedback/thankyou', [FeedbackController::class, 'thankyou'])->name('feedback.thankyou');
 });
+
 // ==========================
-// ADMIN FEEDBACK
+// ADMIN FEEDBACK (dengan Rate Limiting untuk toggle)
 // ==========================
 Route::prefix('admin')->middleware(['auth', 'check.admin'])->group(function () {
     Route::get('/feedback', [AdminFeedbackController::class, 'index'])->name('admin.feedback.index');
     Route::get('/feedback/{id}', [AdminFeedbackController::class, 'show'])->name('admin.feedback.show');
-    Route::post('/feedback/{id}/toggle-visibility', [AdminFeedbackController::class, 'toggleVisibility'])->name('admin.feedback.toggle');
+    
+    // Rate limit: 60 toggles per minute (AJAX endpoint)
+    Route::middleware(['throttle:60,1'])->group(function () {
+        Route::post('/feedback/{id}/toggle-visibility', [AdminFeedbackController::class, 'toggleVisibility'])->name('admin.feedback.toggle');
+    });
 });
 
 // ==========================

@@ -9,7 +9,6 @@
         "barryvdh/laravel-dompdf": "^3.1",
         "guzzlehttp/guzzle": "^7.2",
         "laravel/framework": "^10.10",
-        "laravel/sanctum": "^3.3",
         "laravel/socialite": "^5.23",
         "laravel/tinker": "^2.8",
         "laravel/ui": "^4.6"

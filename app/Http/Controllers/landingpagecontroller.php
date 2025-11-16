@@ -1,53 +1,34 @@
 <?php
-// app/Http/Controllers/LandingPageController.php
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Feedback;
 use App\Models\Treatment;
-use Illuminate\Support\Facades\Log;
 
 class LandingPageController extends Controller
 {
     /**
-     * Menampilkan landing page dengan data feedback yang dipilih admin
+     * Menampilkan landing page dengan optimized eager loading
      */
     public function index()
     {
-        $treatments = Treatment::with('discounts')
+        // ✅ Optimized: Eager load discounts, limit to 4, select only needed columns
+        $treatments = Treatment::select('treatments.id', 'name', 'description', 'price', 'image', 'duration')
+                               ->with(['discounts' => function($query) {
+                                   $query->select('discounts.id', 'name', 'type', 'value', 'start_date', 'end_date', 'is_active')
+                                         ->active();
+                               }])
                                ->latest()
                                ->take(4)
                                ->get();
-        // Ambil feedback dari database
-        $featuredFeedbacks = Feedback::query()
+        
+        // ✅ Optimized: Select only needed columns, no unnecessary relations
+        $featuredFeedbacks = Feedback::select('id', 'name', 'message', 'overall_rating', 'created_at')
             ->where('is_visible', true)
-            ->orderByDesc('created_at')
+            ->latest()
             ->take(5)
             ->get();
+            
         return view('landingpage', compact('featuredFeedbacks', 'treatments'));
-    }
-
-    public function getFeaturedFeedbacks()
-    {
-        $feedbacks = Feedback::where('is_visible', true)
-            ->where('is_hidden', false)
-            ->with('user')
-            ->latest()
-            ->take(6)
-            ->get()
-            ->map(function ($feedback) {
-                return [
-                    'id' => $feedback->id,
-                    'name' => $feedback->name ?: ($feedback->user->name ?? 'Anonymous'),
-                    'message' => $feedback->message,
-                    'rating' => $feedback->overall_rating,
-                    'service_type' => $feedback->reservations->treatment->name ?? 'General',
-                    'date' => $feedback->created_at->format('M Y'),
-                    'avatar' => null // Bisa ditambahkan jika ada field avatar
-                ];
-            });
-
-        return response()->json($feedbacks);
     }
 }

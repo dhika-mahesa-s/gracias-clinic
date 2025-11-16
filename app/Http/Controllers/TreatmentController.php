@@ -10,28 +10,44 @@ class TreatmentController extends Controller
 {
     /**
      * Menampilkan semua treatment (3 card view)
+     * ✅ Optimized: Select only needed columns, eager load active discounts only
      */
     public function index()
     {
-        $treatments = Treatment::with('discounts')->get();
+        $treatments = Treatment::select('treatments.id', 'name', 'description', 'price', 'image', 'duration')
+                               ->with(['discounts' => function($query) {
+                                   $query->select('discounts.id', 'name', 'type', 'value', 'start_date', 'end_date', 'is_active')
+                                         ->active();
+                               }])
+                               ->get();
         return view('treatments.index', compact('treatments'));
     }
 
     /**
      * Menampilkan 1 card detail treatment
+     * ✅ Optimized: Route model binding already loads, just eager load discounts
      */
     public function show(Treatment $treatment)
     {
-        $treatment->load('discounts');
+        $treatment->load(['discounts' => function($query) {
+            $query->select('discounts.id', 'name', 'type', 'value', 'start_date', 'end_date', 'is_active')
+                  ->active();
+        }]);
         return view('treatments.show', compact('treatment'));
     }
 
     /**
      * Halaman daftar untuk admin (tabel)
+     * ✅ Optimized: Select only needed columns
      */
     public function manage()
     {
-        $treatments = Treatment::with('discounts')->get();
+        $treatments = Treatment::select('treatments.id', 'name', 'description', 'price', 'image', 'duration', 'created_at')
+                               ->with(['discounts' => function($query) {
+                                   $query->select('discounts.id', 'name', 'type', 'value', 'start_date', 'end_date', 'is_active');
+                               }])
+                               ->latest()
+                               ->get();
         return view('treatments.manage', compact('treatments'));
     }
 
