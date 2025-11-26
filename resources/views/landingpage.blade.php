@@ -29,7 +29,7 @@
                     {{-- Main Heading --}}
                     <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-primary mb-6 leading-tight animate-slide-up delay-100">
                         Your Beauty,<br/>
-                        <span class="text-primary">Our Priority</span>
+                        <span class="text-primary">Your Priority</span>
                     </h1>
 
                     {{-- Description --}}
