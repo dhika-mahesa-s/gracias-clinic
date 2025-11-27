@@ -19,6 +19,26 @@
       <p class="text-lg text-muted-foreground max-w-2xl mx-auto">
         Pilih treatment terbaik untuk perawatan kecantikan dan kesehatan kulit Anda
       </p>
+      
+      {{-- Promo Banner jika ada treatment dengan diskon --}}
+      @php
+        $hasAnyDiscount = $treatments->contains(function($t) {
+            return $t->hasActiveDiscount();
+        });
+      @endphp
+      
+      @if($hasAnyDiscount)
+        <div class="mt-6 inline-flex items-center gap-3 bg-gradient-to-r from-red-50 to-pink-50 border-2 border-red-200 rounded-full px-6 py-3 shadow-md animate-bounce-in">
+          <div class="flex items-center justify-center w-10 h-10 bg-gradient-to-r from-red-500 to-red-600 rounded-full animate-pulse">
+            <i class="fa-solid fa-fire text-white text-lg"></i>
+          </div>
+          <div class="text-left">
+            <p class="text-sm font-bold text-red-700">🎉 Promo Spesial Tersedia!</p>
+            <p class="text-xs text-red-600">Dapatkan diskon untuk treatment pilihan</p>
+          </div>
+        </div>
+      @endif
+      
       <div class="mt-4 h-1 w-24 bg-gradient-to-r from-primary/50 via-primary to-primary/50 rounded-full mx-auto"></div>
     </div>
 

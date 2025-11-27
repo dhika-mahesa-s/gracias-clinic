@@ -17,21 +17,33 @@ class ReservationController extends Controller
 {
     /**
      * ✅ Optimized: Select only needed columns, eager load active discounts
+     * ✅ Prioritas: Treatment yang dipilih ditampilkan paling atas
      */
     public function index(Request $request)
     {
-        $treatments = Treatment::select('treatments.id', 'name', 'price', 'duration', 'image')
-                               ->with(['discounts' => function($query) {
-                                   $query->select('discounts.id', 'name', 'type', 'value', 'start_date', 'end_date', 'is_active')
-                                         ->active();
-                               }])
-                               ->get();
+        $preSelectedTreatmentId = $request->query('treatment_id');
+        
+        // Base query untuk treatments
+        $treatmentsQuery = Treatment::select('treatments.id', 'name', 'price', 'duration', 'image')
+                                    ->with(['discounts' => function($query) {
+                                        $query->select('discounts.id', 'name', 'type', 'value', 'start_date', 'end_date', 'is_active')
+                                              ->active();
+                                    }]);
+        
+        // Jika ada treatment_id yang dipilih, urutkan agar treatment itu paling atas
+        if ($preSelectedTreatmentId) {
+            $treatments = $treatmentsQuery
+                         ->orderByRaw("CASE WHEN treatments.id = ? THEN 0 ELSE 1 END", [$preSelectedTreatmentId])
+                         ->orderBy('name', 'asc')
+                         ->get();
+        } else {
+            // Default: urutkan berdasarkan nama
+            $treatments = $treatmentsQuery->orderBy('name', 'asc')->get();
+        }
                                
         $doctors = Doctor::select('id', 'name', 'photo')
                         ->where('status', 'active')
                         ->get();
-
-        $preSelectedTreatmentId = $request->query('treatment_id');
 
         return view('reservasi.index', compact('treatments', 'doctors', 'preSelectedTreatmentId'));
     }

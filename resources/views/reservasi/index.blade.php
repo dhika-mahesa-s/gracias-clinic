@@ -654,6 +654,22 @@
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
             background: #7e22ce;
         }
+        
+        /* Highlight animation untuk treatment yang dipilih */
+        @keyframes pulse-once {
+            0%, 100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.9;
+                transform: scale(1.05);
+            }
+        }
+        
+        .animate-pulse-once {
+            animation: pulse-once 1s ease-in-out 2;
+        }
     </style>
 
             <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
@@ -694,6 +710,25 @@
                             const preSelectedTreatment = this.$root.dataset.preSelectedTreatment;
                             if (preSelectedTreatment) {
                                 this.form.treatment_id = preSelectedTreatment;
+                                
+                                // Scroll ke treatment yang dipilih setelah DOM ready
+                                this.$nextTick(() => {
+                                    const selectedCard = document.querySelector(`[data-treatment-id="${preSelectedTreatment}"]`);
+                                    if (selectedCard) {
+                                        // Smooth scroll ke treatment card
+                                        selectedCard.scrollIntoView({ 
+                                            behavior: 'smooth', 
+                                            block: 'nearest',
+                                            inline: 'start'
+                                        });
+                                        
+                                        // Highlight animation
+                                        selectedCard.classList.add('animate-pulse-once');
+                                        setTimeout(() => {
+                                            selectedCard.classList.remove('animate-pulse-once');
+                                        }, 2000);
+                                    }
+                                });
                             }
 
                             // when doctor changes reset selected time & slots

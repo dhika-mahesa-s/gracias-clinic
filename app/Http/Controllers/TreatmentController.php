@@ -11,15 +11,37 @@ class TreatmentController extends Controller
     /**
      * Menampilkan semua treatment (3 card view)
      * ✅ Optimized: Select only needed columns, eager load active discounts only
+     * ✅ Prioritas: Treatment dengan diskon aktif ditampilkan terlebih dahulu
      */
     public function index()
     {
-        $treatments = Treatment::select('treatments.id', 'name', 'description', 'price', 'image', 'duration')
-                               ->with(['discounts' => function($query) {
-                                   $query->select('discounts.id', 'name', 'type', 'value', 'start_date', 'end_date', 'is_active')
-                                         ->active();
-                               }])
-                               ->get();
+        // ✅ Prioritas 1: Treatment dengan diskon aktif
+        $treatmentsWithDiscount = Treatment::select('treatments.id', 'name', 'description', 'price', 'image', 'duration')
+                                           ->with(['discounts' => function($query) {
+                                               $query->select('discounts.id', 'name', 'type', 'value', 'start_date', 'end_date', 'is_active')
+                                                     ->active();
+                                           }])
+                                           ->whereHas('discounts', function($query) {
+                                               $query->active();
+                                           })
+                                           ->latest()
+                                           ->get();
+
+        // ✅ Prioritas 2: Treatment tanpa diskon aktif
+        $treatmentsWithoutDiscount = Treatment::select('treatments.id', 'name', 'description', 'price', 'image', 'duration')
+                                              ->with(['discounts' => function($query) {
+                                                  $query->select('discounts.id', 'name', 'type', 'value', 'start_date', 'end_date', 'is_active')
+                                                        ->active();
+                                              }])
+                                              ->whereDoesntHave('discounts', function($query) {
+                                                  $query->active();
+                                              })
+                                              ->latest()
+                                              ->get();
+
+        // Merge: Treatment dengan diskon + treatment tanpa diskon
+        $treatments = $treatmentsWithDiscount->merge($treatmentsWithoutDiscount);
+
         return view('treatments.index', compact('treatments'));
     }
 
