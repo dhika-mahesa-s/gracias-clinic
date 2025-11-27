@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Laravel\Socialite\Socialite;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\FeedbackController;
@@ -72,25 +73,56 @@ Route::get('/auth/callback', function () {
         $user = User::where('email', $googleUser->getEmail())->first();
 
         if (! $user) {
+            // Create new user dengan Google OAuth - auto verified
             $user = User::create([
                 'name' => $googleUser->getName(),
                 'email' => $googleUser->getEmail(),
                 'google_id' => $googleUser->getId(),
                 'password' => Hash::make(Str::random(16)),
                 'email_verified_at' => now(), // Auto-verify untuk Google OAuth
+                'role' => 'customer', // Set default role
+            ]);
+            
+            Log::info('Google OAuth: New user created', [
+                'user_id' => $user->id,
+                'email' => $user->email,
+                'google_id' => $user->google_id,
+                'email_verified_at' => $user->email_verified_at,
             ]);
         } else {
-            // Jika user sudah ada tapi belum verified, auto-verify
+            $needsSave = false;
+            
+            // Update existing user dengan google_id jika belum ada
+            if (empty($user->google_id)) {
+                $user->google_id = $googleUser->getId();
+                $needsSave = true;
+                Log::info('Google OAuth: Added google_id to existing user', ['user_id' => $user->id]);
+            }
+            
+            // Auto-verify jika belum verified
             if (is_null($user->email_verified_at)) {
                 $user->email_verified_at = now();
+                $needsSave = true;
+                Log::info('Google OAuth: Auto-verified existing user', ['user_id' => $user->id]);
+            }
+            
+            if ($needsSave) {
                 $user->save();
+                // 🔥 CRITICAL: Refresh user dari database untuk memastikan perubahan ter-load
+                $user->refresh();
             }
         }
 
-        Auth::login($user);
+        Auth::login($user, true); // Remember user
         
         // Regenerate session setelah login untuk keamanan
         session()->regenerate();
+        
+        Log::info('Google OAuth: Login successful', [
+            'user_id' => $user->id,
+            'email' => $user->email,
+            'has_verified_email' => $user->hasVerifiedEmail(),
+        ]);
 
          // 🔹 Ambil redirect_to dari session (diset di /auth/redirect)
          if (session()->has('redirect_to')) {

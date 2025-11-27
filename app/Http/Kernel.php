@@ -63,7 +63,8 @@ class Kernel extends HttpKernel
         'precognitive' => \Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests::class,
         'signed' => \App\Http\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
-        'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+        // 🔥 CUSTOM: Support Google OAuth auto-verification
+        'verified' => \App\Http\Middleware\EnsureEmailIsVerifiedOrGoogleAuth::class,
         'check.admin' => \App\Http\Middleware\CheckAdminRole::class,
         'check.customer' => \App\Http\Middleware\CheckCustomerRole::class,
 
