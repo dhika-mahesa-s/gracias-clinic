@@ -20,12 +20,6 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('admin123'),
             'role' => 'admin',
         ]);
-
-        // ===== CUSTOMER USERS =====
-        User::factory()->count(3)->create([
-            'role' => 'customer',
-        ]);
-
         }
        
 
