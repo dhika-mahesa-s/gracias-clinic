@@ -61,4 +61,53 @@ class Treatment extends Model
     {
         return $this->getActiveDiscount() !== null;
     }
+
+    /**
+     * Get discount percentage (untuk display badge)
+     */
+    public function getDiscountPercentage()
+    {
+        $discount = $this->getActiveDiscount();
+        
+        if (!$discount) {
+            return null;
+        }
+
+        if ($discount->type === 'percentage') {
+            return $discount->value;
+        } else {
+            // Hitung persentase dari fixed amount
+            return round(($discount->value / $this->price) * 100, 0);
+        }
+    }
+
+    /**
+     * Get discount amount (nominal potongan)
+     */
+    public function getDiscountAmount()
+    {
+        $discount = $this->getActiveDiscount();
+        
+        if (!$discount) {
+            return 0;
+        }
+
+        return $discount->getDiscountAmount($this->price);
+    }
+
+    /**
+     * Get formatted original price
+     */
+    public function getFormattedPrice()
+    {
+        return 'Rp ' . number_format($this->price, 0, ',', '.');
+    }
+
+    /**
+     * Get formatted discounted price
+     */
+    public function getFormattedDiscountedPrice()
+    {
+        return 'Rp ' . number_format($this->getDiscountedPrice(), 0, ',', '.');
+    }
 }
